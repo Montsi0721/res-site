@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savory Delights - Fine Dining Experience</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+
+<body>
+    <!-- 3D Cube Background -->
+    <div id="cube-container">
+        <div id="cube">
+            <div class="cube-face front"></div>
+            <div class="cube-face back"></div>
+            <div class="cube-face right"></div>
+            <div class="cube-face left"></div>
+            <div class="cube-face top"></div>
+            <div class="cube-face bottom"></div>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+            <span>Savory Delights</span>
+        </div>
+
+        <div class="header-right">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search menu...">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+
+            <!-- Reservation Button -->
+            <button class="login-btn" id="reservationBtn">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Reserve</span>
+            </button>
+
+            <!-- Menu Button -->
+            <div class="menu-btn" id="menuBtn">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-utensils"></i>
+        <span>Welcome to Savory Delights!</span>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-menu" id="navMenu">
+        <div class="nav-header">
+            <h2><i class="fas fa-bars"></i> Menu</h2>
+        </div>
+        <div class="nav-items">
+            <div class="nav-item" data-target="welcome">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <div class="nav-text">Home</div>
+            </div>
+            <div class="nav-item" data-target="menu">
+                <div class="nav-icon"><i class="fas fa-utensils"></i></div>
+                <div class="nav-text">Our Menu</div>
+            </div>
+            <div class="nav-item" data-target="gallery">
+                <div class="nav-icon"><i class="fas fa-images"></i></div>
+                <div class="nav-text">Gallery</div>
+            </div>
+            <div class="nav-item" data-target="special-offers">
+                <div class="nav-icon"><i class="fas fa-tag"></i></div>
+                <div class="nav-text">Special Offers</div>
+            </div>
+            <div class="nav-item" data-target="contact">
+                <div class="nav-icon"><i class="fas fa-phone"></i></div>
+                <div class="nav-text">Contact</div>
+            </div>
+            <div class="nav-item" data-target="about">
+                <div class="nav-icon"><i class="fas fa-info-circle"></i></div>
+                <div class="nav-text">About Us</div>
+            </div>
+
+            <!-- Theme Toggle -->
+            <div class="nav-item theme-toggle">
+                <div class="nav-icon"><i class="fas fa-moon"></i></div>
+                <div class="nav-text">Dark Mode</div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Welcome Section -->
+        <section id="welcome">
+            <h2 class="section-title">Welcome to Savory Delights</h2>
+            <p style="text-align: center; margin-bottom: 30px; font-size: 18px; color: #777;">
+                Experience the finest culinary delights in an atmosphere of elegance and comfort.
+            </p>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menu">
+            <h2 class="section-title">Our Menu</h2>
+            <div class="card-grid" id="menu-items">
+                <!-- Menu items will be loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- Special Offers Section -->
+        <section id="special-offers">
+            <h2 class="section-title">Special Offers</h2>
+            <div class="card-grid" id="special-offers-items">
+                <!-- Special offers will be loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="card-container">
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title"><i class="fas fa-clock"></i> Hours of Operation</h3>
+                        <p class="card-text">Monday - Thursday: 5pm - 10pm</p>
+                        <p class="card-text">Friday - Saturday: 5pm - 11pm</p>
+                        <p class="card-text">Sunday: 11am - 9pm</p>
+                        <p class="card-text" style="margin-top: 15px; font-style: italic;">
+                            <i class="fas fa-map-marker-alt"></i> 123 Gourmet Street, Foodville
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title"><i class="fas fa-envelope"></i> Send us a Message</h3>
+                        <form id="contactForm">
+                            <div class="form-group">
+                                <input type="text" name="name" id="contactName" placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" name="email" id="contactEmail" placeholder="Your Email" required>
+                            </div>
+                            <div class="form-group">
+                                <textarea name="message" id="contactMessage" placeholder="Your Message" rows="4" required></textarea>
+                            </div>
+                            <button type="submit" class="card-btn" style="width: 100%;">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title"><i class="fas fa-share-alt"></i> Follow & Connect</h3>
+                        <div style="text-align: center; margin: 20px 0;">
+                            <a href="#" class="social-link" style="color: #555; margin: 0 10px; font-size: 28px;">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="#" class="social-link" style="color: #555; margin: 0 10px; font-size: 28px;">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-link" style="color: #555; margin: 0 10px; font-size: 28px;">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link" style="color: #555; margin: 0 10px; font-size: 28px;">
+                                <i class="fab fa-tripadvisor"></i>
+                            </a>
+                        </div>
+                        <p class="card-text" style="text-align: center;">
+                            <i class="fas fa-phone"></i> (123) 456-7890<br>
+                            <i class="fas fa-envelope"></i> info@savorydelights.com
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about">
+            <h2 class="section-title">Our Story</h2>
+            <div class="card-container">
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title"><i class="fas fa-history"></i> Since 2010</h3>
+                        <p class="card-text">Founded in 2010, Savory Delights has been serving exceptional cuisine crafted from the finest locally-sourced ingredients. Our chef brings over 20 years of international experience to create dishes that delight the senses.</p>
+                        <p class="card-text">We believe in creating memorable dining experiences through exceptional food, impeccable service, and a warm, inviting atmosphere.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title"><i class="fas fa-leaf"></i> Our Philosophy</h3>
+                        <p class="card-text">At Savory Delights, we're committed to sustainability and supporting local farmers. Our ingredients are sourced from trusted partners who share our values for quality and environmental responsibility.</p>
+                        <p class="card-text">Every dish tells a story of passion, tradition, and innovation.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title"><i class="fas fa-award"></i> Awards & Recognition</h3>
+                        <p class="card-text">
+                            <i class="fas fa-star" style="color: gold;"></i> Best Fine Dining 2023<br>
+                            <i class="fas fa-star" style="color: gold;"></i> Chef's Choice Award 2022<br>
+                            <i class="fas fa-star" style="color: gold;"></i> Wine Spectator Excellence 2021<br>
+                            <i class="fas fa-star" style="color: gold;"></i> Sustainable Restaurant Award 2020
+                        </p>
+                        <p class="card-text" style="font-style: italic; margin-top: 15px;">
+                            "An unforgettable culinary journey" - Food & Wine Magazine
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer style="margin-top: 50px; padding-top: 30px; border-top: 1px solid #e0e0e0;">
+            <div class="copyright">
+                <p>&copy; 2023 Savory Delights. All rights reserved. | Crafted with <i class="fas fa-heart" style="color: #e74c3c;"></i> for food lovers</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Reservation Modal -->
+    <div class="modal" id="reservationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-alt"></i> Make a Reservation</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <form id="reservationForm">
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="name" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="phone"><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" id="phone" required placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <label for="date"><i class="fas fa-calendar-day"></i> Reservation Date</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="time"><i class="fas fa-clock"></i> Reservation Time</label>
+                    <input type="time" id="time" required>
+                </div>
+                <div class="form-group">
+                    <label for="guests"><i class="fas fa-users"></i> Number of Guests</label>
+                    <input type="number" id="guests" min="1" max="20" required placeholder="Number of guests">
+                </div>
+                <div class="form-group">
+                    <label for="specialRequests"><i class="fas fa-sticky-note"></i> Special Requests (Optional)</label>
+                    <textarea id="specialRequests" placeholder="Any special requests or dietary restrictions"></textarea>
+                </div>
+                <button type="submit" class="card-btn" style="width: 100%; background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white;">
+                    <i class="fas fa-check-circle"></i> Confirm Reservation
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="orderModalTitle"><i class="fas fa-shopping-bag"></i> Order Item</h3>
+                <button class="modal-close" id="orderModalClose">&times;</button>
+            </div>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="orderName"><i class="fas fa-user"></i> Your Name</label>
+                    <input type="text" id="orderName" required placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="orderEmail"><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="orderEmail" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="orderPhone"><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" id="orderPhone" required placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <label for="orderQuantity"><i class="fas fa-box"></i> Quantity</label>
+                    <input type="number" id="orderQuantity" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="orderInstructions"><i class="fas fa-edit"></i> Special Instructions (Optional)</label>
+                    <textarea id="orderInstructions" placeholder="Any special cooking instructions or dietary needs"></textarea>
+                </div>
+                <div class="form-group" style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; color: #333;">Order Summary</h4>
+                    <p style="margin: 5px 0; font-size: 16px;"><strong>Item: </strong><span id="orderItemName">-</span></p>
+                    <p style="margin: 5px 0; font-size: 16px;"><strong>Quantity: </strong><span id="orderDisplayQuantity">1</span></p>
+                    <p style="margin: 5px 0; font-size: 18px; font-weight: bold; color: #e74c3c;">
+                        Total: M<span id="orderTotal">0.00</span>
+                    </p>
+                </div>
+                <button type="submit" class="card-btn" style="width: 100%; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white;">
+                    <i class="fas fa-credit-card"></i> Place Order
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gallery Modal -->
+    <div class="modal" id="galleryModal">
+        <div class="modal-content" style="max-width: 90%; max-height: 90%; background: transparent; box-shadow: none;">
+            <button class="modal-close" id="galleryModalClose" style="background: rgba(0,0,0,0.5); color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                &times;
+            </button>
+            <img id="galleryModalImage" src="" alt="Enlarged view" style="width: 100%; height: auto; max-height: 80vh; object-fit: contain; border-radius: 8px;">
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </div>
+
+        <!-- Bottom Navigation for Mobile -->
+    <nav class="bottom-nav" id="bottomNav">
+        <a href="#welcome" class="bottom-nav-item" data-target="welcome">
+            <i class="fas fa-home bottom-nav-icon"></i>
+            <span>Home</span>
+        </a>
+        <a href="#menu" class="bottom-nav-item" data-target="menu">
+            <i class="fas fa-utensils bottom-nav-icon"></i>
+            <span>Menu</span>
+        </a>
+        <a href="#contact" class="bottom-nav-item" data-target="contact">
+            <i class="fas fa-phone bottom-nav-icon"></i>
+            <span>Contact</span>
+        </a>
+        <a href="#about" class="bottom-nav-item" data-target="about">
+            <i class="fas fa-info-circle bottom-nav-icon"></i>
+            <span>About</span>
+        </a>
+    </nav>
+
+    <script src="../assets/main.js"></script>
+</body>
+
+</html>

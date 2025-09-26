@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Savory Delights</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-lock"></i> Admin Panel - Savory Delights</h1>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+
+        <div class="admin-nav">
+            <button data-section="reservations" class="nav-btn active">Reservations</button>
+            <button data-section="orders" class="nav-btn">Orders</button>
+            <button data-section="contacts" class="nav-btn">Contact Messages</button>
+            <button data-section="menu" class="nav-btn">Menu Management</button>
+            <button data-section="specialOffers" class="nav-btn">Special Offers</button>
+        </div>
+
+        <div id="reservationsSection" class="admin-section active">
+            <h2><i class="fas fa-calendar-alt"></i> Reservations</h2>
+            <div class="table-container">
+                <table id="reservationsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Guests</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationsBody">
+                        <!-- Reservations will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="ordersSection" class="admin-section">
+            <h2><i class="fas fa-shopping-bag"></i> Orders</h2>
+            <div class="table-container">
+                <table id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>Email</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersBody">
+                        <!-- Orders will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="contactsSection" class="admin-section">
+            <h2><i class="fas fa-envelope"></i> Contact Messages</h2>
+            <div class="table-container">
+                <table id="contactsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Message</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contactsBody">
+                        <!-- Contact messages will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="menuSection" class="admin-section">
+            <h2><i class="fas fa-utensils"></i> Menu Management</h2>
+            <button class="btn-add" id="addMenuItemBtn">
+                <i class="fas fa-plus"></i> Add New Menu Item
+            </button>
+            <div class="table-container">
+                <table id="menuTable">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="menuBody">
+                        <!-- Menu items will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="specialOffersSection" class="admin-section">
+            <h2><i class="fas fa-tag"></i> Special Offers Management</h2>
+            <button class="btn-add" id="addSpecialOfferBtn">
+                <i class="fas fa-plus"></i> Add New Special Offer
+            </button>
+            <div class="table-container">
+                <table id="specialOffersTable">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Original Price</th>
+                            <th>Discount Price</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="specialOffersBody">
+                        <!-- Special offers will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Item Modal -->
+    <div class="modal" id="menuItemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Menu Item</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <form id="menuItemForm">
+                <input type="hidden" id="menuItemId">
+                <div class="form-group">
+                    <label for="itemName">Name</label>
+                    <input type="text" id="itemName" required>
+                </div>
+                <div class="form-group">
+                    <label for="itemDescription">Description</label>
+                    <textarea id="itemDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="itemPrice">Price</label>
+                    <input type="number" id="itemPrice" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="itemImage">Image URL</label>
+                    <input type="url" id="itemImage" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="card-btn">Save Menu Item</button>
+                    <button type="button" id="cancelMenuItemBtn" class="card-btn"
+                        style="margin-left: 10px; background: #6c757d;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Special Offer Modal -->
+    <div class="modal" id="specialOfferModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="specialOfferModalTitle">Add Special Offer</h3>
+                <button class="modal-close" id="specialOfferModalClose">&times;</button>
+            </div>
+            <form id="specialOfferForm">
+                <input type="hidden" id="specialOfferId">
+                <div class="form-group">
+                    <label for="offerMenuItem">Menu Item</label>
+                    <select id="offerMenuItem" required>
+                        <option value="">Select a menu item</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="originalPrice">Original Price</label>
+                    <input type="number" id="originalPrice" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="discountPrice">Discount Price</label>
+                    <input type="number" id="discountPrice" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="offerDescription">Description</label>
+                    <textarea id="offerDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="card-btn">Save Special Offer</button>
+                    <button type="button" id="cancelSpecialOfferBtn" class="card-btn"
+                        style="margin-left: 10px; background: #6c757d;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../assets/admin.js"></script>
+</body>
+
+</html>
