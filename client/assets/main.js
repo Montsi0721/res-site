@@ -78,7 +78,7 @@ function changeCubeImages() {
 // From localhost:
 //const API_BASE = "http://localhost:5000/api";
 
-// To your Render backend URL:
+// To Render backend URL:
 const API_BASE = "https://res-site-backend.onrender.com/api";
 
 function fetchMenuItems() {
@@ -712,7 +712,7 @@ document.getElementById('orderForm').addEventListener('submit', function (e) {
         total_amount: currentOrderItem.price * (parseInt(document.getElementById('orderQuantity').value) || 1)
     };
 
-    fetch('http://localhost:5000/api/orders', {
+    fetch(`${API_BASE}/orders`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
