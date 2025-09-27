@@ -75,8 +75,14 @@ function changeCubeImages() {
     });
 }
 
+// From localhost:
+//const API_BASE = "http://localhost:5000/api";
+
+// To your Render backend URL:
+const API_BASE = "https://res-site-backend.onrender.com/api";
+
 function fetchMenuItems() {
-    fetch('http://localhost:5000/api/menu')
+    fetch(`${API_BASE}/menu`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -426,7 +432,7 @@ function showSpecialOffers() {
     menuContainer.style.display = 'none';
 
     // Fetch special offers from backend
-    fetch('http://localhost:5000/api/special-offers')
+    fetch(`${API_BASE}/special-offers`)
         .then(response => response.json())
         .then(specialOffers => {
             if (specialOffers.length === 0) {
@@ -637,7 +643,7 @@ function handleReservation(e) {
         guests: document.getElementById('guests').value
     };
 
-    fetch('http://localhost:5000/api/reservations', {
+    fetch(`${API_BASE}/reservations`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -665,7 +671,7 @@ function handleContact(e) {
         message: document.getElementById('contactMessage').value
     };
 
-    fetch('http://localhost:5000/api/contact', {
+    fetch(`${API_BASE}/contact`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -774,4 +780,5 @@ function showToast(message) {
     setTimeout(() => {
         toast.classList.remove('show');
     }, 3000);
+
 }
