@@ -296,11 +296,11 @@ function renderMenuItems(menuItems) {
 function handleNavItemClick(target) {
     const menuBtn = document.getElementById('menuBtn');
     const navMenu = document.getElementById('navMenu');
-    
+
     // Close menu
     menuBtn.classList.remove('active');
     navMenu.classList.remove('active');
-    
+
     // Update bottom nav active state on mobile
     if (window.innerWidth <= 1024) {
         const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
@@ -311,7 +311,7 @@ function handleNavItemClick(target) {
             }
         });
     }
-    
+
     switch (target) {
         case 'welcome':
             scrollToSection('welcome');
@@ -470,8 +470,8 @@ function displaySpecialOffers(specialOffers) {
                         <h3 class="card-title">${offer.item_name || offer.name} <span style="color: #e74c3c; font-size: 0.8em;">SPECIAL</span></h3>
                         <p class="card-text">${offer.item_description || offer.description}</p>
                         <div class="card-footer">
-                            <p class="price" style="text-decoration: line-through; color: #999;">$${offer.original_price ? offer.original_price.toFixed(2) : (offer.price * 1.2).toFixed(2)}</p>
-                            <p class="price" style="color: #e74c3c; font-weight: bold;">$${offer.discount_price ? offer.discount_price.toFixed(2) : offer.price.toFixed(2)}</p>
+                            <p class="price" style="text-decoration: line-through; color: #999;">M${offer.original_price ? offer.original_price.toFixed(2) : (offer.price * 1.2).toFixed(2)}</p>
+                            <p class="price" style="color: #e74c3c; font-weight: bold;">M${offer.discount_price ? offer.discount_price.toFixed(2) : offer.price.toFixed(2)}</p>
                             <button class="card-btn order-btn" data-id="${offer.menu_item_id || offer.id}" data-name="${offer.item_name || offer.name}" data-price="${offer.discount_price || offer.price}">Order Now</button>
                         </div>
                     </div>
@@ -523,7 +523,11 @@ function handleSearch() {
         const password = prompt('Enter admin password:');
         if (password === '1234') {
             localStorage.setItem('adminAuthenticated', 'true');
-            window.location.href = "../public/admin.html";
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                window.location.href = "../public/admin.html";
+            } else {
+                window.location.href = "admin.html";
+            }
         } else {
             alert('Invalid admin password');
         }
@@ -562,7 +566,7 @@ function displaySearchResults(filteredItems, searchTerm) {
                                 <h3 class="card-title">${highlightedName}</h3>
                                 <p class="card-text">${highlightedDescription}</p>
                                 <div class="card-footer">
-                                    <p class="price">$${item.price.toFixed(2)}</p>
+                                    <p class="price">M${item.price.toFixed(2)}</p>
                                     <button class="card-btn order-btn" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">Order Now</button>
                                 </div>
                             </div>
@@ -594,7 +598,7 @@ function displaySearchResults(filteredItems, searchTerm) {
 function highlightText(text, searchTerm) {
     if (!searchTerm) return text;
     const regex = new RegExp(`(${searchTerm})`, 'gi');
-    return text.replace(regex, '<span class="highlight">$1</span>');
+    return text.replace(regex, '<span class="highlight">M1</span>');
 }
 
 function showOrderModal(itemId, itemName, itemPrice) {
