@@ -72,8 +72,12 @@ body.dark-mode .logo {
     color: #eee;
 }
 
+#welcome p {
+    color: #777;
+}
+
 body.dark-mode #welcome p {
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    color: #ccc;
 }
 
 .logo-icon {
@@ -894,41 +898,6 @@ th {
     background: #c0392b;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        padding-top: 90px;
-    }
-    
-    .header {
-        padding: 0 10px;
-    }
-    
-    .logo span {
-        display: none;
-    }
-    
-    .search-container:hover .search-input {
-        width: 200px;
-    }
-    
-    .card-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .admin-nav {
-        flex-direction: column;
-    }
-    
-    table {
-        font-size: 14px;
-    }
-    
-    th, td {
-        padding: 8px;
-    }
-}
-
 /* 3D Cube Background */
 #cube-container {
     position: fixed;
@@ -1143,6 +1112,60 @@ body.dark-mode .bottom-nav-item {
     }
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding-top: 90px;
+    }
+    
+    .header {
+        padding: 0 10px;
+    }
+    
+    .logo span {
+        display: none;
+    }
+    
+    .search-container:hover .search-input {
+        width: 200px;
+    }
+
+    .nav-menu {
+        width: 85vw;
+        right: -85vw;
+    }
+    
+    .nav-item {
+        padding: 12px 15px;
+    }
+
+    .nav-menu {
+        width: 85vw;
+        right: -85vw;
+    }
+    
+    .nav-item {
+        padding: 12px 15px;
+    }
+    
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-nav {
+        flex-direction: column;
+    }
+    
+    table {
+        font-size: 14px;
+    }
+    
+    th, td {
+        padding: 8px;
+    }
+}
+
+
 /* Tablet specific adjustments */
 @media (max-width: 1024px) and (min-width: 768px) {
     .bottom-nav {
@@ -1155,5 +1178,26 @@ body.dark-mode .bottom-nav-item {
     
     .bottom-nav-icon {
         font-size: 20px;
+    }
+}
+
+/* mobile */
+@media (max-width: 480px) {
+    .nav-menu {
+        width: 90vw;
+        right: -90vw;
+        padding: 70px 15px 20px;
+    }
+    
+    .nav-header h2 {
+        font-size: 20px;
+    }
+    
+    .nav-item {
+        padding: 10px 12px;
+    }
+    
+    .nav-text {
+        font-size: 15px;
     }
 }

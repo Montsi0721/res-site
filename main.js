@@ -94,6 +94,17 @@ function setupEventListeners() {
         themeToggle.checked = true;
     }
 
+    // For mobile navigation closing when clicking nav items
+    document.querySelectorAll('.nav-item, .bottom-nav-item').forEach(item => {
+        item.addEventListener('click', function () {
+            // Close the side menu on mobile after clicking
+            if (window.innerWidth <= 1024) {
+                menuBtn.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+
     // Navigation items
     document.querySelectorAll('.nav-item').forEach(item => {
         if (!item.classList.contains('theme-toggle')) {
