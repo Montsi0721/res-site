@@ -72,6 +72,10 @@ body.dark-mode .logo {
     color: #eee;
 }
 
+body.dark-mode #welcome p {
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
 .logo-icon {
     width: 40px;
     height: 40px;
