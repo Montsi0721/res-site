@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (specialOffersHeading) {
         specialOffersHeading.style.display = 'none';
     }
+
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
 });
 
 
