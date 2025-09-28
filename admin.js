@@ -127,8 +127,10 @@ function setupAdminEventListeners() {
     }
 }
 
+//https://res-site-backend.onrender.com/api
+
 function loadReservations() {
-    fetch('http://localhost:5000/api/admin/reservations')
+    fetch('https://res-site-backend.onrender.com/api/admin/reservations')
         .then(response => response.json())
         .then(reservations => {
             const tbody = document.getElementById('reservationsBody');
@@ -159,7 +161,7 @@ function loadReservations() {
 }
 
 function loadOrders() {
-    fetch('http://localhost:5000/api/admin/orders')
+    fetch('https://res-site-backend.onrender.com/api/admin/orders')
         .then(response => response.json())
         .then(orders => {
             const tbody = document.getElementById('ordersBody');
@@ -191,7 +193,7 @@ function loadOrders() {
 }
 
 function loadContacts() {
-    fetch('http://localhost:5000/api/admin/contacts')
+    fetch('https://res-site-backend.onrender.com/api/admin/contacts')
         .then(response => response.json())
         .then(contacts => {
             const tbody = document.getElementById('contactsBody');
@@ -218,7 +220,7 @@ function loadContacts() {
 }
 
 function loadMenu() {
-    fetch('http://localhost:5000/api/admin/menu')
+    fetch('https://res-site-backend.onrender.com/api/admin/menu')
         .then(response => response.json())
         .then(menuItems => {
             const tbody = document.getElementById('menuBody');
@@ -284,7 +286,7 @@ function showMenuItemModal(item = null) {
 }
 
 function editMenuItem(itemId) {
-    fetch('http://localhost:5000/api/admin/menu')
+    fetch('https://res-site-backend.onrender.com/api/admin/menu')
         .then(response => response.json())
         .then(menuItems => {
             const item = menuItems.find(i => i.id == itemId);
@@ -300,7 +302,7 @@ function editMenuItem(itemId) {
 
 function deleteMenuItem(itemId) {
     if (confirm('Are you sure you want to delete this menu item?')) {
-        fetch(`http://localhost:5000/api/admin/menu/${itemId}`, {
+        fetch(`https://res-site-backend.onrender.com/api/admin/menu/${itemId}`, {
             method: 'DELETE'
         })
             .then(response => response.json())
@@ -330,7 +332,7 @@ function handleMenuItemSubmit(e) {
     };
 
     const itemId = document.getElementById('menuItemId').value;
-    const url = itemId ? `http://localhost:5000/api/admin/menu/${itemId}` : 'http://localhost:5000/api/admin/menu';
+    const url = itemId ? `https://res-site-backend.onrender.com/api/admin/menu/${itemId}` : 'https://res-site-backend.onrender.com/api/admin/menu';
     const method = itemId ? 'PUT' : 'POST';
 
     fetch(url, {
@@ -357,7 +359,7 @@ function handleMenuItemSubmit(e) {
 }
 
 function loadSpecialOffers() {
-    fetch('http://localhost:5000/api/admin/special-offers')
+    fetch('https://res-site-backend.onrender.com/api/admin/special-offers')
         .then(response => response.json())
         .then(offers => {
             const tbody = document.getElementById('specialOffersBody');
@@ -443,7 +445,7 @@ function showSpecialOfferModal(offer = null) {
     const title = document.getElementById('specialOfferModalTitle');
 
     // Load menu items for dropdown
-    fetch('http://localhost:5000/api/admin/menu')
+    fetch('https://res-site-backend.onrender.com/api/admin/menu')
         .then(response => response.json())
         .then(menuItems => {
             const select = document.getElementById('offerMenuItem');
@@ -482,7 +484,7 @@ function showSpecialOfferModal(offer = null) {
 }
 
 function editSpecialOffer(offerId) {
-    fetch('http://localhost:5000/api/admin/special-offers')
+    fetch('https://res-site-backend.onrender.com/api/admin/special-offers')
         .then(response => response.json())
         .then(offers => {
             const offer = offers.find(o => o.id == offerId);
@@ -500,7 +502,7 @@ function editSpecialOffer(offerId) {
 
 function deleteSpecialOffer(offerId) {
     if (confirm('Are you sure you want to delete this special offer?')) {
-        fetch(`http://localhost:5000/api/admin/special-offers/${offerId}`, {
+        fetch(`https://res-site-backend.onrender.com/api/admin/special-offers/${offerId}`, {
             method: 'DELETE'
         })
             .then(response => response.json())
@@ -535,7 +537,7 @@ function handleSpecialOfferSubmit(e) {
     }
 
     const offerId = document.getElementById('specialOfferId').value;
-    const url = offerId ? `http://localhost:5000/api/admin/special-offers/${offerId}` : 'http://localhost:5000/api/admin/special-offers';
+    const url = offerId ? `https://res-site-backend.onrender.com/api/admin/special-offers/${offerId}` : 'https://res-site-backend.onrender.com/api/admin/special-offers';
     const method = offerId ? 'PUT' : 'POST';
 
     fetch(url, {

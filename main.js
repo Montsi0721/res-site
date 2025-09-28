@@ -2,20 +2,7 @@
 let allMenuItems = [];
 let currentOrderItem = null;
 
-// Dish images for the cube
-const dishImages = [
-    'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-    'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-    'https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-    'https://images.unsplash.com/photo-1551024506-0bccd828d307?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-    'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-    'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-];
-
 document.addEventListener('DOMContentLoaded', function () {
-    // Initialize 3D cube
-    initializeCube();
-
     // Fetch menu items from backend
     fetchMenuItems();
 
@@ -31,49 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-function initializeCube() {
-    const cubeFaces = document.querySelectorAll('.cube-face');
-
-    // Assign specific images to each face
-    const faceImages = {
-        front: dishImages[0],
-        back: dishImages[1],
-        right: dishImages[2],
-        left: dishImages[3],
-        top: dishImages[4],
-        bottom: dishImages[5]
-    };
-
-    cubeFaces.forEach(face => {
-        const faceClass = Array.from(face.classList).find(cls => cls.includes('front') || cls.includes('back') || cls.includes('right') || cls.includes('left') || cls.includes('top') || cls.includes('bottom'));
-        if (faceClass && faceImages[faceClass]) {
-            face.style.backgroundImage = `url(${faceImages[faceClass]})`;
-        }
-    });
-
-    // Change cube images every 15 seconds (slower rotation)
-    setInterval(changeCubeImages, 150000);
-}
-
-function changeCubeImages() {
-    const cubeFaces = document.querySelectorAll('.cube-face');
-    const usedImages = new Set();
-
-    // Only change images for faces that are not currently visible
-    cubeFaces.forEach(face => {
-        const faceClass = Array.from(face.classList).find(cls => cls.includes('back') || cls.includes('right') || cls.includes('left') || cls.includes('top') || cls.includes('bottom'));
-
-        if (faceClass) {
-            let randomImage;
-            do {
-                randomImage = dishImages[Math.floor(Math.random() * dishImages.length)];
-            } while (usedImages.has(randomImage) && usedImages.size < dishImages.length - 1);
-
-            usedImages.add(randomImage);
-            face.style.backgroundImage = `url(${randomImage})`;
-        }
-    });
-}
 
 // From localhost:
 //const API_BASE = "http://localhost:5000/api";
