@@ -73,7 +73,7 @@ body.dark-mode .logo {
 }
 
 #welcome p {
-    color: #000000;
+    color: #2e2e2e;
 }
 
 body.dark-mode #welcome p {
@@ -1164,7 +1164,6 @@ body.dark-mode .bottom-nav-item {
         padding: 8px;
     }
 }
-
 
 /* Tablet specific adjustments */
 @media (max-width: 1024px) and (min-width: 768px) {
