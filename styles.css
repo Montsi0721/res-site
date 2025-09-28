@@ -74,6 +74,7 @@ body.dark-mode .logo {
 
 #welcome p {
     color: #2e2e2e;
+    text-shadow: 0 0 5px 10px #ccc;
 }
 
 body.dark-mode #welcome p {
