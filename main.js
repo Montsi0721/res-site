@@ -18,10 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-
-// From localhost:
-//const API_BASE = "http://localhost:5000/api";
-
 // To Render backend URL:
 const API_BASE = "https://res-site-backend.onrender.com/api";
 
@@ -326,6 +322,9 @@ function showGallery() {
     galleryContainer.className = 'search-results';
     galleryContainer.innerHTML = `
         <h3>Our Restaurant Gallery</h3>
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="closeGalleryBtn" class="card-btn">Close Gallery</button>
+        </div>
         <p style="text-align: center; margin-bottom: 30px;">Take a visual tour of our restaurant and delicious dishes</p>
         <div class="gallery-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin: 30px 0;">
             ${allGalleryImages.map((image, index) => `
