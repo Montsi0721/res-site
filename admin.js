@@ -161,7 +161,7 @@ function loadReservations() {
 }
 
 function loadOrders() {
-    fetch('https://res-site-backend.onrender.com/api/admin/orders')
+    fetch('http://localhost:5000/api/admin/orders')
         .then(response => response.json())
         .then(orders => {
             const tbody = document.getElementById('ordersBody');
@@ -178,16 +178,37 @@ function loadOrders() {
                     <td>${order.customer_email}</td>
                     <td>${itemsText}</td>
                     <td>M${order.total_amount}</td>
-                    <td>${order.status}</td>
+                    <td>
+                        <select class="status-select" data-order-id="${order.id}" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparing</option>
+                            <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Ready for Pickup</option>
+                            <option value="out-for-delivery" ${order.status === 'out-for-delivery' ? 'selected' : ''}>Out for Delivery</option>
+                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                        </select>
+                    </td>
                     <td>${new Date(order.created_at).toLocaleString()}</td>
+                    <td>
+                        <button class="card-btn update-status-btn" data-order-id="${order.id}" style="background: #3498db; color: white;">Update</button>
+                    </td>
                 `;
                 tbody.appendChild(row);
+            });
+
+            // Add event listeners to update buttons
+            document.querySelectorAll('.update-status-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const orderId = this.getAttribute('data-order-id');
+                    const select = document.querySelector(`.status-select[data-order-id="${orderId}"]`);
+                    const newStatus = select.value;
+                    updateOrderStatus(orderId, newStatus);
+                });
             });
         })
         .catch(error => {
             console.error('Error loading orders:', error);
             document.getElementById('ordersBody').innerHTML = `
-                <tr><td colspan="7" style="text-align: center; color: #e74c3c;">Error loading orders</td></tr>
+                <tr><td colspan="8" style="text-align: center; color: #e74c3c;">Error loading orders</td></tr>
             `;
         });
 }
@@ -561,4 +582,27 @@ function handleSpecialOfferSubmit(e) {
             console.error('Error saving special offer:', error);
             alert('Error saving special offer');
         });
+}
+
+function updateOrderStatus(orderId, status) {
+    fetch(`http://localhost:5000/api/admin/orders/${orderId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: status })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Order status updated to "${status}"`);
+            loadOrders();
+        } else {
+            alert('Error updating order status');
+        }
+    })
+    .catch(error => {
+        console.error('Error updating order status:', error);
+        alert('Error updating order status');
+    });
 }
