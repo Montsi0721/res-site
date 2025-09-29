@@ -7,6 +7,48 @@
     <title>Admin Panel - Savory Delights</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <!-- Add this in admin.html head section -->
+    <style>
+        /* Inherit main page styles and dark mode */
+        body {
+            background-color: #dadadaff;
+            color: #333;
+            margin: 5px 10px 10px 10px;
+        }
+
+        body.dark-mode {
+            background: #222;
+            color: #eee;
+        }
+
+        /* Apply neumorphic design to admin elements */
+        .admin-container {
+            background: rgba(224, 224, 224, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 1200px;
+            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.8);
+        }
+
+        body.dark-mode .admin-container {
+            background: rgba(51, 51, 51, 0.85);
+            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.3), -8px -8px 16px rgba(60, 60, 60, 0.5);
+        }
+
+        .table-container {
+            background: rgba(224, 224, 224, 0.7);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.1), inset -3px -3px 5px rgba(255, 255, 255, 0.8);
+        }
+
+        body.dark-mode .table-container {
+            background: rgba(51, 51, 51, 0.7);
+            box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.3), inset -3px -3px 5px rgba(60, 60, 60, 0.5);
+        }
+    </style>
 </head>
 
 <body>
@@ -61,6 +103,7 @@
                             <th>Total</th>
                             <th>Status</th>
                             <th>Created At</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="ordersBody">

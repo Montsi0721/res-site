@@ -899,6 +899,28 @@ th {
     background: #c0392b;
 }
 
+/* Order status styles */
+.status-pending { color: #f39c12; font-weight: bold; }
+.status-preparing { color: #3498db; font-weight: bold; }
+.status-ready { color: #9b59b6; font-weight: bold; }
+.status-out-for-delivery { color: #e67e22; font-weight: bold; }
+.status-delivered { color: #27ae60; font-weight: bold; }
+
+/* Admin order status select */
+.status-select {
+    background: #e0e0e0;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+}
+
+body.dark-mode .status-select {
+    background: #333;
+    color: #eee;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(60, 60, 60, 0.5);
+}
+
 /* 3D Cube Background */
 #cube-container {
     position: fixed;

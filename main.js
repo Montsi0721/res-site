@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Setup event listeners
     setupEventListeners();
+    
+    setupOrderTracking();
 
     // Show welcome toast
     showToast('Welcome to Savory Delights!');
@@ -282,6 +284,9 @@ function handleNavItemClick(target) {
         case 'about':
             scrollToSection('about');
             break;
+        case 'order-tracking':
+            scrollToSection('order-tracking');
+            break;
     }
 }
 
@@ -478,7 +483,7 @@ function handleSearch() {
         if (password === '1234') {
             localStorage.setItem('adminAuthenticated', 'true');
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                window.location.href = "../public/admin.html";
+                window.location.href = "admin.html";
             } else {
                 window.location.href = "admin.html";
             }
@@ -739,4 +744,90 @@ function showToast(message) {
         toast.classList.remove('show');
     }, 3000);
 
+}
+
+// Order tracking functionality
+function setupOrderTracking() {
+    document.getElementById('trackOrderBtn').addEventListener('click', trackOrder);
+    document.getElementById('confirmDeliveryBtn').addEventListener('click', confirmDelivery);
+}
+
+function trackOrder() {
+    const orderId = document.getElementById('orderTrackingId').value.trim();
+    
+    if (!orderId) {
+        showToast('Please enter an order ID');
+        return;
+    }
+    
+    fetch(`http://localhost:5000/api/orders/${orderId}`)
+        .then(response => response.json())
+        .then(order => {
+            const resultDiv = document.getElementById('orderTrackingResult');
+            const confirmSection = document.getElementById('orderConfirmationSection');
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h4>Order #${order.id}</h4>
+                <p><strong>Customer:</strong> ${order.customer_name}</p>
+                <p><strong>Status:</strong> <span class="status-${order.status}">${getStatusText(order.status)}</span></p>
+                <p><strong>Total:</strong> M${order.total_amount}</p>
+                <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+            `;
+            
+            // Show confirm button only if status is "out-for-delivery"
+            if (order.status === 'out-for-delivery') {
+                confirmSection.style.display = 'block';
+                confirmSection.setAttribute('data-order-id', order.id);
+            } else {
+                confirmSection.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error tracking order:', error);
+            showToast('Order not found. Please check your order ID.');
+        });
+}
+
+function confirmDelivery() {
+    const orderId = document.getElementById('orderConfirmationSection').getAttribute('data-order-id');
+    
+    if (!orderId) {
+        showToast('No order selected');
+        return;
+    }
+    
+    fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: 'delivered' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Order delivery confirmed! Thank you for your order.');
+            document.getElementById('orderConfirmationSection').style.display = 'none';
+            // Refresh tracking info
+            trackOrder();
+        } else {
+            showToast('Error confirming delivery');
+        }
+    })
+    .catch(error => {
+        console.error('Error confirming delivery:', error);
+        showToast('Error confirming delivery');
+    });
+}
+
+function getStatusText(status) {
+    const statusMap = {
+        'pending': 'Pending',
+        'preparing': 'Being Prepared',
+        'ready': 'Ready for Pickup',
+        'out-for-delivery': 'Out for Delivery',
+        'delivered': 'Delivered'
+    };
+    return statusMap[status] || status;
 }
