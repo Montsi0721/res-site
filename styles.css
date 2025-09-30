@@ -934,13 +934,7 @@ th {
     font-weight: bold;
 }
 
-/* Select the last column in each row */
-td:last-child, th:last-child {
-    background-color: #62b82c;
-    font-weight: bold;
-}
-
-tr:last-child {
+tbody tr:last-child {
   background-color: #f0f0f0;
   font-weight: bold;
 }
