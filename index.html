@@ -10,18 +10,6 @@
 </head>
 
 <body>
-    <!-- 3D Cube Background -->
-    <div id="cube-container">
-        <div id="cube">
-            <div class="cube-face front"></div>
-            <div class="cube-face back"></div>
-            <div class="cube-face right"></div>
-            <div class="cube-face left"></div>
-            <div class="cube-face top"></div>
-            <div class="cube-face bottom"></div>
-        </div>
-    </div>
-
     <header class="header">
         <div class="logo">
             <div class="logo-icon"><i class="fas fa-utensils"></i></div>
@@ -244,6 +232,37 @@
             </div>
         </section>
 
+        <!-- Order Tracking Section -->
+        <div class="order-tracking-modal" id="orderTrackingModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-shipping-fast"></i> Track Your Order</h3>
+                    <button class="modal-close" id="orderTrackingModalClose">&times;</button>
+                </div>
+                <div class="form-group">
+                    <label for="orderTrackingId"><i class="fas fa-search"></i> Enter Order ID</label>
+                    <input type="text" id="orderTrackingId" placeholder="Enter your order ID">
+                    <button class="card-btn" id="trackOrderBtn" style="margin-top: 10px; width: 100%;">
+                        <i class="fas fa-search"></i> Track Order
+                    </button>
+                </div>
+                <div id="orderTrackingResult"
+                    style="display: none; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <!-- Order tracking details will appear here -->
+                </div>
+                <div id="orderConfirmationSection" style="display: none; margin-top: 20px; text-align: center;">
+                    <button class="card-btn" id="confirmDeliveryBtn"
+                        style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white;">
+                        <i class="fas fa-check-circle"></i> Confirm Order Received
+                    </button>
+                </div>
+                <button id="closeOrderTrack" class="card-btn"
+                    style="background: #e74c3c; margin-top: 15px; width: 100%;">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+
         <!-- Footer -->
         <footer style="margin-top: 50px; padding-top: 30px; border-top: 1px solid #e0e0e0;">
             <div class="copyright">
@@ -357,37 +376,6 @@
                 style="width: 100%; height: auto; max-height: 80vh; object-fit: contain; border-radius: 8px;">
         </div>
     </div>
-
-    <!-- Back to Top Button -->
-    <!-- <div class="back-to-top" id="backToTop">
-        <i class="fas fa-chevron-up"></i>
-    </div> -->
-
-    <!-- Order Tracking Section -->
-    <section id="order-tracking">
-        <h2 class="section-title">Track Your Order</h2>
-        <div class="card">
-            <div class="card-content">
-                <div class="form-group">
-                    <label for="orderTrackingId"><i class="fas fa-search"></i> Enter Order ID</label>
-                    <input type="text" id="orderTrackingId" placeholder="Enter your order ID">
-                    <button class="card-btn" id="trackOrderBtn" style="margin-top: 10px; width: 100%;">
-                        <i class="fas fa-search"></i> Track Order
-                    </button>
-                </div>
-                <div id="orderTrackingResult"
-                    style="display: none; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                    <!-- Order tracking details will appear here -->
-                </div>
-                <div id="orderConfirmationSection" style="display: none; margin-top: 20px; text-align: center;">
-                    <button class="card-btn" id="confirmDeliveryBtn"
-                        style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white;">
-                        <i class="fas fa-check-circle"></i> Confirm Order Received
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Bottom Navigation for Mobile -->
     <nav class="bottom-nav" id="bottomNav">

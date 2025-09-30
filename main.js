@@ -762,7 +762,7 @@ function trackOrder() {
         return;
     }
     
-    fetch(`http://localhost:5000/api/orders/${orderId}`)
+    fetch(`${API_BASE}/orders/${orderId}`)
         .then(response => response.json())
         .then(order => {
             const resultDiv = document.getElementById('orderTrackingResult');
@@ -799,7 +799,7 @@ function confirmDelivery() {
         return;
     }
     
-    fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+    fetch(`${API_BASE}/orders/${orderId}/status`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -832,4 +832,56 @@ function getStatusText(status) {
         'delivered': 'Delivered'
     };
     return statusMap[status] || status;
+}
+
+function showOrderTrackingModal() {
+    const modal = document.getElementById('orderTrackingModal');
+    document.body.classList.add('modal-open');
+    modal.classList.add('visible');
+    
+    // Clear previous results
+    document.getElementById('orderTrackingResult').style.display = 'none';
+    document.getElementById('orderConfirmationSection').style.display = 'none';
+    document.getElementById('orderTrackingId').value = '';
+}
+
+function hideOrderTrackingModal() {
+    const modal = document.getElementById('orderTrackingModal');
+    document.body.classList.remove('modal-open');
+    modal.classList.remove('visible');
+}
+
+function trackOrder() {
+    const orderId = document.getElementById('orderTrackingId').value.trim();
+    
+    if (!orderId) {
+        showToast('Please enter an order ID');
+        return;
+    }
+    fetch(`${API_BASE}/orders/${orderId}`)
+        .then(response => response.json())
+        .then(order => {
+            const resultDiv = document.getElementById('orderTrackingResult');
+            const confirmSection = document.getElementById('orderConfirmationSection');
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h4>Order #${order.id}</h4>
+                <p><strong>Customer:</strong> ${order.customer_name}</p>
+                <p><strong>Status:</strong> <span class="status-${order.status}">${getStatusText(order.status)}</span></p>
+                <p><strong>Total:</strong> M${order.total_amount}</p>
+                <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+            `;
+            // Show confirm button only if status is "out-for-delivery"
+            if (order.status === 'out-for-delivery') {
+                confirmSection.style.display = 'block';
+                confirmSection.setAttribute('data-order-id', order.id);
+            } else {
+                confirmSection.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error tracking order:', error);
+            showToast('Order not found. Please check your order ID.');
+        });
 }
