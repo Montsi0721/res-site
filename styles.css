@@ -940,6 +940,11 @@ td:last-child, th:last-child {
     font-weight: bold;
 }
 
+tr:last-child {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
 body.dark-mode .admin-nav button.active,
 body.dark-mode .admin-nav button:hover {
     box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), 
