@@ -881,9 +881,11 @@ th:last-child {
     border-right: none;
 }
 
-tbody tr:last-child {
+tbody tr:last-child th {
     border-bottom: none;
 }
+
+
 
 .btn-add {
     padding: 10px 20px;
