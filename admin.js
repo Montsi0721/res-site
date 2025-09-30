@@ -585,7 +585,7 @@ function handleSpecialOfferSubmit(e) {
 }
 
 function updateOrderStatus(orderId, status) {
-    fetch(`http://localhost:5000/api/admin/orders/${orderId}`, {
+    fetch(`https://res-site-backend.onrender.com/api/admin/orders/${orderId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'

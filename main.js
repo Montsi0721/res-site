@@ -2,6 +2,9 @@
 let allMenuItems = [];
 let currentOrderItem = null;
 
+// To Render backend URL:
+const API_BASE = "https://res-site-backend.onrender.com/api";
+
 document.addEventListener('DOMContentLoaded', function () {
     // Fetch menu items from backend
     fetchMenuItems();
@@ -19,9 +22,6 @@ document.addEventListener('DOMContentLoaded', function () {
         specialOffersHeading.style.display = 'none';
     }
 });
-
-// To Render backend URL:
-const API_BASE = "https://res-site-backend.onrender.com/api";
 
 function fetchMenuItems() {
     fetch(`${API_BASE}/menu`)
@@ -112,6 +112,24 @@ function setupEventListeners() {
                 menuBtn.classList.remove('active');
                 navMenu.classList.remove('active');
             });
+        }
+    });
+
+    // Order tracking modal
+    const orderTrackingModal = document.getElementById('orderTrackingModal');
+    const orderTrackingModalClose = document.getElementById('orderTrackingModalClose');
+    const closeOrderTrack = document.getElementById('closeOrderTrack');
+
+    // Add click event to the order tracking nav item
+    document.querySelector('.nav-item[data-target="order-tracking"]').addEventListener('click', showOrderTrackingModal);
+
+    // Close modal events
+    orderTrackingModalClose.addEventListener('click', hideOrderTrackingModal);
+    closeOrderTrack.addEventListener('click', hideOrderTrackingModal);
+    
+    orderTrackingModal.addEventListener('click', (e) => {
+        if (e.target === orderTrackingModal) {
+            hideOrderTrackingModal();
         }
     });
 
@@ -837,6 +855,7 @@ function getStatusText(status) {
 function showOrderTrackingModal() {
     const modal = document.getElementById('orderTrackingModal');
     document.body.classList.add('modal-open');
+    modal.style.display = 'flex';
     modal.classList.add('visible');
     
     // Clear previous results
@@ -848,6 +867,7 @@ function showOrderTrackingModal() {
 function hideOrderTrackingModal() {
     const modal = document.getElementById('orderTrackingModal');
     document.body.classList.remove('modal-open');
+    modal.style.display = 'none';
     modal.classList.remove('visible');
 }
 
