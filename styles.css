@@ -841,12 +841,6 @@ body.dark-mode .form-group textarea {
     box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(60, 60, 60, 0.5);
 }
 
-#order-tracking {
-    position: fixed;
-    z-index: 2000;
-    display: none;
-}
-
 /* Admin Styles */
 .admin-container {
     padding: 20px;
