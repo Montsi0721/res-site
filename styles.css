@@ -935,7 +935,7 @@ th {
 }
 
 tbody tr:last-child {
-    border-bottom: none;
+    border-bottom: 12px red solid;
 }
 
 body.dark-mode .admin-nav button.active,
