@@ -7,7 +7,6 @@
     <title>Admin Panel - Savory Delights</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-    <!-- Add this in admin.html head section -->
     <style>
         /* Inherit main page styles and dark mode */
         body {
@@ -252,6 +251,13 @@
     </div>
 
     <script src="admin.js"></script>
+    <script>
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            themeToggle.checked = true;
+        }
+    </script>
 </body>
 
 </html>
