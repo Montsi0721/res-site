@@ -287,7 +287,7 @@ function handleNavItemClick(target) {
         case 'order-tracking':
             scrollToSection('order-tracking');
             orderTrack = document.getElementById('order-tracking');
-            orderTrack.style.display = 'block';
+            orderTrack.style.display = 'flex';
             break;
     }
 }

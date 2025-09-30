@@ -775,6 +775,8 @@ body.dark-mode .form-group textarea {
 }
 
 #order-tracking {
+    position: fixed;
+    z-index: 2000;
     display: none;
 }
 
