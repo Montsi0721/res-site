@@ -161,7 +161,7 @@ function loadReservations() {
 }
 
 function loadOrders() {
-    fetch('http://localhost:5000/api/admin/orders')
+    fetch('https://res-site-backend.onrender.com/api/admin/orders')
         .then(response => response.json())
         .then(orders => {
             const tbody = document.getElementById('ordersBody');
