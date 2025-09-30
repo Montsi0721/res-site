@@ -867,6 +867,12 @@ th {
     font-weight: bold;
 }
 
+body.dark-mode .admin-nav button.active,
+body.dark-mode .admin-nav button:hover {
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), 
+                inset -2px -2px 5px rgba(60, 60, 60, 0.5);
+}
+
 th:nth-last-child {
     border-right: none;
 }
