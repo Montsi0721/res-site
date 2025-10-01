@@ -793,6 +793,7 @@ function trackOrder() {
             
             const resultDiv = document.getElementById('orderTrackingResult');
             resultDiv.style.display = 'block';
+            resultDiv.style.color = '#333';
             
             if (userOrders.length === 0) {
                 resultDiv.innerHTML = `
