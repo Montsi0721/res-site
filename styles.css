@@ -1026,6 +1026,8 @@ body.dark-mode .header {
     justify-content: center;
     align-items: center;
     width: 100vw;
+    left: -50%;
+    top: -50%;
 }
 
 .spinner {
