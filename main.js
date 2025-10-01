@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Setup event listeners
     setupEventListeners();
-    
+
     setupOrderTracking();
 
     // Show welcome toast
@@ -126,7 +126,7 @@ function setupEventListeners() {
     // Close modal events
     orderTrackingModalClose.addEventListener('click', hideOrderTrackingModal);
     closeOrderTrack.addEventListener('click', hideOrderTrackingModal);
-    
+
     orderTrackingModal.addEventListener('click', (e) => {
         if (e.target === orderTrackingModal) {
             hideOrderTrackingModal();
@@ -704,9 +704,12 @@ document.getElementById('orderForm').addEventListener('submit', function (e) {
     })
         .then(response => response.json())
         .then(data => {
-            showToast('Order placed successfully!');
+            showToast(`Order placed successfully! Your Order ID: ${data.id}`);
             document.getElementById('orderModal').classList.remove('visible');
             document.getElementById('orderForm').reset();
+            setTimeout(() => {
+                document.getElementById('orderTrackingId').value = data.id;
+            }, 500);
         })
         .catch(error => {
             console.error('Error placing order:', error);
@@ -774,18 +777,18 @@ function setupOrderTracking() {
 
 function trackOrder() {
     const orderId = document.getElementById('orderTrackingId').value.trim();
-    
+
     if (!orderId) {
         showToast('Please enter an order ID');
         return;
     }
-    
+
     fetch(`${API_BASE}/orders/${orderId}`)
         .then(response => response.json())
         .then(order => {
             const resultDiv = document.getElementById('orderTrackingResult');
             const confirmSection = document.getElementById('orderConfirmationSection');
-            
+
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = `
                 <h4>Order #${order.id}</h4>
@@ -794,7 +797,7 @@ function trackOrder() {
                 <p><strong>Total:</strong> M${order.total_amount}</p>
                 <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
             `;
-            
+
             // Show confirm button only if status is "out-for-delivery"
             if (order.status === 'out-for-delivery') {
                 confirmSection.style.display = 'block';
@@ -811,12 +814,12 @@ function trackOrder() {
 
 function confirmDelivery() {
     const orderId = document.getElementById('orderConfirmationSection').getAttribute('data-order-id');
-    
+
     if (!orderId) {
         showToast('No order selected');
         return;
     }
-    
+
     fetch(`${API_BASE}/orders/${orderId}/status`, {
         method: 'PUT',
         headers: {
@@ -824,21 +827,21 @@ function confirmDelivery() {
         },
         body: JSON.stringify({ status: 'delivered' })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showToast('Order delivery confirmed! Thank you for your order.');
-            document.getElementById('orderConfirmationSection').style.display = 'none';
-            // Refresh tracking info
-            trackOrder();
-        } else {
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Order delivery confirmed! Thank you for your order.');
+                document.getElementById('orderConfirmationSection').style.display = 'none';
+                // Refresh tracking info
+                trackOrder();
+            } else {
+                showToast('Error confirming delivery');
+            }
+        })
+        .catch(error => {
+            console.error('Error confirming delivery:', error);
             showToast('Error confirming delivery');
-        }
-    })
-    .catch(error => {
-        console.error('Error confirming delivery:', error);
-        showToast('Error confirming delivery');
-    });
+        });
 }
 
 function getStatusText(status) {
@@ -857,7 +860,7 @@ function showOrderTrackingModal() {
     document.body.classList.add('modal-open');
     modal.style.display = 'flex';
     modal.classList.add('visible');
-    
+
     // Clear previous results
     document.getElementById('orderTrackingResult').style.display = 'none';
     document.getElementById('orderConfirmationSection').style.display = 'none';
@@ -873,7 +876,7 @@ function hideOrderTrackingModal() {
 
 function trackOrder() {
     const orderId = document.getElementById('orderTrackingId').value.trim();
-    
+
     if (!orderId) {
         showToast('Please enter an order ID');
         return;
@@ -883,7 +886,7 @@ function trackOrder() {
         .then(order => {
             const resultDiv = document.getElementById('orderTrackingResult');
             const confirmSection = document.getElementById('orderConfirmationSection');
-            
+
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = `
                 <h4>Order #${order.id}</h4>
