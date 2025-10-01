@@ -776,50 +776,78 @@ function setupOrderTracking() {
 }
 
 function trackOrder() {
-    const orderId = document.getElementById('orderTrackingId').value.trim();
-
-    if (!orderId) {
-        showToast('Please enter an order ID');
+    const email = document.getElementById('orderTrackingEmail').value.trim();
+    
+    if (!email) {
+        showToast('Please enter your email address');
         return;
     }
-
-    fetch(`${API_BASE}/orders/${orderId}`)
+    
+    // Fetch all orders and filter by email
+    fetch(`${API_BASE}/admin/orders`)
         .then(response => response.json())
-        .then(order => {
+        .then(orders => {
+            const userOrders = orders.filter(order => 
+                order.customer_email.toLowerCase() === email.toLowerCase()
+            );
+            
             const resultDiv = document.getElementById('orderTrackingResult');
-            const confirmSection = document.getElementById('orderConfirmationSection');
-
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-                <h4>Order #${order.id}</h4>
-                <p><strong>Customer:</strong> ${order.customer_name}</p>
-                <p><strong>Status:</strong> <span class="status-${order.status}">${getStatusText(order.status)}</span></p>
-                <p><strong>Total:</strong> M${order.total_amount}</p>
-                <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
-            `;
-
-            // Show confirm button only if status is "out-for-delivery"
-            if (order.status === 'out-for-delivery') {
-                confirmSection.style.display = 'block';
-                confirmSection.setAttribute('data-order-id', order.id);
-            } else {
-                confirmSection.style.display = 'none';
+            
+            if (userOrders.length === 0) {
+                resultDiv.innerHTML = `
+                    <p>No orders found for ${email}.</p>
+                    <p>Please check your email address or place a new order.</p>
+                `;
+                document.getElementById('orderConfirmationSection').style.display = 'none';
+                return;
             }
+            
+            // Show all orders for this email
+            resultDiv.innerHTML = `
+                <h4>Your Orders (${userOrders.length})</h4>
+                ${userOrders.map(order => {
+                    const items = JSON.parse(order.items);
+                    const itemsText = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+                    
+                    return `
+                        <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0; border-radius: 8px;">
+                            <p><strong>Order #${order.id}</strong></p>
+                            <p><strong>Items:</strong> ${itemsText}</p>
+                            <p><strong>Total:</strong> M${order.total_amount}</p>
+                            <p><strong>Status:</strong> <span class="status-${order.status}">${getStatusText(order.status)}</span></p>
+                            <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
+                            ${order.status === 'out-for-delivery' ? 
+                                `<button class="card-btn confirm-delivery-btn" data-order-id="${order.id}" 
+                                    style="background: #27ae60; color: white; margin-top: 10px;">
+                                    Confirm Delivery Received
+                                </button>` : ''
+                            }
+                        </div>
+                    `;
+                }).join('')}
+            `;
+            
+            // Add event listeners to confirm delivery buttons
+            document.querySelectorAll('.confirm-delivery-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const orderId = this.getAttribute('data-order-id');
+                    confirmDelivery(orderId);
+                });
+            });
         })
         .catch(error => {
-            console.error('Error tracking order:', error);
-            showToast('Order not found. Please check your order ID.');
+            console.error('Error fetching orders:', error);
+            showToast('Error finding orders. Please try again.');
         });
 }
 
-function confirmDelivery() {
-    const orderId = document.getElementById('orderConfirmationSection').getAttribute('data-order-id');
-
+function confirmDelivery(orderId) {
     if (!orderId) {
         showToast('No order selected');
         return;
     }
-
+    
     fetch(`${API_BASE}/orders/${orderId}/status`, {
         method: 'PUT',
         headers: {
@@ -827,21 +855,20 @@ function confirmDelivery() {
         },
         body: JSON.stringify({ status: 'delivered' })
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Order delivery confirmed! Thank you for your order.');
-                document.getElementById('orderConfirmationSection').style.display = 'none';
-                // Refresh tracking info
-                trackOrder();
-            } else {
-                showToast('Error confirming delivery');
-            }
-        })
-        .catch(error => {
-            console.error('Error confirming delivery:', error);
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Order delivery confirmed! Thank you for your order.');
+            // Refresh the orders list
+            trackOrder();
+        } else {
             showToast('Error confirming delivery');
-        });
+        }
+    })
+    .catch(error => {
+        console.error('Error confirming delivery:', error);
+        showToast('Error confirming delivery');
+    });
 }
 
 function getStatusText(status) {
@@ -872,39 +899,4 @@ function hideOrderTrackingModal() {
     document.body.classList.remove('modal-open');
     modal.style.display = 'none';
     modal.classList.remove('visible');
-}
-
-function trackOrder() {
-    const orderId = document.getElementById('orderTrackingId').value.trim();
-
-    if (!orderId) {
-        showToast('Please enter an order ID');
-        return;
-    }
-    fetch(`${API_BASE}/orders/${orderId}`)
-        .then(response => response.json())
-        .then(order => {
-            const resultDiv = document.getElementById('orderTrackingResult');
-            const confirmSection = document.getElementById('orderConfirmationSection');
-
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-                <h4>Order #${order.id}</h4>
-                <p><strong>Customer:</strong> ${order.customer_name}</p>
-                <p><strong>Status:</strong> <span class="status-${order.status}">${getStatusText(order.status)}</span></p>
-                <p><strong>Total:</strong> M${order.total_amount}</p>
-                <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
-            `;
-            // Show confirm button only if status is "out-for-delivery"
-            if (order.status === 'out-for-delivery') {
-                confirmSection.style.display = 'block';
-                confirmSection.setAttribute('data-order-id', order.id);
-            } else {
-                confirmSection.style.display = 'none';
-            }
-        })
-        .catch(error => {
-            console.error('Error tracking order:', error);
-            showToast('Order not found. Please check your order ID.');
-        });
 }
