@@ -350,8 +350,8 @@ function setupPagination() {
     const pageInfo = document.getElementById('pageInfo');
 
     // Initialize pagination as hidden
-    pagination.classList.add('hidden');
-    pagination.style.display = 'none';
+    //pagination.classList.add('hidden');
+    //pagination.style.display = 'none';
 
     prevBtn.addEventListener('click', () => changePage(currentPage - 1));
     nextBtn.addEventListener('click', () => changePage(currentPage + 1));
