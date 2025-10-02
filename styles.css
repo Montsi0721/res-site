@@ -1032,6 +1032,7 @@ body.dark-mode .header {
     justify-content: center;
     align-items: center;
     border: 3px solid red;
+    margin-right: 100px;
     width: 100vw;
     height: 200px;
     position: relative;
