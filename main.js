@@ -27,9 +27,7 @@ function fetchMenuItems() {
     // Show loading spinner
     const menuContainer = document.getElementById('menu-items');
     menuContainer.innerHTML = `
-        <div class="loading-spinner">
-            <div class="spinner"></div>
-        </div>
+        <span class="loader"></span>
     `;
     fetch(`${API_BASE}/menu`)
         .then(response => {
@@ -52,9 +50,7 @@ function fetchMenuItems() {
 function loadSampleMenu() {
     const menuContainer = document.getElementById('menu-items');
     menuContainer.innerHTML = `
-        <div class="loading-spinner">
-            <div class="spinner"></div>
-        </div>
+        <span class="loader"></span>
     `;
     allMenuItems = [
         {
