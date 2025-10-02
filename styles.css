@@ -77,7 +77,7 @@ body.dark-mode {
 }
 
 .headerOverlay {
-    background-color: #d5d5d5f0;
+    background-color: #d5d5d5e0;
     width: 100vw;
     height: 70px;
     position: absolute;
@@ -571,6 +571,7 @@ body.dark-mode .card:hover {
 
 .card-content {
     padding: 20px;
+    background-color: #27ae60;
 }
 
 .card-title {
