@@ -12,7 +12,6 @@ let directionsService;
 let directionsRenderer;
 let userMarker;
 
-// To Render backend URL:
 const API_BASE = "https://res-site-backend.onrender.com/api";
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -350,8 +349,15 @@ function setupPagination() {
     const nextBtn = document.getElementById('nextPage');
     const pageInfo = document.getElementById('pageInfo');
 
+    // Initialize pagination as hidden
+    pagination.classList.add('hidden');
+    pagination.style.display = 'none';
+
     prevBtn.addEventListener('click', () => changePage(currentPage - 1));
     nextBtn.addEventListener('click', () => changePage(currentPage + 1));
+    
+    // Call update once to set initial state
+    updatePaginationControls();
 }
 
 function changePage(page) {
@@ -380,16 +386,26 @@ function updatePaginationControls() {
     
     const totalPages = Math.ceil(allMenuItems.length / itemsPerPage);
     
-    if (allMenuItems.length > itemsPerPage) {
+    // Show pagination only if we have more than one page
+    if (totalPages > 1) {
+        pagination.classList.remove('hidden');
         pagination.style.display = 'flex';
     } else {
+        pagination.classList.add('hidden');
         pagination.style.display = 'none';
         return;
     }
     
+    // Update page info
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    
+    // Update button states
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === totalPages;
+    
+    // Add/remove disabled styles
+    prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
+    nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
 }
 
 function handleNavItemClick(target) {
@@ -1033,7 +1049,6 @@ function hideOrderTrackingModal() {
     modal.classList.remove('visible');
 }
 
-// Initialize Live Location Feature
 function initializeLocationFeature() {
     // Load Google Maps API
     loadGoogleMaps();
@@ -1202,7 +1217,6 @@ function openGoogleMaps() {
     window.open(url, '_blank');
 }
 
-// Add location to navigation
 function addLocationToNavigation() {
     const navItems = document.querySelector('.nav-items');
     const locationNavItem = document.createElement('div');
