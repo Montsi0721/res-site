@@ -2,6 +2,16 @@
 let allMenuItems = [];
 let currentOrderItem = null;
 
+// Pagination variables
+let currentPage = 1;
+const itemsPerPage = 6;
+
+// Live Location Variables
+let map;
+let directionsService;
+let directionsRenderer;
+let userMarker;
+
 // To Render backend URL:
 const API_BASE = "https://res-site-backend.onrender.com/api";
 
@@ -13,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
     setupEventListeners();
 
     setupOrderTracking();
+
+    setupPagination();
+
+    addLocationToNavigation();
+    initializeLocationFeature();
 
     // Show welcome toast
     showToast('Welcome to Savory Delights!');
@@ -40,11 +55,12 @@ function fetchMenuItems() {
         })
         .then(menuItems => {
             allMenuItems = menuItems;
-            renderMenuItems(menuItems);
+            currentPage = 1;
+            renderCurrentPage();
+            updatePaginationControls();
         })
         .catch(error => {
             console.error('Error loading menu:', error);
-            // Fallback to sample data if server is not available
             loadSampleMenu();
         });
 }
@@ -78,8 +94,59 @@ function loadSampleMenu() {
             price: 18.99,
             image: "https://images.unsplash.com/photo-1476124369491-e7addf5db371?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
         }
+        {
+            id: 4,
+            name: "Truffle Pasta",
+            description: "Fresh pasta with black truffle cream sauce and parmesan",
+            price: 22.99,
+            image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        },
+        {
+            id: 5,
+            name: "Seafood Platter",
+            description: "Assorted fresh seafood with lemon butter and herbs",
+            price: 35.99,
+            image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        },
+        {
+            id: 6,
+            name: "Vegetarian Delight",
+            description: "Seasonal vegetables with quinoa and tahini sauce",
+            price: 16.99,
+            image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        },
+        {
+            id: 7,
+            name: "Chocolate Lava Cake",
+            description: "Warm chocolate cake with molten center and vanilla ice cream",
+            price: 8.99,
+            image: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        },
+        {
+            id: 8,
+            name: "Caprese Salad",
+            description: "Fresh mozzarella, tomatoes, and basil with balsamic glaze",
+            price: 12.99,
+            image: "https://images.unsplash.com/photo-1551782450-17144efb9c50?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        },
+        {
+            id: 9,
+            name: "Beef Burger",
+            description: "Premium beef patty with special sauce and crispy fries",
+            price: 14.99,
+            image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        },
+        {
+            id: 10,
+            name: "Margherita Pizza",
+            description: "Classic pizza with fresh mozzarella and basil",
+            price: 16.99,
+            image: "https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        }
     ];
-    renderMenuItems(allMenuItems);
+    currentPage = 1;
+    renderCurrentPage();
+    updatePaginationControls();
 }
 
 function setupEventListeners() {
@@ -267,14 +334,62 @@ function renderMenuItems(menuItems) {
     });
 
     // Add event listeners to order buttons
-    document.querySelectorAll('.order-btn').forEach(button => {
-        button.addEventListener('click', function () {
+   document.querySelectorAll('.order-btn').forEach(button => {
+        button.addEventListener('click', function() {
             const itemId = this.getAttribute('data-id');
             const itemName = this.getAttribute('data-name');
             const itemPrice = parseFloat(this.getAttribute('data-price'));
             showOrderModal(itemId, itemName, itemPrice);
         });
     });
+}
+
+function setupPagination() {
+    const pagination = document.getElementById('pagination');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const pageInfo = document.getElementById('pageInfo');
+
+    prevBtn.addEventListener('click', () => changePage(currentPage - 1));
+    nextBtn.addEventListener('click', () => changePage(currentPage + 1));
+}
+
+function changePage(page) {
+    const totalPages = Math.ceil(allMenuItems.length / itemsPerPage);
+    
+    if (page < 1 || page > totalPages) return;
+    
+    currentPage = page;
+    renderCurrentPage();
+    updatePaginationControls();
+}
+
+function renderCurrentPage() {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentItems = allMenuItems.slice(startIndex, endIndex);
+    
+    renderMenuItems(currentItems);
+}
+
+function updatePaginationControls() {
+    const pagination = document.getElementById('pagination');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const pageInfo = document.getElementById('pageInfo');
+    
+    const totalPages = Math.ceil(allMenuItems.length / itemsPerPage);
+    
+    if (allMenuItems.length > itemsPerPage) {
+        pagination.style.display = 'flex';
+    } else {
+        pagination.style.display = 'none';
+        return;
+    }
+    
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
 }
 
 function handleNavItemClick(target) {
@@ -319,6 +434,9 @@ function handleNavItemClick(target) {
             scrollToSection('order-tracking');
             orderTrack = document.getElementById('order-tracking');
             orderTrack.style.display = 'flex';
+            break;
+        case 'location':
+            scrollToSection('location');
             break;
     }
 }
@@ -913,4 +1031,194 @@ function hideOrderTrackingModal() {
     document.body.classList.remove('modal-open');
     modal.style.display = 'none';
     modal.classList.remove('visible');
+}
+
+// Initialize Live Location Feature
+function initializeLocationFeature() {
+    // Load Google Maps API
+    loadGoogleMaps();
+    
+    // Setup event listeners
+    document.getElementById('getDirectionsBtn').addEventListener('click', openGoogleMaps);
+    document.getElementById('useCurrentLocation').addEventListener('click', getCurrentLocation);
+    document.getElementById('calculateRoute').addEventListener('click', calculateRoute);
+}
+
+function loadGoogleMaps() {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap`;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+}
+
+function initMap() {
+    // Restaurant coordinates (example coordinates for Foodville)
+    const restaurantLocation = { lat: -26.2041, lng: 28.0473 }; // Johannesburg coordinates
+    
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 15,
+        center: restaurantLocation,
+        styles: [
+            {
+                featureType: 'poi',
+                elementType: 'labels',
+                stylers: [{ visibility: 'on' }]
+            }
+        ]
+    });
+    
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
+    
+    // Add restaurant marker
+    new google.maps.Marker({
+        position: restaurantLocation,
+        map: map,
+        title: 'Savory Delights Restaurant',
+        icon: {
+            url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
+        }
+    });
+}
+
+function getCurrentLocation() {
+    if (!navigator.geolocation) {
+        showToast('Geolocation is not supported by your browser');
+        return;
+    }
+    
+    showToast('Getting your location...');
+    
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            
+            // Reverse geocode to get address
+            reverseGeocode(userLocation);
+            
+            // Add/update user marker on map
+            if (userMarker) {
+                userMarker.setPosition(userLocation);
+            } else {
+                userMarker = new google.maps.Marker({
+                    position: userLocation,
+                    map: map,
+                    title: 'Your Location',
+                    icon: {
+                        url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                    }
+                });
+            }
+            
+            // Center map on user location
+            map.setCenter(userLocation);
+            map.setZoom(13);
+            
+        },
+        (error) => {
+            console.error('Error getting location:', error);
+            let errorMessage = 'Unable to get your location';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage = 'Location access denied. Please enable location services.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage = 'Location information unavailable.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage = 'Location request timed out.';
+                    break;
+            }
+            
+            showToast(errorMessage);
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 60000
+        }
+    );
+}
+
+function reverseGeocode(location) {
+    const geocoder = new google.maps.Geocoder();
+    
+    geocoder.geocode({ location: location }, (results, status) => {
+        if (status === 'OK' && results[0]) {
+            document.getElementById('userLocation').value = results[0].formatted_address;
+        } else {
+            document.getElementById('userLocation').value = `${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`;
+        }
+    });
+}
+
+function calculateRoute() {
+    const userLocationInput = document.getElementById('userLocation').value.trim();
+    
+    if (!userLocationInput) {
+        showToast('Please enter your location or use current location');
+        return;
+    }
+    
+    // Restaurant location (hardcoded for example)
+    const restaurantLocation = { lat: -26.2041, lng: 28.0473 };
+    
+    const request = {
+        origin: userLocationInput,
+        destination: restaurantLocation,
+        travelMode: google.maps.TravelMode.DRIVING
+    };
+    
+    directionsService.route(request, (result, status) => {
+        if (status === 'OK') {
+            directionsRenderer.setDirections(result);
+            
+            const route = result.routes[0].legs[0];
+            const distance = route.distance.text;
+            const duration = route.duration.text;
+            
+            document.getElementById('routeDetails').innerHTML = `
+                <strong>Distance:</strong> ${distance}<br>
+                <strong>Estimated Time:</strong> ${duration}<br>
+                <strong>Address:</strong> 123 Gourmet Street, Foodville
+            `;
+            document.getElementById('routeInfo').style.display = 'block';
+            
+        } else {
+            showToast('Unable to calculate route. Please check your location.');
+        }
+    });
+}
+
+function openGoogleMaps() {
+    // Open Google Maps with restaurant location
+    const url = `https://www.google.com/maps/dir/?api=1&destination=123+Gourmet+Street+Foodville`;
+    window.open(url, '_blank');
+}
+
+// Add location to navigation
+function addLocationToNavigation() {
+    const navItems = document.querySelector('.nav-items');
+    const locationNavItem = document.createElement('div');
+    locationNavItem.className = 'nav-item';
+    locationNavItem.setAttribute('data-target', 'location');
+    locationNavItem.innerHTML = `
+        <div class="nav-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div class="nav-text">Find Us</div>
+    `;
+    
+    // Insert before the theme toggle
+    const themeToggle = document.querySelector('.theme-toggle');
+    navItems.insertBefore(locationNavItem, themeToggle);
+    
+    // Add click event
+    locationNavItem.addEventListener('click', function() {
+        handleNavItemClick('location');
+    });
 }

@@ -119,6 +119,15 @@
             <div class="card-grid" id="menu-items">
                 <!-- Menu items will be loaded dynamically -->
             </div>
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="pagination-btn" id="prevPage">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <span class="pagination-info" id="pageInfo">Page 1 of 1</span>
+                <button class="pagination-btn" id="nextPage">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
         </section>
 
         <!-- Special Offers Section -->
@@ -229,6 +238,70 @@
                         <p class="card-text" style="font-style: italic; margin-top: 15px;">
                             "An unforgettable culinary journey" - Food & Wine Magazine
                         </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Location Section -->
+        <section id="location">
+            <h2 class="section-title">Find Us</h2>
+            <div class="card-container">
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title"><i class="fas fa-map-marker-alt"></i> Our Location</h3>
+                        <div id="mapContainer"
+                            style="height: 300px; border-radius: 8px; overflow: hidden; margin-bottom: 15px;">
+                            <div id="map" style="height: 100%; width: 100%;"></div>
+                        </div>
+                        <p class="card-text">
+                            <i class="fas fa-location-arrow"></i> 123 Gourmet Street, Foodville<br>
+                            <i class="fas fa-clock"></i> Open today: 5pm - 10pm
+                        </p>
+                        <button class="card-btn" id="getDirectionsBtn" style="width: 100%; margin-top: 10px;">
+                            <i class="fas fa-directions"></i> Get Directions
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title"><i class="fas fa-car"></i> Parking & Transport</h3>
+                        <p class="card-text">
+                            <strong>Valet Parking:</strong> Available from 5pm<br>
+                            <strong>Street Parking:</strong> Available after 6pm<br>
+                            <strong>Public Transport:</strong><br>
+                            - Bus: Lines 12, 24, 36<br>
+                            - Metro: Foodville Station (5 min walk)
+                        </p>
+                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                            <p style="margin: 0; font-size: 14px;">
+                                <i class="fas fa-info-circle"></i>
+                                Complimentary valet parking for reservations of 4+ guests
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title"><i class="fas fa-map"></i> Live Directions</h3>
+                        <div class="form-group">
+                            <label for="userLocation"><i class="fas fa-location-arrow"></i> Your Location</label>
+                            <input type="text" id="userLocation"
+                                placeholder="Enter your address or use current location">
+                        </div>
+                        <button class="card-btn" id="useCurrentLocation" style="width: 100%; margin-bottom: 10px;">
+                            <i class="fas fa-crosshairs"></i> Use Current Location
+                        </button>
+                        <button class="card-btn" id="calculateRoute"
+                            style="width: 100%; background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white;">
+                            <i class="fas fa-route"></i> Calculate Route
+                        </button>
+                        <div id="routeInfo"
+                            style="display: none; margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                            <p id="routeDetails" style="margin: 0; font-size: 14px;"></p>
+                        </div>
                     </div>
                 </div>
             </div>
