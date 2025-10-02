@@ -1029,8 +1029,8 @@ body.dark-mode .header {
 /* Loading Spinner */
 .loading-spinner {
     position: absolute;
-    left: 1px;
-    margin-left: 1px;
+    left: -21px;
+    margin-left: -21px;
     border: 3px solid red;
     width: 100vw;
     height: 200px;
