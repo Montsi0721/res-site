@@ -1036,7 +1036,6 @@ body.dark-mode .header {
     border: 3px solid red;
     width: 100vw;
     height: 200px;
-    /* position: relative; */
 }
 
 .spinner {
