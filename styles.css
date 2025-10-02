@@ -1028,11 +1028,13 @@ body.dark-mode .header {
 
 /* Loading Spinner */
 .loading-spinner {
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
     border: 3px solid red;
     margin-right: 100px;
+    right: 10px;
     width: 100vw;
     height: 200px;
     position: relative;
