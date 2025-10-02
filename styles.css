@@ -1027,7 +1027,7 @@ body.dark-mode .header {
 }
 
 /* Loading Spinner */
-/* .loading-spinner {
+.loading-spinner {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1053,7 +1053,7 @@ body.dark-mode .spinner {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-} */
+}
 
 /* Footer */
 footer {
