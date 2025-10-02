@@ -536,7 +536,8 @@ body.dark-mode .section-title {
 }
 
 .card {
-    background: red;
+    /* background: #e0e0e0d0; */
+    background-color: #27ae60;
     border-radius: 15px;
     overflow: hidden;
     border: 1px solid #ccccccc0;
