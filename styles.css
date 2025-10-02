@@ -1027,7 +1027,7 @@ body.dark-mode .header {
 }
 
 /* Loading Spinner */
-.loading-spinner {
+/* .loading-spinner {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1053,6 +1053,14 @@ body.dark-mode .spinner {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+} */
+
+.loaderContainer{
+    height: 100px;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .loader {
@@ -1068,6 +1076,7 @@ body.dark-mode .spinner {
   inset: 0;
   box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3) inset;
 }
+
 .loader:after {
   box-shadow: 0 2px 0 #FF3D00 inset;
   animation: rotate 2s linear infinite;
