@@ -1032,11 +1032,11 @@ body.dark-mode .header {
     display: flex;
     justify-content: center;
     text-align: center;
-    left: -20%;
+    /* left: -20%; */
     border: 3px solid red;
     width: 100vw;
     height: 200px;
-    /* position: relative; */
+    position: relative;
 }
 
 .spinner {
