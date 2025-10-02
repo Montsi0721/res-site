@@ -1032,9 +1032,8 @@ body.dark-mode .header {
     display: flex;
     justify-content: center;
     text-align: center;
-    /* left: 0%; */
     border: 3px solid red;
-    width: 90vw;
+    width: 88vw;
     height: 200px;
 }
 
