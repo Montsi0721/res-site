@@ -77,12 +77,16 @@ body.dark-mode {
 }
 
 .headerOverlay {
-    background-color: #222222f9;
+    background-color: #d5d5d5f9;
     width: 100vw;
     height: 70px;
     position: absolute;
     z-index: -10;
     left: 0;
+}
+
+body.dark-mode .headerOverlay {
+    background-color: #222222f9;
 }
 
 body.dark-mode .header {
