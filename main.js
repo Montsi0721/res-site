@@ -379,11 +379,6 @@ function renderCurrentPage() {
 }
 
 function updatePaginationControls() {
-    console.log('Updating pagination controls...');
-    console.log('Total items:', allMenuItems.length);
-    console.log('Items per page:', itemsPerPage);
-    console.log('Total pages:', Math.ceil(allMenuItems.length / itemsPerPage));
-    
     const pagination = document.getElementById('pagination');
     const prevBtn = document.getElementById('prevPage');
     const nextBtn = document.getElementById('nextPage');
