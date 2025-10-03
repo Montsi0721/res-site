@@ -253,59 +253,8 @@ function loadSampleMenu() {
             description: "Creamy arborio rice with wild mushrooms and parmesan cheese",
             price: 18.99,
             image: "https://images.unsplash.com/photo-1476124369491-e7addf5db371?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-            category: "main"
+            category: "desert"
         }
-        /*
-        {
-            id: 4,
-            name: "Truffle Pasta",
-            description: "Fresh pasta with black truffle cream sauce and parmesan",
-            price: 22.99,
-            image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        },
-        {
-            id: 5,
-            name: "Seafood Platter",
-            description: "Assorted fresh seafood with lemon butter and herbs",
-            price: 35.99,
-            image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        },
-        {
-            id: 6,
-            name: "Vegetarian Delight",
-            description: "Seasonal vegetables with quinoa and tahini sauce",
-            price: 16.99,
-            image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        },
-        {
-            id: 7,
-            name: "Chocolate Lava Cake",
-            description: "Warm chocolate cake with molten center and vanilla ice cream",
-            price: 8.99,
-            image: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        },
-        {
-            id: 8,
-            name: "Caprese Salad",
-            description: "Fresh mozzarella, tomatoes, and basil with balsamic glaze",
-            price: 12.99,
-            image: "https://images.unsplash.com/photo-1551782450-17144efb9c50?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        },
-        {
-            id: 9,
-            name: "Beef Burger",
-            description: "Premium beef patty with special sauce and crispy fries",
-            price: 14.99,
-            image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        },
-        {
-            id: 10,
-            name: "Margherita Pizza",
-            description: "Classic pizza with fresh mozzarella and basil",
-            price: 16.99,
-            image: "https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        }
-            */
     ];
     filteredMenuItems = allMenuItems;
     currentPage = 1;
