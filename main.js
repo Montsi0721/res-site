@@ -12,7 +12,8 @@ let directionsService;
 let directionsRenderer;
 let userMarker;
 
-const API_BASE = "https://res-site-backend.onrender.com/api";
+//const API_BASE = "https://res-site-backend.onrender.com/api";
+const API_BASE = window.location.origin + "/api";
 
 document.addEventListener('DOMContentLoaded', function () {
     // Fetch menu items from backend
@@ -1345,4 +1346,5 @@ function addLocationToNavigation() {
     locationNavItem.addEventListener('click', function() {
         handleNavItemClick('location');
     });
+
 }
