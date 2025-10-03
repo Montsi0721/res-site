@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +10,7 @@
 </head>
 
 <body>
+    <!-- Header -->
     <header class="header">
         <div class="headerOverlay"></div>
         <div class="logo">
@@ -28,7 +28,7 @@
             </div>
 
             <!-- Reservation Button -->
-            <button class="login-btn" id="reservationBtn">
+            <button class="btn" id="reservationBtn">
                 <i class="fas fa-calendar-alt"></i>
                 <span>Reserve</span>
             </button>
@@ -42,6 +42,7 @@
         </div>
     </header>
 
+    <!-- Progress Bar -->
     <div class="progress-container">
         <div class="progress-bar" id="progressBar"></div>
     </div>
@@ -104,22 +105,21 @@
         </div>
     </nav>
 
+    <!-- Main Content -->
     <div class="container">
         <!-- Welcome Section -->
         <section id="welcome">
             <h2 class="section-title">Welcome to Savory Delights</h2>
-            <p style="text-align: center; margin-bottom: 30px; font-size: 18px;">
-                Experience the finest culinary delights in an atmosphere of elegance and comfort.
-            </p>
+            <p class="section-subtitle">Experience the finest culinary delights in an atmosphere of elegance and comfort.</p>
         </section>
 
         <!-- Menu Section -->
         <section id="menu">
             <h2 class="section-title">Our Menu</h2>
+            
             <!-- Category Filter Buttons -->
-            <div class="category-filters" style="margin-bottom: 30px; text-align: center;">
-                <div class="filter-buttons"
-                    style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+            <div class="category-filters">
+                <div class="filter-buttons">
                     <button class="category-btn active" data-category="all">
                         <i class="fas fa-utensils"></i> All Items
                     </button>
@@ -136,19 +136,19 @@
                         <i class="fas fa-ice-cream"></i> Desserts
                     </button>
                 </div>
-                <div class="active-category" style="font-style: italic; color: #666; margin-top: 10px;">
-                    Showing: All Items
-                </div>
+                <div class="active-category">Showing: All Items</div>
             </div>
+            
             <div class="card-grid" id="menu-items">
                 <!-- Menu items will be loaded dynamically -->
             </div>
+            
             <div class="pagination" id="pagination">
-                <button class="pagination-btn" id="prevPage">
+                <button class="btn pagination-btn" id="prevPage">
                     <i class="fas fa-chevron-left"></i> Previous
                 </button>
                 <span class="pagination-info" id="pageInfo">Page 1 of 1</span>
-                <button class="pagination-btn" id="nextPage">
+                <button class="btn pagination-btn" id="nextPage">
                     Next <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
@@ -172,7 +172,7 @@
                         <p class="card-text">Monday - Thursday: 5pm - 10pm</p>
                         <p class="card-text">Friday - Saturday: 5pm - 11pm</p>
                         <p class="card-text">Sunday: 11am - 9pm</p>
-                        <p class="card-text" style="margin-top: 15px; font-style: italic;">
+                        <p class="card-text contact-address">
                             <i class="fas fa-map-marker-alt"></i> 123 Gourmet Street, Foodville
                         </p>
                     </div>
@@ -189,10 +189,9 @@
                                 <input type="email" name="email" id="contactEmail" placeholder="Your Email" required>
                             </div>
                             <div class="form-group">
-                                <textarea name="message" id="contactMessage" placeholder="Your Message" rows="4"
-                                    required></textarea>
+                                <textarea name="message" id="contactMessage" placeholder="Your Message" rows="4" required></textarea>
                             </div>
-                            <button type="submit" class="card-btn" style="width: 100%;">
+                            <button type="submit" class="btn card-btn">
                                 <i class="fas fa-paper-plane"></i> Send Message
                             </button>
                         </form>
@@ -202,21 +201,13 @@
                 <div class="card">
                     <div class="card-content">
                         <h3 class="card-title"><i class="fas fa-share-alt"></i> Follow & Connect</h3>
-                        <div style="text-align: center; margin: 20px 0;">
-                            <a href="#" class="social-link" style="color: #555; margin: 0 10px; font-size: 28px;">
-                                <i class="fab fa-facebook"></i>
-                            </a>
-                            <a href="#" class="social-link" style="color: #555; margin: 0 10px; font-size: 28px;">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="social-link" style="color: #555; margin: 0 10px; font-size: 28px;">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="social-link" style="color: #555; margin: 0 10px; font-size: 28px;">
-                                <i class="fab fa-tripadvisor"></i>
-                            </a>
+                        <div class="social-links">
+                            <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-tripadvisor"></i></a>
                         </div>
-                        <p class="card-text" style="text-align: center;">
+                        <p class="card-text contact-info">
                             <i class="fas fa-phone"></i> (123) 456-7890<br>
                             <i class="fas fa-envelope"></i> info@savorydelights.com
                         </p>
@@ -232,20 +223,15 @@
                 <div class="card">
                     <div class="card-content">
                         <h3 class="card-title"><i class="fas fa-history"></i> Since 2010</h3>
-                        <p class="card-text">Founded in 2010, Savory Delights has been serving exceptional cuisine
-                            crafted from the finest locally-sourced ingredients. Our chef brings over 20 years of
-                            international experience to create dishes that delight the senses.</p>
-                        <p class="card-text">We believe in creating memorable dining experiences through exceptional
-                            food, impeccable service, and a warm, inviting atmosphere.</p>
+                        <p class="card-text">Founded in 2010, Savory Delights has been serving exceptional cuisine crafted from the finest locally-sourced ingredients.</p>
+                        <p class="card-text">We believe in creating memorable dining experiences through exceptional food, impeccable service, and a warm, inviting atmosphere.</p>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-content">
                         <h3 class="card-title"><i class="fas fa-leaf"></i> Our Philosophy</h3>
-                        <p class="card-text">At Savory Delights, we're committed to sustainability and supporting local
-                            farmers. Our ingredients are sourced from trusted partners who share our values for quality
-                            and environmental responsibility.</p>
+                        <p class="card-text">We're committed to sustainability and supporting local farmers. Our ingredients are sourced from trusted partners who share our values.</p>
                         <p class="card-text">Every dish tells a story of passion, tradition, and innovation.</p>
                     </div>
                 </div>
@@ -253,13 +239,13 @@
                 <div class="card">
                     <div class="card-content">
                         <h3 class="card-title"><i class="fas fa-award"></i> Awards & Recognition</h3>
-                        <p class="card-text">
-                            <i class="fas fa-star" style="color: gold;"></i> Best Fine Dining 2023<br>
-                            <i class="fas fa-star" style="color: gold;"></i> Chef's Choice Award 2022<br>
-                            <i class="fas fa-star" style="color: gold;"></i> Wine Spectator Excellence 2021<br>
-                            <i class="fas fa-star" style="color: gold;"></i> Sustainable Restaurant Award 2020
+                        <p class="card-text awards">
+                            <i class="fas fa-star"></i> Best Fine Dining 2023<br>
+                            <i class="fas fa-star"></i> Chef's Choice Award 2022<br>
+                            <i class="fas fa-star"></i> Wine Spectator Excellence 2021<br>
+                            <i class="fas fa-star"></i> Sustainable Restaurant Award 2020
                         </p>
-                        <p class="card-text" style="font-style: italic; margin-top: 15px;">
+                        <p class="card-text testimonial">
                             "An unforgettable culinary journey" - Food & Wine Magazine
                         </p>
                     </div>
@@ -274,15 +260,14 @@
                 <div class="card">
                     <div class="card-content">
                         <h3 class="card-title"><i class="fas fa-map-marker-alt"></i> Our Location</h3>
-                        <div id="mapContainer"
-                            style="height: 300px; border-radius: 8px; overflow: hidden; margin-bottom: 15px;">
-                            <div id="map" style="height: 100%; width: 100%;"></div>
+                        <div id="mapContainer">
+                            <div id="map"></div>
                         </div>
-                        <p class="card-text">
+                        <p class="card-text location-info">
                             <i class="fas fa-location-arrow"></i> 123 Gourmet Street, Foodville<br>
                             <i class="fas fa-clock"></i> Open today: 5pm - 10pm
                         </p>
-                        <button class="card-btn" id="getDirectionsBtn" style="width: 100%; margin-top: 10px;">
+                        <button class="btn card-btn" id="getDirectionsBtn">
                             <i class="fas fa-directions"></i> Get Directions
                         </button>
                     </div>
@@ -291,18 +276,16 @@
                 <div class="card">
                     <div class="card-content">
                         <h3 class="card-title"><i class="fas fa-car"></i> Parking & Transport</h3>
-                        <p class="card-text">
+                        <p class="card-text transport-info">
                             <strong>Valet Parking:</strong> Available from 5pm<br>
                             <strong>Street Parking:</strong> Available after 6pm<br>
                             <strong>Public Transport:</strong><br>
                             - Bus: Lines 12, 24, 36<br>
                             - Metro: Foodville Station (5 min walk)
                         </p>
-                        <div style="margin-top: 15px; padding: 10px; background: #4c657e; border-radius: 8px;">
-                            <p style="margin: 0; font-size: 14px;">
-                                <i class="fas fa-info-circle"></i>
-                                Complimentary valet parking for reservations of 4+ guests
-                            </p>
+                        <div class="info-note">
+                            <i class="fas fa-info-circle"></i>
+                            Complimentary valet parking for reservations of 4+ guests
                         </div>
                     </div>
                 </div>
@@ -312,63 +295,56 @@
                         <h3 class="card-title"><i class="fas fa-map"></i> Live Directions</h3>
                         <div class="form-group">
                             <label for="userLocation"><i class="fas fa-location-arrow"></i> Your Location</label>
-                            <input type="text" id="userLocation"
-                                placeholder="Enter your address or use current location">
+                            <input type="text" id="userLocation" placeholder="Enter your address or use current location">
                         </div>
-                        <button class="card-btn" id="useCurrentLocation" style="width: 100%; margin-bottom: 10px;">
+                        <button class="btn card-btn" id="useCurrentLocation">
                             <i class="fas fa-crosshairs"></i> Use Current Location
                         </button>
-                        <button class="card-btn" id="calculateRoute"
-                            style="width: 100%; background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white;">
+                        <button class="btn card-btn primary" id="calculateRoute">
                             <i class="fas fa-route"></i> Calculate Route
                         </button>
-                        <div id="routeInfo"
-                            style="display: none; margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
-                            <p id="routeDetails" style="margin: 0; font-size: 14px;"></p>
+                        <div id="routeInfo">
+                            <p id="routeDetails"></p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Order Tracking Section -->
-        <div class="order-tracking-modal" id="orderTrackingModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3><i class="fas fa-shipping-fast"></i> Track Your Order</h3>
-                    <button class="modal-close" id="orderTrackingModalClose">&times;</button>
-                </div>
-                <div class="form-group">
-                    <label for="orderTrackingEmail"><i class="fas fa-envelope"></i> Enter Your Email</label>
-                    <input type="email" id="orderTrackingEmail" placeholder="Enter your email address">
-                    <button class="card-btn" id="trackOrderBtn" style="margin-top: 10px; width: 100%;">
-                        <i class="fas fa-search"></i> Find My Orders
-                    </button>
-                </div>
-                <div id="orderTrackingResult"
-                    style="display: none; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                    <!-- Order tracking details will appear here -->
-                </div>
-                <div id="orderConfirmationSection" style="display: none; margin-top: 20px; text-align: center;">
-                    <button class="card-btn" id="confirmDeliveryBtn"
-                        style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white;">
-                        <i class="fas fa-check-circle"></i> Confirm Order Received
-                    </button>
-                </div>
-                <button id="closeOrderTrack" class="card-btn"
-                    style="background: #e74c3c; margin-top: 15px; width: 100%;">
-                    <i class="fas fa-times"></i> Close
-                </button>
-            </div>
-        </div>
-
         <!-- Footer -->
-        <footer style="margin-top: 50px; padding-top: 30px; border-top: 1px solid #e0e0e0;">
+        <footer>
             <div class="copyright">
-                <p>&copy; 2023 Savory Delights. All rights reserved. | Crafted with <i class="fas fa-heart"
-                        style="color: #e74c3c;"></i> for food lovers</p>
+                <p>&copy; 2023 Savory Delights. All rights reserved. | Crafted with <i class="fas fa-heart"></i> for food lovers</p>
             </div>
         </footer>
+    </div>
+
+    <!-- Order Tracking Modal -->
+    <div class="modal order-tracking-modal" id="orderTrackingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-shipping-fast"></i> Track Your Order</h3>
+                <button class="modal-close" id="orderTrackingModalClose">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="orderTrackingEmail"><i class="fas fa-envelope"></i> Enter Your Email</label>
+                <input type="email" id="orderTrackingEmail" placeholder="Enter your email address">
+                <button class="btn card-btn" id="trackOrderBtn">
+                    <i class="fas fa-search"></i> Find My Orders
+                </button>
+            </div>
+            <div id="orderTrackingResult">
+                <!-- Order tracking details will appear here -->
+            </div>
+            <div id="orderConfirmationSection">
+                <button class="btn card-btn success" id="confirmDeliveryBtn">
+                    <i class="fas fa-check-circle"></i> Confirm Order Received
+                </button>
+            </div>
+            <button class="btn card-btn danger" id="closeOrderTrack">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
     </div>
 
     <!-- Reservation Modal -->
@@ -405,11 +381,9 @@
                 </div>
                 <div class="form-group">
                     <label for="specialRequests"><i class="fas fa-sticky-note"></i> Special Requests (Optional)</label>
-                    <textarea id="specialRequests"
-                        placeholder="Any special requests or dietary restrictions"></textarea>
+                    <textarea id="specialRequests" placeholder="Any special requests or dietary restrictions"></textarea>
                 </div>
-                <button type="submit" class="card-btn"
-                    style="width: 100%; background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white;">
+                <button type="submit" class="btn card-btn primary">
                     <i class="fas fa-check-circle"></i> Confirm Reservation
                 </button>
             </form>
@@ -442,37 +416,18 @@
                 </div>
                 <div class="form-group">
                     <label for="orderInstructions"><i class="fas fa-edit"></i> Special Instructions (Optional)</label>
-                    <textarea id="orderInstructions"
-                        placeholder="Any special cooking instructions or dietary needs"></textarea>
+                    <textarea id="orderInstructions" placeholder="Any special cooking instructions or dietary needs"></textarea>
                 </div>
-                <div class="form-group"
-                    style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
-                    <h4 style="margin: 0 0 10px 0; color: #333;">Order Summary</h4>
-                    <p style="margin: 5px 0; font-size: 16px;"><strong>Item: </strong><span id="orderItemName">-</span>
-                    </p>
-                    <p style="margin: 5px 0; font-size: 16px;"><strong>Quantity: </strong><span
-                            id="orderDisplayQuantity">1</span></p>
-                    <p style="margin: 5px 0; font-size: 18px; font-weight: bold; color: #e74c3c;">
-                        Total: M<span id="orderTotal">0.00</span>
-                    </p>
+                <div class="order-summary">
+                    <h4>Order Summary</h4>
+                    <p><strong>Item: </strong><span id="orderItemName">-</span></p>
+                    <p><strong>Quantity: </strong><span id="orderDisplayQuantity">1</span></p>
+                    <p class="order-total">Total: M<span id="orderTotal">0.00</span></p>
                 </div>
-                <button type="submit" class="card-btn"
-                    style="width: 100%; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white;">
+                <button type="submit" class="btn card-btn success">
                     <i class="fas fa-credit-card"></i> Place Order
                 </button>
             </form>
-        </div>
-    </div>
-
-    <!-- Gallery Modal -->
-    <div class="modal" id="galleryModal">
-        <div class="modal-content" style="max-width: 90%; max-height: 90%; background: transparent; box-shadow: none;">
-            <button class="modal-close" id="galleryModalClose"
-                style="background: rgba(0,0,0,0.5); color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                &times;
-            </button>
-            <img id="galleryModalImage" src="" alt="Enlarged view"
-                style="width: 100%; height: auto; max-height: 80vh; object-fit: contain; border-radius: 8px;">
         </div>
     </div>
 
@@ -498,6 +453,4 @@
 
     <script src="main.js"></script>
 </body>
-
-
 </html>
