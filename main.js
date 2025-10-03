@@ -210,13 +210,17 @@ function fetchMenuItems() {
             }
             return response.json();
         })
-        console.log('fetched!!')
+        console.log('fetching1')
         .then(menuItems => {
+            console.log('fetching2');
             allMenuItems = menuItems;
             filteredMenuItems = menuItems;
             currentPage = 1;
+            console.log('fetching3');
             renderCurrentPage();
+            console.log('fetching4');
             updatePaginationControls();
+            console.log('fetching5');
             initializeCategoryFilters();
             console.log('whats going on?');
         })
