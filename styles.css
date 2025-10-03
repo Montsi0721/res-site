@@ -202,7 +202,7 @@ body.dark-mode .search-icon i {
 }
 
 /* Login/Signup Button */
-.login-btn {
+#reservationBtn {
     padding: 10px 20px;
     background: #e0e0e0;
     border: none;
@@ -217,18 +217,18 @@ body.dark-mode .search-icon i {
     gap: 8px;
 }
 
-body.dark-mode .login-btn {
+body.dark-mode #reservationBtn {
     background: #333;
     color: #eee;
     box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5), -3px -3px 5px rgba(60, 60, 60, 0.8);
 }
 
-.login-btn:hover {
+#reservationBtn:hover {
     box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.2), inset -3px -3px 5px rgba(255, 255, 255, 0.8);
     transform: translateY(2px);
 }
 
-body.dark-mode .login-btn:hover {
+body.dark-mode #reservationBtn:hover {
     box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.5), inset -3px -3px 5px rgba(60, 60, 60, 0.8);
 }
 
