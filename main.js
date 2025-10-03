@@ -274,7 +274,7 @@ function renderMenuItems(menuItems) {
             <img src="${item.image}" alt="${item.name}" class="card-img">
             <div class="card-content">
                 <h3 class="card-title">${item.name}</h3>
-                <p class="card-text">${item.description}</p>
+                <p class="card-text">${item.description}<br>${item.category}</p>
                 <div class="card-footer">
                     <p class="price">M${item.price.toFixed(2)}</p>
                     <button class="card-btn order-btn" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">
