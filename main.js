@@ -210,7 +210,6 @@ function fetchMenuItems() {
             }
             return response.json();
         })
-        console.log('fetching1')
         .then(menuItems => {
             console.log('fetching2');
             allMenuItems = menuItems;
