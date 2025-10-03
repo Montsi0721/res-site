@@ -55,15 +55,27 @@
     <div class="admin-container">
         <div class="admin-header">
             <h1><i class="fas fa-lock"></i> Admin Panel - Savory Delights</h1>
-            <button class="logout-btn" id="logoutBtn">Logout</button>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
 
         <div class="admin-nav">
-            <button data-section="reservations" class="nav-btn active">Reservations</button>
-            <button data-section="orders" class="nav-btn">Orders</button>
-            <button data-section="contacts" class="nav-btn">Contact Messages</button>
-            <button data-section="menu" class="nav-btn">Menu Management</button>
-            <button data-section="specialOffers" class="nav-btn">Special Offers</button>
+            <button data-section="reservations" class="nav-btn active">
+                <i class="fas fa-calendar-alt"></i> Reservations
+            </button>
+            <button data-section="orders" class="nav-btn">
+                <i class="fas fa-shopping-bag"></i> Orders
+            </button>
+            <button data-section="contacts" class="nav-btn">
+                <i class="fas fa-envelope"></i> Contact Messages
+            </button>
+            <button data-section="menu" class="nav-btn">
+                <i class="fas fa-utensils"></i> Menu Management
+            </button>
+            <button data-section="specialOffers" class="nav-btn">
+                <i class="fas fa-tag"></i> Special Offers
+            </button>
         </div>
 
         <div id="reservationsSection" class="admin-section active">
@@ -84,7 +96,9 @@
                         </tr>
                     </thead>
                     <tbody id="reservationsBody">
-                        <!-- Reservations will be loaded here -->
+                        <tr>
+                            <td colspan="9" style="text-align: center;">Loading reservations...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -107,7 +121,9 @@
                         </tr>
                     </thead>
                     <tbody id="ordersBody">
-                        <!-- Orders will be loaded here -->
+                        <tr>
+                            <td colspan="8" style="text-align: center;">Loading orders...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -127,7 +143,9 @@
                         </tr>
                     </thead>
                     <tbody id="contactsBody">
-                        <!-- Contact messages will be loaded here -->
+                        <tr>
+                            <td colspan="5" style="text-align: center;">Loading contact messages...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -150,7 +168,9 @@
                         </tr>
                     </thead>
                     <tbody id="menuBody">
-                        <!-- Menu items will be loaded here -->
+                        <tr>
+                            <td colspan="5" style="text-align: center;">Loading menu items...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -174,7 +194,9 @@
                         </tr>
                     </thead>
                     <tbody id="specialOffersBody">
-                        <!-- Special offers will be loaded here -->
+                        <tr>
+                            <td colspan="6" style="text-align: center;">Loading special offers...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -205,6 +227,15 @@
                 <div class="form-group">
                     <label for="itemImage">Image URL</label>
                     <input type="url" id="itemImage" required>
+                </div>
+                <div class="form-group">
+                    <label for="itemCategory">Category</label>
+                    <select id="itemCategory" required>
+                        <option value="main">Main Course</option>
+                        <option value="appetizers">Appetizers</option>
+                        <option value="desserts">Desserts</option>
+                        <option value="beverages">Beverages</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="card-btn">Save Menu Item</button>
@@ -254,12 +285,11 @@
     <script src="admin.js"></script>
     <script>
         // Check for saved dark mode preference
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-mode');
-            themeToggle.checked = true;
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+        });
     </script>
 </body>
-
-
 </html>

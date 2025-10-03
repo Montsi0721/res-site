@@ -13,6 +13,32 @@ document.addEventListener('DOMContentLoaded', function () {
     loadReservations();
 });
 
+const API_BASE = "https://res-site-backend.onrender.com/api";
+
+// Helper function for admin API calls
+async function adminFetch(endpoint, options = {}) {
+    const url = `${API_BASE}/admin${endpoint}?password=1234`;
+    
+    const config = {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+        }
+    };
+
+    try {
+        const response = await fetch(url, config);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Admin API error:', error);
+        throw error;
+    }
+}
+
 function setupAdminEventListeners() {
     // Navigation
     document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -127,14 +153,22 @@ function setupAdminEventListeners() {
     }
 }
 
-//https://res-site-backend.onrender.com/api
-
 function loadReservations() {
-    fetch('https://res-site-backend.onrender.com/api/admin/reservations')
-        .then(response => response.json())
+    adminFetch('/reservations')
         .then(reservations => {
             const tbody = document.getElementById('reservationsBody');
             tbody.innerHTML = '';
+
+            if (reservations.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; color: #777;">
+                            No reservations found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
 
             reservations.forEach(reservation => {
                 const row = document.createElement('tr');
@@ -146,7 +180,11 @@ function loadReservations() {
                     <td>${new Date(reservation.date).toLocaleDateString()}</td>
                     <td>${reservation.time}</td>
                     <td>${reservation.guests}</td>
-                    <td>${reservation.status}</td>
+                    <td>
+                        <span class="status-badge status-${reservation.status}">
+                            ${reservation.status}
+                        </span>
+                    </td>
                     <td>${new Date(reservation.created_at).toLocaleString()}</td>
                 `;
                 tbody.appendChild(row);
@@ -161,14 +199,30 @@ function loadReservations() {
 }
 
 function loadOrders() {
-    fetch('https://res-site-backend.onrender.com/api/admin/orders')
-        .then(response => response.json())
+    adminFetch('/orders')
         .then(orders => {
             const tbody = document.getElementById('ordersBody');
             tbody.innerHTML = '';
 
+            if (orders.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; color: #777;">
+                            No orders found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
             orders.forEach(order => {
-                const items = JSON.parse(order.items);
+                let items;
+                try {
+                    items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+                } catch (e) {
+                    items = [{ name: 'Error parsing items', quantity: 1 }];
+                }
+                
                 const itemsText = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
 
                 const row = document.createElement('tr');
@@ -176,8 +230,8 @@ function loadOrders() {
                     <td>${order.id}</td>
                     <td>${order.customer_name}</td>
                     <td>${order.customer_email}</td>
-                    <td>${itemsText}</td>
-                    <td>M${order.total_amount}</td>
+                    <td title="${itemsText}">${itemsText.substring(0, 50)}${itemsText.length > 50 ? '...' : ''}</td>
+                    <td>M${parseFloat(order.total_amount).toFixed(2)}</td>
                     <td>
                         <select class="status-select" data-order-id="${order.id}" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
                             <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
@@ -189,7 +243,9 @@ function loadOrders() {
                     </td>
                     <td>${new Date(order.created_at).toLocaleString()}</td>
                     <td>
-                        <button class="card-btn update-status-btn" data-order-id="${order.id}" style="background: #3498db; color: white;">Update</button>
+                        <button class="card-btn update-status-btn" data-order-id="${order.id}" style="background: #3498db; color: white; padding: 5px 10px; font-size: 12px;">
+                            Update
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -214,11 +270,21 @@ function loadOrders() {
 }
 
 function loadContacts() {
-    fetch('https://res-site-backend.onrender.com/api/admin/contacts')
-        .then(response => response.json())
+    adminFetch('/contacts')
         .then(contacts => {
             const tbody = document.getElementById('contactsBody');
             tbody.innerHTML = '';
+
+            if (contacts.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #777;">
+                            No contact messages found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
 
             contacts.forEach(contact => {
                 const row = document.createElement('tr');
@@ -226,7 +292,7 @@ function loadContacts() {
                     <td>${contact.id}</td>
                     <td>${contact.name}</td>
                     <td>${contact.email}</td>
-                    <td title="${contact.message}">${contact.message.substring(0, 50)}...</td>
+                    <td title="${contact.message}">${contact.message.substring(0, 50)}${contact.message.length > 50 ? '...' : ''}</td>
                     <td>${new Date(contact.created_at).toLocaleString()}</td>
                 `;
                 tbody.appendChild(row);
@@ -241,22 +307,38 @@ function loadContacts() {
 }
 
 function loadMenu() {
-    fetch('https://res-site-backend.onrender.com/api/admin/menu')
-        .then(response => response.json())
+    adminFetch('/menu')
         .then(menuItems => {
             const tbody = document.getElementById('menuBody');
             tbody.innerHTML = '';
 
+            if (menuItems.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #777;">
+                            No menu items found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
             menuItems.forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td><img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
-                    <td>${item.name}</td>
-                    <td title="${item.description}">${item.description.substring(0, 50)}...</td>
-                    <td>M${item.price}</td>
                     <td>
-                        <button class="card-btn edit-btn" data-id="${item.id}">Edit</button>
-                        <button class="card-btn delete-btn" data-id="${item.id}" style="background: #e74c3c;">Delete</button>
+                        ${item.image ? `<img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">` : 'No Image'}
+                    </td>
+                    <td>${item.name}</td>
+                    <td title="${item.description}">${item.description.substring(0, 50)}${item.description.length > 50 ? '...' : ''}</td>
+                    <td>M${parseFloat(item.price).toFixed(2)}</td>
+                    <td>
+                        <button class="card-btn edit-btn" data-id="${item.id}" style="padding: 5px 10px; font-size: 12px; margin-right: 5px;">
+                            Edit
+                        </button>
+                        <button class="card-btn delete-btn" data-id="${item.id}" style="background: #e74c3c; padding: 5px 10px; font-size: 12px;">
+                            Delete
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -296,7 +378,8 @@ function showMenuItemModal(item = null) {
         document.getElementById('itemName').value = item.name;
         document.getElementById('itemDescription').value = item.description;
         document.getElementById('itemPrice').value = item.price;
-        document.getElementById('itemImage').value = item.image;
+        document.getElementById('itemImage').value = item.image || '';
+        document.getElementById('itemCategory').value = item.category || 'main';
     } else {
         title.textContent = 'Add Menu Item';
         form.reset();
@@ -307,12 +390,13 @@ function showMenuItemModal(item = null) {
 }
 
 function editMenuItem(itemId) {
-    fetch('https://res-site-backend.onrender.com/api/admin/menu')
-        .then(response => response.json())
+    adminFetch('/menu')
         .then(menuItems => {
             const item = menuItems.find(i => i.id == itemId);
             if (item) {
                 showMenuItemModal(item);
+            } else {
+                alert('Menu item not found');
             }
         })
         .catch(error => {
@@ -323,16 +407,13 @@ function editMenuItem(itemId) {
 
 function deleteMenuItem(itemId) {
     if (confirm('Are you sure you want to delete this menu item?')) {
-        fetch(`https://res-site-backend.onrender.com/api/admin/menu/${itemId}`, {
-            method: 'DELETE'
-        })
-            .then(response => response.json())
+        adminFetch(`/menu/${itemId}`, { method: 'DELETE' })
             .then(data => {
                 if (data.success) {
                     alert('Menu item deleted successfully');
                     loadMenu();
                 } else {
-                    alert('Error deleting menu item');
+                    alert('Error deleting menu item: ' + (data.error || 'Unknown error'));
                 }
             })
             .catch(error => {
@@ -349,28 +430,25 @@ function handleMenuItemSubmit(e) {
         name: document.getElementById('itemName').value,
         description: document.getElementById('itemDescription').value,
         price: parseFloat(document.getElementById('itemPrice').value),
-        image: document.getElementById('itemImage').value
+        image: document.getElementById('itemImage').value,
+        category: document.getElementById('itemCategory').value
     };
 
     const itemId = document.getElementById('menuItemId').value;
-    const url = itemId ? `https://res-site-backend.onrender.com/api/admin/menu/${itemId}` : 'https://res-site-backend.onrender.com/api/admin/menu';
     const method = itemId ? 'PUT' : 'POST';
+    const endpoint = itemId ? `/menu/${itemId}` : '/menu';
 
-    fetch(url, {
+    adminFetch(endpoint, {
         method: method,
-        headers: {
-            'Content-Type': 'application/json'
-        },
         body: JSON.stringify(formData)
     })
-        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 alert(itemId ? 'Menu item updated successfully' : 'Menu item added successfully');
                 document.getElementById('menuItemModal').classList.remove('visible');
                 loadMenu();
             } else {
-                alert('Error saving menu item');
+                alert('Error saving menu item: ' + (data.error || 'Unknown error'));
             }
         })
         .catch(error => {
@@ -380,8 +458,7 @@ function handleMenuItemSubmit(e) {
 }
 
 function loadSpecialOffers() {
-    fetch('https://res-site-backend.onrender.com/api/admin/special-offers')
-        .then(response => response.json())
+    adminFetch('/special-offers')
         .then(offers => {
             const tbody = document.getElementById('specialOffersBody');
             if (!tbody) {
@@ -409,8 +486,8 @@ function loadSpecialOffers() {
                         ${offer.item_image ? `<img src="${offer.item_image}" alt="${offer.item_name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 10px;">` : ''}
                         ${offer.item_name || 'N/A'}
                     </td>
-                    <td>M${offer.original_price ? offer.original_price.toFixed(2) : '0.00'}</td>
-                    <td>M${offer.discount_price ? offer.discount_price.toFixed(2) : '0.00'}</td>
+                    <td>M${offer.original_price ? parseFloat(offer.original_price).toFixed(2) : '0.00'}</td>
+                    <td>M${offer.discount_price ? parseFloat(offer.discount_price).toFixed(2) : '0.00'}</td>
                     <td>${offer.description || '-'}</td>
                     <td>
                         <span style="color: ${offer.is_active ? '#27ae60' : '#e74c3c'}; font-weight: bold;">
@@ -418,8 +495,12 @@ function loadSpecialOffers() {
                         </span>
                     </td>
                     <td>
-                        <button class="card-btn edit-offer-btn" data-id="${offer.id}">Edit</button>
-                        <button class="card-btn delete-offer-btn" data-id="${offer.id}" style="background: #e74c3c; margin-left: 5px;">Delete</button>
+                        <button class="card-btn edit-offer-btn" data-id="${offer.id}" style="padding: 5px 10px; font-size: 12px; margin-right: 5px;">
+                            Edit
+                        </button>
+                        <button class="card-btn delete-offer-btn" data-id="${offer.id}" style="background: #e74c3c; padding: 5px 10px; font-size: 12px;">
+                            Delete
+                        </button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -466,8 +547,7 @@ function showSpecialOfferModal(offer = null) {
     const title = document.getElementById('specialOfferModalTitle');
 
     // Load menu items for dropdown
-    fetch('https://res-site-backend.onrender.com/api/admin/menu')
-        .then(response => response.json())
+    adminFetch('/menu')
         .then(menuItems => {
             const select = document.getElementById('offerMenuItem');
             if (!select) {
@@ -479,7 +559,7 @@ function showSpecialOfferModal(offer = null) {
             menuItems.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item.id;
-                option.textContent = item.name;
+                option.textContent = `${item.name} - M${item.price}`;
                 select.appendChild(option);
             });
 
@@ -505,8 +585,7 @@ function showSpecialOfferModal(offer = null) {
 }
 
 function editSpecialOffer(offerId) {
-    fetch('https://res-site-backend.onrender.com/api/admin/special-offers')
-        .then(response => response.json())
+    adminFetch('/special-offers')
         .then(offers => {
             const offer = offers.find(o => o.id == offerId);
             if (offer) {
@@ -523,10 +602,7 @@ function editSpecialOffer(offerId) {
 
 function deleteSpecialOffer(offerId) {
     if (confirm('Are you sure you want to delete this special offer?')) {
-        fetch(`https://res-site-backend.onrender.com/api/admin/special-offers/${offerId}`, {
-            method: 'DELETE'
-        })
-            .then(response => response.json())
+        adminFetch(`/special-offers/${offerId}`, { method: 'DELETE' })
             .then(data => {
                 if (data.success) {
                     alert('Special offer deleted successfully');
@@ -558,17 +634,13 @@ function handleSpecialOfferSubmit(e) {
     }
 
     const offerId = document.getElementById('specialOfferId').value;
-    const url = offerId ? `https://res-site-backend.onrender.com/api/admin/special-offers/${offerId}` : 'https://res-site-backend.onrender.com/api/admin/special-offers';
     const method = offerId ? 'PUT' : 'POST';
+    const endpoint = offerId ? `/special-offers/${offerId}` : '/special-offers';
 
-    fetch(url, {
+    adminFetch(endpoint, {
         method: method,
-        headers: {
-            'Content-Type': 'application/json'
-        },
         body: JSON.stringify(formData)
     })
-        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 alert(offerId ? 'Special offer updated successfully' : 'Special offer added successfully');
@@ -585,20 +657,16 @@ function handleSpecialOfferSubmit(e) {
 }
 
 function updateOrderStatus(orderId, status) {
-    fetch(`https://res-site-backend.onrender.com/api/admin/orders/${orderId}`, {
+    adminFetch(`/orders/${orderId}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
         body: JSON.stringify({ status: status })
     })
-    .then(response => response.json())
     .then(data => {
         if (data.success) {
             alert(`Order status updated to "${status}"`);
             loadOrders();
         } else {
-            alert('Error updating order status');
+            alert('Error updating order status: ' + (data.error || 'Unknown error'));
         }
     })
     .catch(error => {
