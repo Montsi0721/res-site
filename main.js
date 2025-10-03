@@ -205,10 +205,12 @@ function fetchMenuItems() {
     fetch(`${API_BASE}/menu`)
         .then(response => {
             if (!response.ok) {
+                console.log('not fatched...');
                 throw new Error('Network response was not ok');
             }
             return response.json();
         })
+        console.log('fetched!!')
         .then(menuItems => {
             allMenuItems = menuItems;
             filteredMenuItems = menuItems;
@@ -216,6 +218,7 @@ function fetchMenuItems() {
             renderCurrentPage();
             updatePaginationControls();
             initializeCategoryFilters();
+            console.log('whats going on?');
         })
         .catch(error => {
             console.error('Error loading menu:', error);
