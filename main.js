@@ -4,7 +4,7 @@ let currentOrderItem = null;
 let currentCategory = 'all';
 let filteredMenuItems = [];
 let currentPage = 1;
-const itemsPerPage = 3;
+const itemsPerPage = 6;
 
 // Live Location Variables
 let map;
