@@ -340,6 +340,7 @@ function changePage(page) {
     
     currentPage = page;
     renderCurrentPage();
+    scrollToSection('menu');
     updatePaginationControls();
 }
 
