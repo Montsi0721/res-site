@@ -195,41 +195,30 @@ function setupEventListeners() {
 }
 
 function fetchMenuItems() {
+    // Show loading spinner
     const menuContainer = document.getElementById('menu-items');
     menuContainer.innerHTML = `
         <div class="loading-spinner">
             <div class="spinner"></div>
-            <p>Loading menu...</p>
         </div>
     `;
-
-    console.log('Fetching from:', `${API_BASE}/menu`);
-    
     fetch(`${API_BASE}/menu`)
         .then(response => {
-            console.log('Response status:', response.status);
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error('Network response was not ok');
             }
             return response.json();
         })
         .then(menuItems => {
-            console.log('Menu items received:', menuItems);
-            if (menuItems && menuItems.length > 0) {
-                allMenuItems = menuItems;
-                filteredMenuItems = menuItems;
-                currentPage = 1;
-                renderCurrentPage();
-                updatePaginationControls();
-                initializeCategoryFilters();
-            } else {
-                console.warn('No menu items received, loading sample data');
-                loadSampleMenu();
-            }
+            allMenuItems = menuItems;
+            filteredMenuItems = menuItems;
+            currentPage = 1;
+            renderCurrentPage();
+            updatePaginationControls();
+            initializeCategoryFilters();
         })
         .catch(error => {
             console.error('Error loading menu:', error);
-            showToast('Error loading menu. Using sample data.');
             loadSampleMenu();
         });
 }
@@ -327,19 +316,42 @@ function loadSampleMenu() {
 
 function renderMenuItems(menuItems) {
     const menuContainer = document.getElementById('menu-items');
+    
+    if (!menuContainer) {
+        console.error('Menu container not found!');
+        return;
+    }
+
+    if (!menuItems || menuItems.length === 0) {
+        menuContainer.innerHTML = `
+            <div class="no-results" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                <i class="fas fa-utensils" style="font-size: 48px; margin-bottom: 20px; color: #ccc;"></i>
+                <h3>No menu items available</h3>
+                <p>Please check back later or contact us</p>
+            </div>
+        `;
+        return;
+    }
+
     menuContainer.innerHTML = '';
 
     menuItems.forEach(item => {
         const menuItemElement = document.createElement('div');
         menuItemElement.className = 'card';
         menuItemElement.innerHTML = `
-            <img src="${item.image}" alt="${item.name}" class="card-img">
+            <img src="${item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'}" 
+                 alt="${item.name}" 
+                 class="card-img"
+                 onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'">
             <div class="card-content">
                 <h3 class="card-title">${item.name}</h3>
-                <p class="card-text">${item.description}</p>
+                <p class="card-text">${item.description || 'Delicious menu item'}</p>
                 <div class="card-footer">
-                    <p class="price">M${item.price.toFixed(2)}</p>
-                    <button class="card-btn order-btn" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">
+                    <p class="price">M${(item.price || 0).toFixed(2)}</p>
+                    <button class="card-btn order-btn" 
+                            data-id="${item.id}" 
+                            data-name="${item.name}" 
+                            data-price="${item.price}">
                         Order Now
                     </button>
                 </div>
@@ -348,8 +360,8 @@ function renderMenuItems(menuItems) {
         menuContainer.appendChild(menuItemElement);
     });
 
-    // Add event listeners to order buttons
-   document.querySelectorAll('.order-btn').forEach(button => {
+    // Reattach event listeners
+    document.querySelectorAll('.order-btn').forEach(button => {
         button.addEventListener('click', function() {
             const itemId = this.getAttribute('data-id');
             const itemName = this.getAttribute('data-name');
