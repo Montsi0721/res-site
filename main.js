@@ -1,8 +1,8 @@
 // Frontend JavaScript
 let allMenuItems = [];
 let currentOrderItem = null;
-
-// Pagination variables
+let currentCategory = 'all';
+let filteredMenuItems = [];
 let currentPage = 1;
 const itemsPerPage = 6;
 
@@ -215,9 +215,11 @@ function fetchMenuItems() {
         })
         .then(menuItems => {
             allMenuItems = menuItems;
+            filteredMenuItems = menuItems;
             currentPage = 1;
             renderCurrentPage();
             updatePaginationControls();
+            initializeCategoryFilters();
         })
         .catch(error => {
             console.error('Error loading menu:', error);
@@ -238,22 +240,25 @@ function loadSampleMenu() {
             name: "Grilled Salmon",
             description: "Fresh Atlantic salmon with lemon butter sauce, served with seasonal vegetables",
             price: 24.99,
-            image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+            category: "main"
         },
         {
             id: 2,
             name: "Filet Mignon",
             description: "8oz premium beef tenderloin with red wine reduction and garlic mashed potatoes",
             price: 32.99,
-            image: "https://images.unsplash.com/photo-1546964124-0cce460f38ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+            image: "https://images.unsplash.com/photo-1546964124-0cce460f38ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+            category: "main"
         },
         {
             id: 3,
             name: "Mushroom Risotto",
             description: "Creamy arborio rice with wild mushrooms and parmesan cheese",
             price: 18.99,
-            image: "https://images.unsplash.com/photo-1476124369491-e7addf5db371?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-        },
+            image: "https://images.unsplash.com/photo-1476124369491-e7addf5db371?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+            category: "main"
+        }
         /*
         {
             id: 4,
@@ -306,9 +311,11 @@ function loadSampleMenu() {
         }
             */
     ];
+    filteredMenuItems = allMenuItems;
     currentPage = 1;
     renderCurrentPage();
     updatePaginationControls();
+    initializeCategoryFilters();
 }
 
 function renderMenuItems(menuItems) {
@@ -375,8 +382,7 @@ function changePage(page) {
 function renderCurrentPage() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentItems = allMenuItems.slice(startIndex, endIndex);
-    
+    const currentItems = filteredMenuItems.slice(startIndex, endIndex);    
     renderMenuItems(currentItems);
 }
 
@@ -386,7 +392,7 @@ function updatePaginationControls() {
     const nextBtn = document.getElementById('nextPage');
     const pageInfo = document.getElementById('pageInfo');
     
-    const totalPages = Math.ceil(allMenuItems.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredMenuItems.length / itemsPerPage);
     
     // Show pagination only if we have more than one page
     if (totalPages > 1) {
@@ -642,6 +648,7 @@ function handleSearch() {
         const menuContainer = document.getElementById('menu-items');
         menuContainer.style.display = 'grid';
         renderMenuItems(allMenuItems);
+        loadCategoryItems(currentCategory);
         return;
     }
 
@@ -667,7 +674,24 @@ function handleSearch() {
         item.description.toLowerCase().includes(searchTerm)
     );
 
+    // Filter items based on search term from allMenuItems
+    const searchResults = allMenuItems.filter(item =>
+        item.name.toLowerCase().includes(searchTerm) ||
+        item.description.toLowerCase().includes(searchTerm) ||
+        (item.category && item.category.toLowerCase().includes(searchTerm))
+    );
+
+    // Display search results
+    filteredMenuItems = searchResults;
+    currentPage = 1;
+    renderCurrentPage();
+    updatePaginationControls();    
+
     displaySearchResults(filteredItems, searchTerm);
+
+    // Update category display to show search results
+    const activeCategoryDisplay = document.querySelector('.active-category');
+    activeCategoryDisplay.textContent = `Search Results: "${searchTerm}" (${searchResults.length} items)`;
 }
 
 function displaySearchResults(filteredItems, searchTerm) {
@@ -727,6 +751,90 @@ function highlightText(text, searchTerm) {
     if (!searchTerm) return text;
     const regex = new RegExp(`(${searchTerm})`, 'gi');
     return text.replace(regex, '<span class="highlight">M1</span>');
+}
+
+// Initialize category filtering
+function initializeCategoryFilters() {
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const activeCategoryDisplay = document.querySelector('.active-category');
+    
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+            
+            // Update active button
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update active category display
+            const categoryNames = {
+                'all': 'All Items',
+                'appetizers': 'Appetizers',
+                'main': 'Main Courses',
+                'beverages': 'Beverages',
+                'desserts': 'Desserts'
+            };
+            activeCategoryDisplay.textContent = `Showing: ${categoryNames[category]}`;
+            
+            // Load items for the selected category
+            loadCategoryItems(category);
+        });
+    });
+}
+
+// Load items by category
+function loadCategoryItems(category) {
+    currentCategory = category;
+    
+    // Show loading state
+    const menuContainer = document.getElementById('menu-items');
+    menuContainer.innerHTML = `
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading ${category === 'all' ? 'all items' : category}...</p>
+        </div>
+    `;
+    
+    if (category === 'all') {
+        // Use all items we already have
+        filteredMenuItems = allMenuItems;
+        currentPage = 1;
+        renderCurrentPage();
+        updatePaginationControls();
+    } else {
+        // Fetch specific category from backend
+        fetch(`${API_BASE}/menu/${category}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(items => {
+                filteredMenuItems = items;
+                currentPage = 1;
+                renderCurrentPage();
+                updatePaginationControls();
+                
+                if (items.length === 0) {
+                    menuContainer.innerHTML = `
+                        <div class="no-results" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                            <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px; color: #ccc;"></i>
+                            <h3>No items found in this category</h3>
+                            <p>Try selecting a different category</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading category items:', error);
+                // Fallback: filter from allMenuItems
+                filteredMenuItems = allMenuItems.filter(item => item.category === category);
+                currentPage = 1;
+                renderCurrentPage();
+                updatePaginationControls();
+            });
+    }
 }
 
 function showOrderModal(itemId, itemName, itemPrice) {

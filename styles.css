@@ -1103,6 +1103,67 @@ body.dark-mode .spinner {
     100% { transform: rotate(360deg); }
 }
 
+/* Category Filter Buttons */
+.category-filters {
+    margin-bottom: 30px;
+}
+
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.category-btn {
+    padding: 12px 20px;
+    background: #e0e0e0;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #555;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1), -3px -3px 5px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+body.dark-mode .category-btn {
+    background: #333;
+    color: #eee;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3), -3px -3px 5px rgba(60, 60, 60, 0.5);
+}
+
+.category-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15), -5px -5px 10px rgba(255, 255, 255, 0.8);
+}
+
+.category-btn.active {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.2), inset -3px -3px 5px rgba(255, 255, 255, 0.5);
+}
+
+body.dark-mode .category-btn.active {
+    box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.4), inset -3px -3px 5px rgba(60, 60, 60, 0.3);
+}
+
+.active-category {
+    font-style: italic;
+    color: #666;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+body.dark-mode .active-category {
+    color: #ccc;
+}
+
 /* Pagination Styles */
 .pagination {
     display: flex;
@@ -1334,6 +1395,19 @@ body.dark-mode .bottom-nav-item {
     th, td {
         padding: 8px;
     }
+
+    .filter-buttons {
+        gap: 8px;
+    }
+    
+    .category-btn {
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+    
+    .category-btn i {
+        font-size: 14px;
+    }
 }
 
 /* Tablet specific adjustments */
@@ -1369,5 +1443,15 @@ body.dark-mode .bottom-nav-item {
     
     .nav-text {
         font-size: 15px;
+    }
+
+    .filter-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .category-btn {
+        width: 200px;
+        justify-content: center;
     }
 }
