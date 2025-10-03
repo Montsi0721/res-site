@@ -14,19 +14,6 @@ let userMarker;
 
 const API_BASE = "https://res-site-backend.onrender.com/api";
 
-// Temporary CORS bypass for testing
-async function fetchWithCorsFallback(url) {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Network response was not ok');
-        return await response.json();
-    } catch (error) {
-        console.log('CORS error, trying proxy approach:', error);
-        // Fallback to JSONBin or similar for testing
-        return loadSampleMenu();
-    }
-}
-
 document.addEventListener('DOMContentLoaded', function () {
     // Fetch menu items from backend
     fetchMenuItems();
@@ -213,8 +200,14 @@ function fetchMenuItems() {
             <div class="spinner"></div>
         </div>
     `;
-    
-    fetchWithCorsFallback(`${API_BASE}/menu`)
+    fetch(`${API_BASE}/menu`)
+        .then(response => {
+            if (!response.ok) {
+                console.log('not fatched...');
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(menuItems => {
             allMenuItems = menuItems;
             filteredMenuItems = menuItems;
@@ -228,35 +221,6 @@ function fetchMenuItems() {
             loadSampleMenu();
         });
 }
-
-// function fetchMenuItems() {
-//     const menuContainer = document.getElementById('menu-items');
-//     menuContainer.innerHTML = `
-//         <div class="loading-spinner">
-//             <div class="spinner"></div>
-//         </div>
-//     `;
-//     fetch(`${API_BASE}/menu`)
-//         .then(response => {
-//             if (!response.ok) {
-//                 console.log('not fatched...');
-//                 throw new Error('Network response was not ok');
-//             }
-//             return response.json();
-//         })
-//         .then(menuItems => {
-//             allMenuItems = menuItems;
-//             filteredMenuItems = menuItems;
-//             currentPage = 1;
-//             renderCurrentPage();
-//             updatePaginationControls();
-//             initializeCategoryFilters();
-//         })
-//         .catch(error => {
-//             console.error('Error loading menu:', error);
-//             loadSampleMenu();
-//         });
-// }
 
 function loadSampleMenu() {
     const menuContainer = document.getElementById('menu-items');
@@ -351,19 +315,6 @@ function renderMenuItems(currentItems) {
         });
     });
 }
-
-function debugMenuLoading() {
-    console.log('Debug Info:');
-    console.log('allMenuItems:', allMenuItems);
-    console.log('filteredMenuItems:', filteredMenuItems);
-    console.log('currentPage:', currentPage);
-    
-    const menuContainer = document.getElementById('menu-items');
-    console.log('Menu container innerHTML:', menuContainer.innerHTML);
-}
-
-// Call this after menu loading to see what's happening
-// Add this to your fetchMenuItems success and error handlers
 
 function setupPagination() {
     const pagination = document.getElementById('pagination');
