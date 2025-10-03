@@ -211,17 +211,12 @@ function fetchMenuItems() {
             return response.json();
         })
         .then(menuItems => {
-            console.log('fetching2');
             allMenuItems = menuItems;
             filteredMenuItems = menuItems;
             currentPage = 1;
-            console.log('fetching3');
             renderCurrentPage();
-            console.log('fetching4');
             updatePaginationControls();
-            console.log('fetching5');
             initializeCategoryFilters();
-            console.log('whats going on?');
         })
         .catch(error => {
             console.error('Error loading menu:', error);
@@ -269,7 +264,14 @@ function loadSampleMenu() {
     initializeCategoryFilters();
 }
 
-function renderMenuItems(menuItems) {
+function renderCurrentPage() {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentItems = filteredMenuItems.slice(startIndex, endIndex);    
+    renderMenuItems(currentItems);
+}
+
+function renderMenuItems(currentItems) {
     const menuContainer = document.getElementById('menu-items');
     menuContainer.innerHTML = '';
 
@@ -328,13 +330,6 @@ function changePage(page) {
     currentPage = page;
     renderCurrentPage();
     updatePaginationControls();
-}
-
-function renderCurrentPage() {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentItems = filteredMenuItems.slice(startIndex, endIndex);    
-    renderMenuItems(currentItems);
 }
 
 function updatePaginationControls() {
