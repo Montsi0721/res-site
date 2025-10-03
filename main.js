@@ -19,13 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Fetch menu items from backend
     fetchMenuItems();
 
-    // Setup event listeners
     setupEventListeners();
-
     setupOrderTracking();
-
     setupPagination();
-
     addLocationToNavigation();
     initializeLocationFeature();
 
@@ -39,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function setupEventListeners() {
-    // Menu button
     const menuBtn = document.getElementById('menuBtn');
     const navMenu = document.getElementById('navMenu');
 
@@ -200,30 +195,41 @@ function setupEventListeners() {
 }
 
 function fetchMenuItems() {
-    // Show loading spinner
     const menuContainer = document.getElementById('menu-items');
     menuContainer.innerHTML = `
         <div class="loading-spinner">
             <div class="spinner"></div>
+            <p>Loading menu...</p>
         </div>
     `;
+
+    console.log('Fetching from:', `${API_BASE}/menu`);
+    
     fetch(`${API_BASE}/menu`)
         .then(response => {
+            console.log('Response status:', response.status);
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(menuItems => {
-            allMenuItems = menuItems;
-            filteredMenuItems = menuItems;
-            currentPage = 1;
-            renderCurrentPage();
-            updatePaginationControls();
-            initializeCategoryFilters();
+            console.log('Menu items received:', menuItems);
+            if (menuItems && menuItems.length > 0) {
+                allMenuItems = menuItems;
+                filteredMenuItems = menuItems;
+                currentPage = 1;
+                renderCurrentPage();
+                updatePaginationControls();
+                initializeCategoryFilters();
+            } else {
+                console.warn('No menu items received, loading sample data');
+                loadSampleMenu();
+            }
         })
         .catch(error => {
             console.error('Error loading menu:', error);
+            showToast('Error loading menu. Using sample data.');
             loadSampleMenu();
         });
 }
@@ -1348,4 +1354,3 @@ function addLocationToNavigation() {
     });
 
 }
-
