@@ -13,7 +13,19 @@ let directionsRenderer;
 let userMarker;
 
 const API_BASE = "https://res-site-backend.onrender.com/api";
-//const API_BASE = window.location.origin + "/api";
+
+// Temporary CORS bypass for testing
+async function fetchWithCorsFallback(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok');
+        return await response.json();
+    } catch (error) {
+        console.log('CORS error, trying proxy approach:', error);
+        // Fallback to JSONBin or similar for testing
+        return loadSampleMenu();
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     // Fetch menu items from backend
@@ -195,21 +207,14 @@ function setupEventListeners() {
 }
 
 function fetchMenuItems() {
-    // Show loading spinner
     const menuContainer = document.getElementById('menu-items');
     menuContainer.innerHTML = `
         <div class="loading-spinner">
             <div class="spinner"></div>
         </div>
     `;
-    fetch(`${API_BASE}/menu`)
-        .then(response => {
-            if (!response.ok) {
-                console.log('not fatched...');
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
+    
+    fetchWithCorsFallback(`${API_BASE}/menu`)
         .then(menuItems => {
             allMenuItems = menuItems;
             filteredMenuItems = menuItems;
@@ -223,6 +228,35 @@ function fetchMenuItems() {
             loadSampleMenu();
         });
 }
+
+// function fetchMenuItems() {
+//     const menuContainer = document.getElementById('menu-items');
+//     menuContainer.innerHTML = `
+//         <div class="loading-spinner">
+//             <div class="spinner"></div>
+//         </div>
+//     `;
+//     fetch(`${API_BASE}/menu`)
+//         .then(response => {
+//             if (!response.ok) {
+//                 console.log('not fatched...');
+//                 throw new Error('Network response was not ok');
+//             }
+//             return response.json();
+//         })
+//         .then(menuItems => {
+//             allMenuItems = menuItems;
+//             filteredMenuItems = menuItems;
+//             currentPage = 1;
+//             renderCurrentPage();
+//             updatePaginationControls();
+//             initializeCategoryFilters();
+//         })
+//         .catch(error => {
+//             console.error('Error loading menu:', error);
+//             loadSampleMenu();
+//         });
+// }
 
 function loadSampleMenu() {
     const menuContainer = document.getElementById('menu-items');
@@ -262,6 +296,7 @@ function loadSampleMenu() {
     renderCurrentPage();
     updatePaginationControls();
     initializeCategoryFilters();
+    debugMenuLoading();
 }
 
 function renderCurrentPage() {
@@ -273,16 +308,28 @@ function renderCurrentPage() {
 
 function renderMenuItems(currentItems) {
     const menuContainer = document.getElementById('menu-items');
+    
+    if (!currentItems || currentItems.length === 0) {
+        menuContainer.innerHTML = `
+            <div class="no-results" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                <i class="fas fa-search" style="font-size: 48px; margin-bottom: 20px; color: #ccc;"></i>
+                <h3>No menu items found</h3>
+                <p>Please try again later or check back soon</p>
+            </div>
+        `;
+        return;
+    }
+    
     menuContainer.innerHTML = '';
-
-    menuItems.forEach(item => {
+    
+    currentItems.forEach(item => {
         const menuItemElement = document.createElement('div');
         menuItemElement.className = 'card';
         menuItemElement.innerHTML = `
             <img src="${item.image}" alt="${item.name}" class="card-img">
             <div class="card-content">
                 <h3 class="card-title">${item.name}</h3>
-                <p class="card-text">${item.description}<br>${item.category}</p>
+                <p class="card-text">${item.description}</p>
                 <div class="card-footer">
                     <p class="price">M${item.price.toFixed(2)}</p>
                     <button class="card-btn order-btn" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">
@@ -295,7 +342,7 @@ function renderMenuItems(currentItems) {
     });
 
     // Add event listeners to order buttons
-   document.querySelectorAll('.order-btn').forEach(button => {
+    document.querySelectorAll('.order-btn').forEach(button => {
         button.addEventListener('click', function() {
             const itemId = this.getAttribute('data-id');
             const itemName = this.getAttribute('data-name');
@@ -304,6 +351,19 @@ function renderMenuItems(currentItems) {
         });
     });
 }
+
+function debugMenuLoading() {
+    console.log('Debug Info:');
+    console.log('allMenuItems:', allMenuItems);
+    console.log('filteredMenuItems:', filteredMenuItems);
+    console.log('currentPage:', currentPage);
+    
+    const menuContainer = document.getElementById('menu-items');
+    console.log('Menu container innerHTML:', menuContainer.innerHTML);
+}
+
+// Call this after menu loading to see what's happening
+// Add this to your fetchMenuItems success and error handlers
 
 function setupPagination() {
     const pagination = document.getElementById('pagination');
