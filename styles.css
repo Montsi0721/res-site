@@ -1558,9 +1558,9 @@ body.dark-mode .bottom-nav-item {
         font-size: 14px;
     }
 
-    /* .floating-filters {
+    .floating-filters {
         width: 95%;
-    } */
+    }
 }
 
 /* Tablet specific adjustments */
