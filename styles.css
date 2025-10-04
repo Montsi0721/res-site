@@ -1209,7 +1209,6 @@ body.dark-mode .active-category {
     right: 0;
     background: transparent;
     border: 1px solid green;
-    /* padding: 0 15px 0 15px; */
     z-index: 999;
     transform: translateY(-100%);
     opacity: 0;
@@ -1262,13 +1261,13 @@ body.dark-mode .floating-filters .category-btn {
 
 /* Adjust the original filter buttons container */
 .category-filters {
-    margin-bottom: 0px;
     position: relative;
     z-index: 1;
 }
 
 /* Ensure the original filters are hidden when floating filters are visible */
 body.floating-filters-visible .category-filters {
+    margin-bottom: 0px;
     opacity: 0.3;
     pointer-events: none;
 }
