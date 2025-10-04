@@ -1202,20 +1202,32 @@ body.dark-mode .active-category {
 }
 
 /* Floating Filter Buttons */
+/* Floating Filter Buttons */
 .floating-filters {
     position: fixed;
-    top: 76px;
+    top: 80px;
     left: 50%;
     transform: translateX(-50%) translateY(-100%);
-    background: transparent;
-    border: 1px solid green;
+    background: rgba(224, 224, 224, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     z-index: 999;
     opacity: 0;
     transition: all 0.3s ease;
     display: flex;
-    justify-content: center;
-    text-align: center;
+    gap: 6px;
     flex-wrap: wrap;
+    justify-content: center;
+    max-width: 90%;
+    border: none;
+    margin: 0;
+}
+
+body.dark-mode .floating-filters {
+    background: rgba(51, 51, 51, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .floating-filters.visible {
@@ -1224,10 +1236,9 @@ body.dark-mode .active-category {
 }
 
 .floating-filters .category-btn {
-    padding: 10px 16px;
     background: #e0e0e0;
     border: none;
-    border-radius: 20px;
+    border-radius: 18px;
     cursor: pointer;
     font-weight: 600;
     color: #555;
@@ -1235,10 +1246,14 @@ body.dark-mode .active-category {
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px;
+    gap: 4px;
+    font-size: 12px;
     white-space: nowrap;
     margin: 0;
+    line-height: 1;
+    /* Remove fixed padding and use auto width */
+    padding: 6px 12px;
+    width: auto;
 }
 
 body.dark-mode .floating-filters .category-btn {
@@ -1262,56 +1277,118 @@ body.dark-mode .floating-filters .category-btn.active {
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
 }
 
-/* Ensure the original filters are hidden when floating filters are visible */
-body.floating-filters-visible .category-filters {
-    margin-bottom: 0px;
-    opacity: 0.3;
-    pointer-events: none;
-}
-
-/* Responsive adjustments */
+/* Mobile-specific styles for content-based width */
 @media (max-width: 768px) {
     .floating-filters {
-        top: 70px;
-        padding: 12px 15px;
-        gap: 8px;
+        top: 75px;
+        padding: 6px 10px;
+        gap: 4px;
+        max-width: 95%;
+        border-radius: 20px;
     }
     
     .floating-filters .category-btn {
-        padding: 8px 12px;
-        font-size: 12px;
+        /* Let the button width be determined by its content */
+        width: auto;
+        padding: 5px 10px;
+        font-size: 11px;
+        border-radius: 15px;
+        gap: 3px;
+        /* Ensure no minimum width unless needed */
+        min-width: unset;
+        /* Use flex-shrink to allow natural sizing */
+        flex-shrink: 0;
     }
     
     .floating-filters .category-btn i {
-        font-size: 12px;
+        font-size: 11px;
+        /* Ensure icons don't add extra space */
+        margin: 0;
+        flex-shrink: 0;
     }
     
-    .container.with-floating-filters {
-        padding-top: 130px;
+    .floating-filters .category-btn span {
+        /* Ensure text doesn't wrap and takes only needed space */
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 }
 
 @media (max-width: 480px) {
     .floating-filters {
-        padding: 10px;
-        left: 0;
-        right: 0;
-        gap: 6px;
+        padding: 4px 8px;
+        gap: 3px;
+        border-radius: 18px;
     }
     
     .floating-filters .category-btn {
-        padding: 6px 10px;
-        font-size: 11px;
+        width: auto;
+        padding: 4px 8px;
+        font-size: 10px;
+        border-radius: 12px;
+        /* Even tighter for small screens */
+        gap: 2px;
     }
     
     .floating-filters .category-btn span {
-        display: none;
+        display: inline; /* Keep text visible */
+        white-space: nowrap;
     }
     
     .floating-filters .category-btn i {
         margin: 0;
-        font-size: 14px;
+        font-size: 10px;
     }
+}
+
+/* For very small screens, you might want to hide text but keep icon */
+@media (max-width: 360px) {
+    .floating-filters {
+        padding: 3px 6px;
+        gap: 2px;
+    }
+    
+    .floating-filters .category-btn {
+        width: auto;
+        padding: 4px 6px;
+        border-radius: 10px;
+    }
+    
+    .floating-filters .category-btn span {
+        display: none; /* Hide text on very small screens */
+    }
+    
+    .floating-filters .category-btn i {
+        font-size: 12px;
+        margin: 0;
+    }
+    
+    /* When text is hidden, make buttons square */
+    .floating-filters .category-btn:not(:has(span)) {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        justify-content: center;
+    }
+}
+
+/* Ensure no extra constraints on button width */
+.floating-filters .category-btn {
+    /* Remove any max-width constraints */
+    max-width: none;
+    /* Let content determine the width */
+    width: fit-content;
+}
+
+/* Remove any potential flex constraints */
+.floating-filters {
+    /* Allow natural flow */
+    align-items: center;
+}
+
+.floating-filters .category-btn {
+    /* Don't grow or shrink unnecessarily */
+    flex: 0 0 auto;
 }
 
 /* Pagination Styles */
