@@ -1221,11 +1221,6 @@ body.dark-mode .active-category {
     gap: 10px;
 }
 
-body.dark-mode .floating-filters {
-    background: rgba(51, 51, 51, 0.95);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
 .floating-filters.visible {
     transform: translateY(0);
     opacity: 1;
@@ -1279,7 +1274,7 @@ body.floating-filters-visible .category-filters {
 }
 
 /* Adjust container padding for floating filters */
-.container {
+/* .container {
     width: 90%;
     max-width: 1200px;
     margin: 0 auto;
@@ -1289,7 +1284,7 @@ body.floating-filters-visible .category-filters {
 
 .container.with-floating-filters {
     padding-top: 140px;
-}
+} */
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
