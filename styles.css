@@ -1225,6 +1225,10 @@ body.dark-mode .active-category {
     pointer-events: none;
 }
 
+#menu {
+    margin-top: 80px; /* Space for the fixed filters */
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .category-filters {

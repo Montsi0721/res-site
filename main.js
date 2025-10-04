@@ -1305,7 +1305,6 @@ document.addEventListener('DOMContentLoaded', () => {
     Utils.showToast('Welcome to Savory Delights!');
 });
 
-// Add this JavaScript to handle the scroll behavior
 const FloatingFilters = {
     init() {
         this.categoryFilters = document.querySelector('.category-filters');
@@ -1314,15 +1313,15 @@ const FloatingFilters = {
         if (!this.categoryFilters || !this.pagination) return;
         
         window.addEventListener('scroll', this.handleScroll.bind(this));
+        this.handleScroll(); // Initial check
     },
     
     handleScroll() {
         if (!this.categoryFilters || !this.pagination) return;
         
-        const filtersRect = this.categoryFilters.getBoundingClientRect();
         const paginationRect = this.pagination.getBoundingClientRect();
         
-        // Check if pagination is in viewport or above viewport
+        // Check if pagination top is at or above the viewport bottom
         const isPaginationVisible = paginationRect.top <= window.innerHeight;
         
         if (isPaginationVisible) {
@@ -1333,8 +1332,6 @@ const FloatingFilters = {
     },
     
     updateFromOriginal() {
-        // This method can be called when category filters change
-        // to ensure the floating filters stay in sync
         this.handleScroll();
     }
 };
