@@ -1205,6 +1205,7 @@ body.dark-mode .active-category {
 .floating-filters {
     position: fixed;
     top: 76px;
+    margin: 0 auto;
     background: transparent;
     border: 1px solid green;
     z-index: 999;
@@ -1215,7 +1216,6 @@ body.dark-mode .active-category {
     justify-content: center;
     text-align: center;
     flex-wrap: wrap;
-    /* gap: 10px; */
 }
 
 .floating-filters.visible {
@@ -1255,6 +1255,10 @@ body.dark-mode .floating-filters .category-btn {
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     color: white;
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+}
+
+body.dark-mode .floating-filters .category-btn.active {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
 }
 
 /* Adjust the original filter buttons container */
