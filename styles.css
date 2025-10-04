@@ -1220,7 +1220,7 @@ body.dark-mode .active-category {
 }
 
 .floating-filters.visible {
-    transform: translateY(0);
+    transform: translateX(0) translateY(0);
     opacity: 1;
 }
 
