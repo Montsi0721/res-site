@@ -1187,7 +1187,7 @@ body.dark-mode .category-btn {
 }
 
 body.dark-mode .category-btn.active {
-    box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.4), inset -3px -3px 5px rgba(60, 60, 60, 0.3);
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
 }
 
 .active-category {
@@ -1199,6 +1199,141 @@ body.dark-mode .category-btn.active {
 
 body.dark-mode .active-category {
     color: #ccc;
+}
+
+/* Add these styles to your CSS file */
+
+/* Floating Filter Buttons */
+.floating-filters {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: rgba(224, 224, 224, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+body.dark-mode .floating-filters {
+    background: rgba(51, 51, 51, 0.95);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.floating-filters.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.floating-filters .category-btn {
+    padding: 10px 16px;
+    background: #e0e0e0;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #555;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1), -2px -2px 4px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+body.dark-mode .floating-filters .category-btn {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: #eee;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), -2px -2px 4px rgba(60, 60, 60, 0.5);
+}
+
+.floating-filters .category-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15), -3px -3px 6px rgba(255, 255, 255, 0.8);
+}
+
+.floating-filters .category-btn.active {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+}
+
+/* Adjust the original filter buttons container */
+.category-filters {
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Ensure the original filters are hidden when floating filters are visible */
+body.floating-filters-visible .category-filters {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* Adjust container padding for floating filters */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 80px;
+    transition: padding-top 0.3s ease;
+}
+
+.container.with-floating-filters {
+    padding-top: 140px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .floating-filters {
+        top: 70px;
+        padding: 12px 15px;
+        gap: 8px;
+    }
+    
+    .floating-filters .category-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .floating-filters .category-btn i {
+        font-size: 12px;
+    }
+    
+    .container.with-floating-filters {
+        padding-top: 130px;
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-filters {
+        padding: 10px;
+        gap: 6px;
+    }
+    
+    .floating-filters .category-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+    
+    .floating-filters .category-btn span {
+        display: none;
+    }
+    
+    .floating-filters .category-btn i {
+        margin: 0;
+        font-size: 14px;
+    }
 }
 
 /* Pagination Styles */

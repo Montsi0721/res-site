@@ -269,6 +269,11 @@ const CategoryFilters = {
                 activeCategoryDisplay.textContent = `Showing: ${categoryNames[category]}`;
                 
                 this.loadCategoryItems(category);
+                
+                // Update floating filters
+                if (FloatingFilters && FloatingFilters.updateFromOriginal) {
+                    FloatingFilters.updateFromOriginal();
+                }
             });
         });
     },
@@ -313,6 +318,140 @@ const CategoryFilters = {
                     Pagination.updateControls();
                 });
         }
+    }
+};
+
+
+
+// Floating Filters Management
+const FloatingFilters = {
+    init() {
+        this.createFloatingFilters();
+        this.setupScrollListener();
+        this.setupClickHandlers();
+    },
+
+    createFloatingFilters() {
+        const floatingFilters = document.createElement('div');
+        floatingFilters.className = 'floating-filters';
+        floatingFilters.id = 'floatingFilters';
+        
+        // Copy the filter buttons from the original container
+        const originalButtons = document.querySelector('.filter-buttons').cloneNode(true);
+        floatingFilters.appendChild(originalButtons);
+        
+        document.body.appendChild(floatingFilters);
+        this.floatingElement = floatingFilters;
+    },
+
+    setupScrollListener() {
+        let scrollTimeout;
+        
+        window.addEventListener('scroll', () => {
+            // Debounce scroll events for performance
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                this.handleScroll();
+            }, 10);
+        });
+    },
+
+    handleScroll() {
+        const menuSection = document.getElementById('menu');
+        const filterButtons = document.querySelector('.category-filters');
+        const pagination = document.getElementById('pagination');
+        
+        if (!menuSection || !filterButtons || !pagination) return;
+
+        const menuRect = menuSection.getBoundingClientRect();
+        const filterRect = filterButtons.getBoundingClientRect();
+        const paginationRect = pagination.getBoundingClientRect();
+        
+        // Check if we've scrolled past the last filter button
+        const filtersBottom = filterRect.bottom + window.scrollY;
+        const scrollY = window.scrollY;
+        const windowHeight = window.innerHeight;
+        
+        // Check if pagination is visible (menu section is in view)
+        const isPaginationVisible = paginationRect.top < windowHeight && paginationRect.bottom > 0;
+        
+        // Show floating filters when:
+        // 1. We've scrolled past the original filter buttons
+        // 2. The menu section is still in view (pagination is visible)
+        if (scrollY > filtersBottom && isPaginationVisible) {
+            this.showFloatingFilters();
+        } else {
+            this.hideFloatingFilters();
+        }
+        
+        // Update container padding
+        this.updateContainerPadding();
+    },
+
+    showFloatingFilters() {
+        if (!this.floatingElement) return;
+        
+        this.floatingElement.classList.add('visible');
+        document.body.classList.add('floating-filters-visible');
+        this.updateContainerPadding();
+        
+        // Sync active state with original buttons
+        this.syncActiveState();
+    },
+
+    hideFloatingFilters() {
+        if (!this.floatingElement) return;
+        
+        this.floatingElement.classList.remove('visible');
+        document.body.classList.remove('floating-filters-visible');
+        this.updateContainerPadding();
+    },
+
+    updateContainerPadding() {
+        const container = document.querySelector('.container');
+        const isFloatingVisible = this.floatingElement.classList.contains('visible');
+        
+        if (isFloatingVisible) {
+            container.classList.add('with-floating-filters');
+        } else {
+            container.classList.remove('with-floating-filters');
+        }
+    },
+
+    setupClickHandlers() {
+        // Delegate clicks from floating filters to original buttons
+        this.floatingElement.addEventListener('click', (e) => {
+            const button = e.target.closest('.category-btn');
+            if (!button) return;
+            
+            const category = button.getAttribute('data-category');
+            const originalButton = document.querySelector(`.category-btn[data-category="${category}"]`);
+            
+            if (originalButton) {
+                originalButton.click();
+            }
+        });
+    },
+
+    syncActiveState() {
+        // Sync active state from original buttons to floating buttons
+        const originalActive = document.querySelector('.category-btn.active');
+        if (!originalActive) return;
+        
+        const activeCategory = originalActive.getAttribute('data-category');
+        const floatingButtons = this.floatingElement.querySelectorAll('.category-btn');
+        
+        floatingButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-category') === activeCategory) {
+                btn.classList.add('active');
+            }
+        });
+    },
+
+    updateFromOriginal() {
+        // Update floating filters when original filters change
+        this.syncActiveState();
     }
 };
 
@@ -1139,6 +1278,10 @@ const EventListeners = {
                 });
             }
         });
+
+        setTimeout(() => {
+            FloatingFilters.init();
+        }, 100);
 
         // Order tracking nav item
         document.querySelector('.nav-item[data-target="order-tracking"]').addEventListener('click', OrderTracking.showModal);
