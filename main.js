@@ -338,13 +338,12 @@ const FloatingFilters = {
         const originalButtons = document.querySelector('.filter-buttons').cloneNode(true);
         floatingFilters.appendChild(originalButtons);
 
-        // Force horizontal layout
+        // Force horizontal layout with wrap
         originalButtons.style.display = 'flex';
         originalButtons.style.flexDirection = 'row';
-        originalButtons.style.flexWrap = 'nowrap';
-        originalButtons.style.overflowX = 'auto';
+        originalButtons.style.flexWrap = 'wrap';
         originalButtons.style.gap = '8px';
-        originalButtons.style.justifyContent = 'flex-start';
+        originalButtons.style.justifyContent = 'center';
         originalButtons.style.alignItems = 'center';
         originalButtons.style.padding = '0 10px';
 
