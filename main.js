@@ -279,8 +279,6 @@ const CategoryFilters = {
         DOM.menuContainer.innerHTML = `
             <div class="loading-spinner">
                 <div class="spinner"></div>
-                <br>
-                <p>Loading ${category === 'all' ? 'all items' : category}...</p>
             </div>
         `;
         
