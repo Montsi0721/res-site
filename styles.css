@@ -1283,85 +1283,6 @@ body.dark-mode .floating-filters .category-btn.active {
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
 }
 
-/* Mobile-specific horizontal layout */
-/* @media (max-width: 768px) {
-    .floating-filters {
-        top: 75px;
-        padding: 6px 10px;
-        gap: 6px;
-        width: 98%;
-        border-radius: 20px;
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-        overflow-x: auto; 
-        overflow-y: hidden;
-    }
-    
-    .floating-filters .category-btn {
-        padding: 6px 10px;
-        font-size: 12px;
-        border-radius: 16px;
-        gap: 4px;
-        flex-shrink: 0; 
-        flex: 0 0 auto; 
-    }
-    
-    .floating-filters .category-btn i {
-        font-size: 12px;
-        flex-shrink: 0;
-    }
-    
-    .floating-filters .category-btn span {
-        white-space: nowrap;
-        flex-shrink: 0;
-        display: inline !important; 
-    }
-} */
-
-/* @media (max-width: 480px) {
-    .floating-filters {
-        padding: 5px 8px;
-        gap: 5px;
-        border-radius: 18px;
-        max-width: 99%;
-    }
-    
-    .floating-filters .category-btn {
-        padding: 5px 8px;
-        font-size: 11px;
-        border-radius: 14px;
-        gap: 3px;
-    }
-    
-    .floating-filters .category-btn i {
-        font-size: 11px;
-    }
-} */
-
-/* For very small screens, keep horizontal but adjust size */
-/* @media (max-width: 360px) {
-    .floating-filters {
-        padding: 4px 6px;
-        gap: 4px;
-        max-width: 99%;
-    }
-    
-    .floating-filters .category-btn {
-        padding: 4px 6px;
-        font-size: 10px;
-        border-radius: 12px;
-        gap: 2px;
-    }
-    
-    .floating-filters .category-btn i {
-        font-size: 10px;
-    }
-    
-    .floating-filters .category-btn span {
-        font-size: 10px;
-    }
-} */
-
 /* Hide scrollbar for cleaner look but keep functionality */
 .floating-filters::-webkit-scrollbar {
     display: none; /* Hide scrollbar for Webkit browsers */
@@ -1635,6 +1556,10 @@ body.dark-mode .bottom-nav-item {
 
     .category-btn i {
         font-size: 14px;
+    }
+
+    .floating-filters {
+        width: 95%;
     }
 }
 
