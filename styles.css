@@ -1217,21 +1217,12 @@ body.dark-mode .active-category {
     opacity: 0;
     transition: all 0.3s ease;
     display: flex;
-    gap: 8px;
-    flex-wrap: nowrap;
-    /* Prevent wrapping */
     justify-content: center;
     align-items: center;
     max-width: 95%;
     border: none;
     margin: 0;
-    overflow-x: auto;
-    /* Enable horizontal scrolling */
     overflow-y: hidden;
-    white-space: nowrap;
-    /* Prevent text wrapping */
-    -webkit-overflow-scrolling: touch;
-    /* Smooth scrolling on iOS */
 }
 
 body.dark-mode .floating-filters {
@@ -1254,7 +1245,6 @@ body.dark-mode .floating-filters {
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1), -2px -2px 4px rgba(255, 255, 255, 0.8);
     transition: all 0.3s ease;
     display: inline-flex;
-    /* Use inline-flex for better horizontal layout */
     align-items: center;
     gap: 6px;
     font-size: 13px;
@@ -1264,9 +1254,7 @@ body.dark-mode .floating-filters {
     padding: 8px 12px;
     width: auto;
     flex-shrink: 0;
-    /* Prevent buttons from shrinking */
     flex: 0 0 auto;
-    /* Don't grow or shrink */
 }
 
 body.dark-mode .floating-filters .category-btn {
@@ -1288,33 +1276,6 @@ body.dark-mode .floating-filters .category-btn {
 
 body.dark-mode .floating-filters .category-btn.active {
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-}
-
-/* Hide scrollbar for cleaner look but keep functionality */
-.floating-filters::-webkit-scrollbar {
-    display: none;
-    /* Hide scrollbar for Webkit browsers */
-}
-
-.floating-filters {
-    -ms-overflow-style: none;
-    /* Hide scrollbar for IE and Edge */
-    scrollbar-width: none;
-    /* Hide scrollbar for Firefox */
-}
-
-/* Ensure the container doesn't cause wrapping */
-.container.with-floating-filters {
-    overflow: visible;
-}
-
-/* Add some visual indication that it's scrollable */
-.floating-filters {
-    cursor: grab;
-}
-
-.floating-filters:active {
-    cursor: grabbing;
 }
 
 /* Pagination Styles */
