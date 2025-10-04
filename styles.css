@@ -1262,12 +1262,6 @@ body.dark-mode .floating-filters .category-btn.active {
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
 }
 
-/* Adjust the original filter buttons container */
-/* .category-filters {
-    position: relative;
-    z-index: 1;
-} */
-
 /* Ensure the original filters are hidden when floating filters are visible */
 body.floating-filters-visible .category-filters {
     margin-bottom: 0px;
@@ -1300,6 +1294,8 @@ body.floating-filters-visible .category-filters {
 @media (max-width: 480px) {
     .floating-filters {
         padding: 10px;
+        left: 0;
+        right: 0;
         gap: 6px;
     }
     
