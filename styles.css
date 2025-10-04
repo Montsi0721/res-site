@@ -1074,6 +1074,10 @@ body.dark-mode .header {
     background: rgba(51, 51, 51, 0.85);
 }
 
+#calculateRoute {
+    margin-top: 5px;
+}
+
 /* Loading Spinner */
 .loading-spinner {
     position: absolute;
