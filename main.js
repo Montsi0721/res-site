@@ -384,7 +384,7 @@ const FloatingFilters = {
         const floatingTop = 80; // From CSS top: 80px
         const floatingBottom = floatingTop + floatingHeight;
         
-        const isFiltersOut = filterRect.bottom <= -10;
+        const isFiltersOut = filterRect.bottom <= -100;
         const isPaginationVisible = paginationRect.top < window.innerHeight && paginationRect.bottom > 0;
         const isPaginationPushing = paginationRect.top <= floatingBottom;
         
