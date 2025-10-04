@@ -1284,16 +1284,16 @@ body.dark-mode .floating-filters .category-btn.active {
 }
 
 /* Mobile-specific horizontal layout */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .floating-filters {
         top: 75px;
         padding: 6px 10px;
         gap: 6px;
         width: 98%;
         border-radius: 20px;
-        flex-wrap: nowrap; /* Force no wrapping */
-        justify-content: flex-start; /* Align to start for scrolling */
-        overflow-x: auto; /* Enable horizontal scroll */
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto; 
         overflow-y: hidden;
     }
     
@@ -1302,8 +1302,8 @@ body.dark-mode .floating-filters .category-btn.active {
         font-size: 12px;
         border-radius: 16px;
         gap: 4px;
-        flex-shrink: 0; /* Crucial: prevent shrinking */
-        flex: 0 0 auto; /* Don't grow or shrink */
+        flex-shrink: 0; 
+        flex: 0 0 auto; 
     }
     
     .floating-filters .category-btn i {
@@ -1314,11 +1314,11 @@ body.dark-mode .floating-filters .category-btn.active {
     .floating-filters .category-btn span {
         white-space: nowrap;
         flex-shrink: 0;
-        display: inline !important; /* Force show text */
+        display: inline !important; 
     }
-}
+} */
 
-@media (max-width: 480px) {
+/* @media (max-width: 480px) {
     .floating-filters {
         padding: 5px 8px;
         gap: 5px;
@@ -1336,10 +1336,10 @@ body.dark-mode .floating-filters .category-btn.active {
     .floating-filters .category-btn i {
         font-size: 11px;
     }
-}
+} */
 
 /* For very small screens, keep horizontal but adjust size */
-@media (max-width: 360px) {
+/* @media (max-width: 360px) {
     .floating-filters {
         padding: 4px 6px;
         gap: 4px;
@@ -1360,7 +1360,7 @@ body.dark-mode .floating-filters .category-btn.active {
     .floating-filters .category-btn span {
         font-size: 10px;
     }
-}
+} */
 
 /* Hide scrollbar for cleaner look but keep functionality */
 .floating-filters::-webkit-scrollbar {
