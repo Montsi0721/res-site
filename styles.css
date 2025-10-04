@@ -1194,6 +1194,7 @@ body.dark-mode .category-btn.active {
     font-style: italic;
     color: #666;
     margin-top: 10px;
+    margin-bottom: 0;
     font-size: 16px;
 }
 
@@ -1201,7 +1202,6 @@ body.dark-mode .active-category {
     color: #ccc;
 }
 
-/* Floating Filter Buttons */
 /* Floating Filter Buttons */
 .floating-filters {
     position: fixed;
@@ -1599,7 +1599,7 @@ body.dark-mode .bottom-nav-item {
     }
 
     footer {
-        margin-bottom: 60px;
+        margin-bottom: 80px;
     }
 }
 
