@@ -1203,7 +1203,7 @@ body.dark-mode .active-category {
 
 /* Floating Filter Buttons */
 .floating-filters {
-    position: fixed;
+    position: relative;
     top: 76px;
     margin: 50px auto;
     background: transparent;
