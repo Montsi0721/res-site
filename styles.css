@@ -1289,7 +1289,7 @@ body.dark-mode .floating-filters .category-btn.active {
         top: 75px;
         padding: 6px 10px;
         gap: 6px;
-        max-width: 98%;
+        width: 98%;
         border-radius: 20px;
         flex-wrap: nowrap; /* Force no wrapping */
         justify-content: flex-start; /* Align to start for scrolling */
