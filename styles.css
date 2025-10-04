@@ -1218,12 +1218,16 @@ body.dark-mode .active-category {
     transition: all 0.3s ease;
     display: flex;
     gap: 8px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* Prevent wrapping */
     justify-content: center;
     align-items: center;
     max-width: 95%;
     border: none;
     margin: 0;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden;
+    white-space: nowrap; /* Prevent text wrapping */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 body.dark-mode .floating-filters {
@@ -1245,16 +1249,17 @@ body.dark-mode .floating-filters {
     color: #555;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1), -2px -2px 4px rgba(255, 255, 255, 0.8);
     transition: all 0.3s ease;
-    display: flex;
+    display: inline-flex; /* Use inline-flex for better horizontal layout */
     align-items: center;
     gap: 6px;
     font-size: 13px;
     white-space: nowrap;
     margin: 0;
     line-height: 1;
-    padding: 8px 12px; /* Let padding determine the size */
-    width: auto; /* Let the content determine the width */
+    padding: 8px 12px;
+    width: auto;
     flex-shrink: 0; /* Prevent buttons from shrinking */
+    flex: 0 0 auto; /* Don't grow or shrink */
 }
 
 body.dark-mode .floating-filters .category-btn {
@@ -1278,14 +1283,18 @@ body.dark-mode .floating-filters .category-btn.active {
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
 }
 
-/* Mobile-specific styles */
+/* Mobile-specific horizontal layout */
 @media (max-width: 768px) {
     .floating-filters {
         top: 75px;
         padding: 6px 10px;
         gap: 6px;
-        max-width: 98%; /* Use more of the screen width */
+        max-width: 98%;
         border-radius: 20px;
+        flex-wrap: nowrap; /* Force no wrapping */
+        justify-content: flex-start; /* Align to start for scrolling */
+        overflow-x: auto; /* Enable horizontal scroll */
+        overflow-y: hidden;
     }
     
     .floating-filters .category-btn {
@@ -1293,19 +1302,19 @@ body.dark-mode .floating-filters .category-btn.active {
         font-size: 12px;
         border-radius: 16px;
         gap: 4px;
-        /* Let the content determine the width */
-        width: auto;
-        flex: 0 0 auto; /* Don't grow or shrink, base on content */
+        flex-shrink: 0; /* Crucial: prevent shrinking */
+        flex: 0 0 auto; /* Don't grow or shrink */
     }
     
     .floating-filters .category-btn i {
         font-size: 12px;
-        flex-shrink: 0; /* Prevent icon from shrinking */
+        flex-shrink: 0;
     }
     
     .floating-filters .category-btn span {
         white-space: nowrap;
-        flex-shrink: 0; /* Prevent text from shrinking */
+        flex-shrink: 0;
+        display: inline !important; /* Force show text */
     }
 }
 
@@ -1314,7 +1323,7 @@ body.dark-mode .floating-filters .category-btn.active {
         padding: 5px 8px;
         gap: 5px;
         border-radius: 18px;
-        justify-content: flex-start; /* Start from left and wrap */
+        max-width: 99%;
     }
     
     .floating-filters .category-btn {
@@ -1324,17 +1333,12 @@ body.dark-mode .floating-filters .category-btn.active {
         gap: 3px;
     }
     
-    /* Show both icon and text on small screens */
-    .floating-filters .category-btn span {
-        display: inline !important; /* Force show text */
-    }
-    
     .floating-filters .category-btn i {
         font-size: 11px;
     }
 }
 
-/* For very small screens, adjust spacing but keep both icon and text */
+/* For very small screens, keep horizontal but adjust size */
 @media (max-width: 360px) {
     .floating-filters {
         padding: 4px 6px;
@@ -1358,36 +1362,28 @@ body.dark-mode .floating-filters .category-btn.active {
     }
 }
 
-/* Extra small screens - minimal but still show both */
-@media (max-width: 320px) {
-    .floating-filters {
-        padding: 3px 5px;
-        gap: 3px;
-    }
-    
-    .floating-filters .category-btn {
-        padding: 3px 5px;
-        font-size: 9px;
-        border-radius: 10px;
-        gap: 1px;
-    }
-    
-    .floating-filters .category-btn i {
-        font-size: 9px;
-    }
-    
-    .floating-filters .category-btn span {
-        font-size: 9px;
-    }
+/* Hide scrollbar for cleaner look but keep functionality */
+.floating-filters::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Webkit browsers */
 }
 
-/* Ensure the buttons wrap properly */
 .floating-filters {
-    flex-wrap: wrap;
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
 
-.floating-filters .category-btn {
-    flex-shrink: 0;
+/* Ensure the container doesn't cause wrapping */
+.container.with-floating-filters {
+    overflow: visible;
+}
+
+/* Add some visual indication that it's scrollable */
+.floating-filters {
+    cursor: grab;
+}
+
+.floating-filters:active {
+    cursor: grabbing;
 }
 
 /* Pagination Styles */
