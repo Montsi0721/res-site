@@ -454,6 +454,37 @@ const ModalManager = {
     }
 };
 
+const FloatingFilters = {
+    init() {
+        this.categoryFilters = document.querySelector('.category-filters');
+        this.pagination = document.getElementById('pagination');
+        
+        if (!this.categoryFilters || !this.pagination) return;
+        
+        window.addEventListener('scroll', this.handleScroll.bind(this));
+        this.handleScroll(); // Initial check
+    },
+    
+    handleScroll() {
+        if (!this.categoryFilters || !this.pagination) return;
+        
+        const paginationRect = this.pagination.getBoundingClientRect();
+        
+        // Check if pagination top is at or above the viewport bottom
+        const isPaginationVisible = paginationRect.top <= window.innerHeight;
+        
+        if (isPaginationVisible) {
+            this.categoryFilters.classList.add('hidden');
+        } else {
+            this.categoryFilters.classList.remove('hidden');
+        }
+    },
+    
+    updateFromOriginal() {
+        this.handleScroll();
+    }
+};
+
 // Order Modal
 const OrderModal = {
     show(itemId, itemName, itemPrice) {
@@ -1290,6 +1321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     MenuManager.fetchMenuItems();
     EventListeners.setup();
     Pagination.setup();
+    FloatingFilters.init();
     Navigation.addLocationToNavigation();
     LocationFeature.initialize();
     OrderModal.setup();
@@ -1303,40 +1335,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     Utils.showToast('Welcome to Savory Delights!');
-});
-
-const FloatingFilters = {
-    init() {
-        this.categoryFilters = document.querySelector('.category-filters');
-        this.pagination = document.getElementById('pagination');
-        
-        if (!this.categoryFilters || !this.pagination) return;
-        
-        window.addEventListener('scroll', this.handleScroll.bind(this));
-        this.handleScroll(); // Initial check
-    },
-    
-    handleScroll() {
-        if (!this.categoryFilters || !this.pagination) return;
-        
-        const paginationRect = this.pagination.getBoundingClientRect();
-        
-        // Check if pagination top is at or above the viewport bottom
-        const isPaginationVisible = paginationRect.top <= window.innerHeight;
-        
-        if (isPaginationVisible) {
-            this.categoryFilters.classList.add('hidden');
-        } else {
-            this.categoryFilters.classList.remove('hidden');
-        }
-    },
-    
-    updateFromOriginal() {
-        this.handleScroll();
-    }
-};
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    FloatingFilters.init();
 });

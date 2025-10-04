@@ -1144,7 +1144,7 @@ body.dark-mode .spinner {
 .category-filters {
     position: sticky;
     top: 70px;
-    z-index: 100;
+    z-index: 10001;
     margin-bottom: 30px;
     background: rgba(224, 224, 224, 0.95);
     backdrop-filter: blur(10px);
