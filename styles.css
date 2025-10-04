@@ -1141,8 +1141,23 @@ body.dark-mode .spinner {
 }
 
 /* Category Filter Buttons */
+/* Category Filter Buttons */
 .category-filters {
+    position: sticky;
+    top: 80px;
+    z-index: 100;
     margin-bottom: 30px;
+    background: rgba(224, 224, 224, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 15px 0;
+    border-radius: 0 0 15px 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .category-filters {
+    background: rgba(51, 51, 51, 0.95);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .filter-buttons {
@@ -1150,7 +1165,7 @@ body.dark-mode .spinner {
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .category-btn {
@@ -1196,10 +1211,50 @@ body.dark-mode .category-btn.active {
     margin-top: 10px;
     margin-bottom: 0;
     font-size: 16px;
+    text-align: center;
 }
 
 body.dark-mode .active-category {
     color: #ccc;
+}
+
+/* Hide filters when scrolled past pagination */
+.category-filters.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .category-filters {
+        top: 90px;
+        padding: 10px 0;
+    }
+    
+    .filter-buttons {
+        gap: 8px;
+    }
+    
+    .category-btn {
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+    
+    .category-btn i {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-buttons {
+        align-items: center;
+    }
+    
+    .category-btn {
+        width: 200px;
+        justify-content: center;
+    }
 }
 
 /* Pagination Styles */
