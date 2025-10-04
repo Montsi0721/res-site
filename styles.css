@@ -1141,10 +1141,9 @@ body.dark-mode .spinner {
 }
 
 /* Category Filter Buttons */
-/* Category Filter Buttons */
 .category-filters {
     position: sticky;
-    top: 80px;
+    top: 70px;
     z-index: 100;
     margin-bottom: 30px;
     background: rgba(224, 224, 224, 0.95);
@@ -1223,6 +1222,7 @@ body.dark-mode .active-category {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-20px);
+    pointer-events: none;
 }
 
 /* Responsive adjustments */

@@ -1305,43 +1305,41 @@ document.addEventListener('DOMContentLoaded', () => {
     Utils.showToast('Welcome to Savory Delights!');
 });
 
-
-
-
-
-
-// Add this to your main.js file
-
-// Sticky filter functionality
-function initStickyFilters() {
-    const categoryFilters = document.querySelector('.category-filters');
-    const pagination = document.getElementById('pagination');
-    
-    if (!categoryFilters || !pagination) return;
-    
-    function handleScroll() {
-        const filtersRect = categoryFilters.getBoundingClientRect();
-        const paginationRect = pagination.getBoundingClientRect();
+// Add this JavaScript to handle the scroll behavior
+const FloatingFilters = {
+    init() {
+        this.categoryFilters = document.querySelector('.category-filters');
+        this.pagination = document.getElementById('pagination');
         
-        // Check if pagination is in view
+        if (!this.categoryFilters || !this.pagination) return;
+        
+        window.addEventListener('scroll', this.handleScroll.bind(this));
+    },
+    
+    handleScroll() {
+        if (!this.categoryFilters || !this.pagination) return;
+        
+        const filtersRect = this.categoryFilters.getBoundingClientRect();
+        const paginationRect = this.pagination.getBoundingClientRect();
+        
+        // Check if pagination is in viewport or above viewport
         const isPaginationVisible = paginationRect.top <= window.innerHeight;
         
-        // Hide filters when pagination is visible
         if (isPaginationVisible) {
-            categoryFilters.classList.add('hidden');
+            this.categoryFilters.classList.add('hidden');
         } else {
-            categoryFilters.classList.remove('hidden');
+            this.categoryFilters.classList.remove('hidden');
         }
+    },
+    
+    updateFromOriginal() {
+        // This method can be called when category filters change
+        // to ensure the floating filters stay in sync
+        this.handleScroll();
     }
-    
-    // Add scroll event listener
-    window.addEventListener('scroll', handleScroll);
-    
-    // Initial check
-    handleScroll();
-}
+};
 
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    initStickyFilters();
+document.addEventListener('DOMContentLoaded', () => {
+    FloatingFilters.init();
 });
