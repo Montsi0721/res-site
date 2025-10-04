@@ -337,6 +337,23 @@ const FloatingFilters = {
         // Copy the filter buttons from the original container
         const originalButtons = document.querySelector('.filter-buttons').cloneNode(true);
         floatingFilters.appendChild(originalButtons);
+
+        // Force horizontal layout
+        originalButtons.style.display = 'flex';
+        originalButtons.style.flexDirection = 'row';
+        originalButtons.style.flexWrap = 'nowrap';
+        originalButtons.style.overflowX = 'auto';
+        originalButtons.style.gap = '8px';
+        originalButtons.style.justifyContent = 'flex-start';
+        originalButtons.style.alignItems = 'center';
+        originalButtons.style.padding = '0 10px';
+
+        const categoryBtns = originalButtons.querySelectorAll('.category-btn');
+        categoryBtns.forEach(btn => {
+            btn.style.width = 'auto';
+            btn.style.minWidth = 'auto';
+            btn.style.flex = '0 0 auto';
+        });
         
         document.body.appendChild(floatingFilters);
         this.floatingElement = floatingFilters;
@@ -361,22 +378,18 @@ const FloatingFilters = {
         
         if (!menuSection || !filterButtons || !pagination) return;
 
-        const menuRect = menuSection.getBoundingClientRect();
         const filterRect = filterButtons.getBoundingClientRect();
         const paginationRect = pagination.getBoundingClientRect();
         
-        // Check if we've scrolled past the last filter button
-        const filtersBottom = filterRect.bottom + window.scrollY;
-        const scrollY = window.scrollY;
-        const windowHeight = window.innerHeight;
+        const floatingHeight = this.floatingElement.offsetHeight;
+        const floatingTop = 80; // From CSS top: 80px
+        const floatingBottom = floatingTop + floatingHeight;
         
-        // Check if pagination is visible (menu section is in view)
-        const isPaginationVisible = paginationRect.top < windowHeight && paginationRect.bottom > 0;
+        const isFiltersOut = filterRect.bottom <= 0;
+        const isPaginationVisible = paginationRect.top < window.innerHeight && paginationRect.bottom > 0;
+        const isPaginationPushing = paginationRect.top <= floatingBottom;
         
-        // Show floating filters when:
-        // 1. We've scrolled past the original filter buttons
-        // 2. The menu section is still in view (pagination is visible)
-        if (scrollY > filtersBottom && isPaginationVisible) {
+        if (isFiltersOut && isPaginationVisible && !isPaginationPushing) {
             this.showFloatingFilters();
         } else {
             this.hideFloatingFilters();

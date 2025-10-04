@@ -1599,7 +1599,6 @@ body.dark-mode .bottom-nav-item {
     }
 
     .filter-buttons {
-        flex-direction: column;
         align-items: center;
     }
 
