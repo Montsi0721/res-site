@@ -1304,3 +1304,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     Utils.showToast('Welcome to Savory Delights!');
 });
+
+
+
+
+
+
+// Add this to your main.js file
+
+// Sticky filter functionality
+function initStickyFilters() {
+    const categoryFilters = document.querySelector('.category-filters');
+    const pagination = document.getElementById('pagination');
+    
+    if (!categoryFilters || !pagination) return;
+    
+    function handleScroll() {
+        const filtersRect = categoryFilters.getBoundingClientRect();
+        const paginationRect = pagination.getBoundingClientRect();
+        
+        // Check if pagination is in view
+        const isPaginationVisible = paginationRect.top <= window.innerHeight;
+        
+        // Hide filters when pagination is visible
+        if (isPaginationVisible) {
+            categoryFilters.classList.add('hidden');
+        } else {
+            categoryFilters.classList.remove('hidden');
+        }
+    }
+    
+    // Add scroll event listener
+    window.addEventListener('scroll', handleScroll);
+    
+    // Initial check
+    handleScroll();
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initStickyFilters();
+});
