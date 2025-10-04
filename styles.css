@@ -1202,193 +1202,36 @@ body.dark-mode .active-category {
 }
 
 /* Floating Filter Buttons */
-/* Floating Filter Buttons */
-.floating-filters {
-    position: fixed;
-    top: 80px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100%);
-    background: rgba(224, 224, 224, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 25px;
-    padding: 8px 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    z-index: 999;
-    opacity: 0;
-    transition: all 0.3s ease;
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 90%;
-    border: none;
-    margin: 0;
-}
-
-body.dark-mode .floating-filters {
-    background: rgba(51, 51, 51, 0.95);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-}
-
-.floating-filters.visible {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-}
-
-.floating-filters .category-btn {
-    background: #e0e0e0;
-    border: none;
-    border-radius: 18px;
-    cursor: pointer;
-    font-weight: 600;
-    color: #555;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1), -2px -2px 4px rgba(255, 255, 255, 0.8);
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    white-space: nowrap;
-    margin: 0;
-    line-height: 1;
-    /* Remove fixed padding and use auto width */
-    padding: 6px 12px;
-    width: auto;
-}
-
-body.dark-mode .floating-filters .category-btn {
-    background: #333;
-    color: #eee;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), -2px -2px 4px rgba(60, 60, 60, 0.5);
-}
-
-.floating-filters .category-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15), -3px -3px 6px rgba(255, 255, 255, 0.8);
-}
-
-.floating-filters .category-btn.active {
-    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    color: white;
-    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
-}
-
-body.dark-mode .floating-filters .category-btn.active {
-    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-}
-
-/* Mobile-specific styles for content-based width */
+/* More aggressive mobile approach */
 @media (max-width: 768px) {
     .floating-filters {
         top: 75px;
-        padding: 6px 10px;
-        gap: 4px;
-        max-width: 95%;
-        border-radius: 20px;
-    }
-    
-    .floating-filters .category-btn {
-        /* Let the button width be determined by its content */
-        width: auto;
-        padding: 5px 10px;
-        font-size: 11px;
-        border-radius: 15px;
-        gap: 3px;
-        /* Ensure no minimum width unless needed */
-        min-width: unset;
-        /* Use flex-shrink to allow natural sizing */
-        flex-shrink: 0;
-    }
-    
-    .floating-filters .category-btn i {
-        font-size: 11px;
-        /* Ensure icons don't add extra space */
-        margin: 0;
-        flex-shrink: 0;
-    }
-    
-    .floating-filters .category-btn span {
-        /* Ensure text doesn't wrap and takes only needed space */
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-}
-
-@media (max-width: 480px) {
-    .floating-filters {
-        padding: 4px 8px;
-        gap: 3px;
-        border-radius: 18px;
-    }
-    
-    .floating-filters .category-btn {
-        width: auto;
-        padding: 4px 8px;
-        font-size: 10px;
-        border-radius: 12px;
-        /* Even tighter for small screens */
-        gap: 2px;
-    }
-    
-    .floating-filters .category-btn span {
-        display: inline; /* Keep text visible */
-        white-space: nowrap;
-    }
-    
-    .floating-filters .category-btn i {
-        margin: 0;
-        font-size: 10px;
-    }
-}
-
-/* For very small screens, you might want to hide text but keep icon */
-@media (max-width: 360px) {
-    .floating-filters {
-        padding: 3px 6px;
-        gap: 2px;
-    }
-    
-    .floating-filters .category-btn {
-        width: auto;
         padding: 4px 6px;
-        border-radius: 10px;
+        gap: 4px;
+        max-width: 99%;
+        border-radius: 16px;
     }
     
-    .floating-filters .category-btn span {
-        display: none; /* Hide text on very small screens */
+    .floating-filters .category-btn {
+        padding: 4px 6px !important;
+        font-size: 10px !important;
+        border-radius: 12px;
+        gap: 2px;
+        width: auto;
+        flex: 0 0 auto;
+        min-width: min-content; /* Ensure minimum width based on content */
     }
     
     .floating-filters .category-btn i {
-        font-size: 12px;
-        margin: 0;
+        font-size: 10px !important;
+        margin: 0 !important;
     }
     
-    /* When text is hidden, make buttons square */
-    .floating-filters .category-btn:not(:has(span)) {
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        justify-content: center;
+    .floating-filters .category-btn span {
+        font-size: 10px !important;
+        display: inline !important;
+        white-space: nowrap;
     }
-}
-
-/* Ensure no extra constraints on button width */
-.floating-filters .category-btn {
-    /* Remove any max-width constraints */
-    max-width: none;
-    /* Let content determine the width */
-    width: fit-content;
-}
-
-/* Remove any potential flex constraints */
-.floating-filters {
-    /* Allow natural flow */
-    align-items: center;
-}
-
-.floating-filters .category-btn {
-    /* Don't grow or shrink unnecessarily */
-    flex: 0 0 auto;
 }
 
 /* Pagination Styles */
