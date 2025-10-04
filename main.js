@@ -321,8 +321,6 @@ const CategoryFilters = {
     }
 };
 
-
-
 // Floating Filters Management
 const FloatingFilters = {
     init() {
