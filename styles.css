@@ -1201,15 +1201,13 @@ body.dark-mode .active-category {
     color: #ccc;
 }
 
-/* Add these styles to your CSS file */
-
 /* Floating Filter Buttons */
 .floating-filters {
     position: fixed;
-    top: 74px;
+    top: 76px;
     left: 0;
     right: 0;
-    background: transparent;
+    background: green;
     padding: 0 15px 0 15px;
     z-index: 999;
     transform: translateY(-100%);
@@ -1218,7 +1216,7 @@ body.dark-mode .active-category {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 10px;
+    /* gap: 10px; */
 }
 
 body.dark-mode .floating-filters {
