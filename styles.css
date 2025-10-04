@@ -1262,7 +1262,7 @@ body.dark-mode .floating-filters .category-btn {
 
 /* Adjust the original filter buttons container */
 .category-filters {
-    margin-bottom: 30px;
+    margin-bottom: 0px;
     position: relative;
     z-index: 1;
 }
@@ -1272,19 +1272,6 @@ body.floating-filters-visible .category-filters {
     opacity: 0.3;
     pointer-events: none;
 }
-
-/* Adjust container padding for floating filters */
-/* .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding-top: 80px;
-    transition: padding-top 0.3s ease;
-}
-
-.container.with-floating-filters {
-    padding-top: 140px;
-} */
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
