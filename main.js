@@ -454,36 +454,36 @@ const ModalManager = {
     }
 };
 
-const FloatingFilters = {
-    init() {
-        this.categoryFilters = document.querySelector('.category-filters');
-        this.pagination = document.getElementById('pagination');
+// const FloatingFilters = {
+//     init() {
+//         this.categoryFilters = document.querySelector('.category-filters');
+//         this.pagination = document.getElementById('pagination');
         
-        if (!this.categoryFilters || !this.pagination) return;
+//         if (!this.categoryFilters || !this.pagination) return;
         
-        // window.addEventListener('scroll', this.handleScroll.bind(this));
-        // this.handleScroll(); // Initial check
-    },
+//         // window.addEventListener('scroll', this.handleScroll.bind(this));
+//         // this.handleScroll(); // Initial check
+//     },
     
-    handleScroll() {
-        if (!this.categoryFilters || !this.pagination) return;
+//     handleScroll() {
+//         if (!this.categoryFilters || !this.pagination) return;
         
-        const paginationRect = this.pagination.getBoundingClientRect();
+//         const paginationRect = this.pagination.getBoundingClientRect();
         
-        // Check if pagination top is at or above the viewport bottom
-        const isPaginationVisible = paginationRect.top <= window.innerHeight;
+//         // Check if pagination top is at or above the viewport bottom
+//         const isPaginationVisible = paginationRect.top <= window.innerHeight;
         
-        if (isPaginationVisible) {
-            this.categoryFilters.classList.add('hidden');
-        } else {
-            this.categoryFilters.classList.remove('hidden');
-        }
-    },
+//         if (isPaginationVisible) {
+//             this.categoryFilters.classList.add('hidden');
+//         } else {
+//             this.categoryFilters.classList.remove('hidden');
+//         }
+//     },
     
-    updateFromOriginal() {
-        //this.handleScroll();
-    }
-};
+//     updateFromOriginal() {
+//         //this.handleScroll();
+//     }
+// };
 
 // Order Modal
 const OrderModal = {
@@ -1321,7 +1321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     MenuManager.fetchMenuItems();
     EventListeners.setup();
     Pagination.setup();
-    FloatingFilters.init();
+    //FloatingFilters.init();
     Navigation.addLocationToNavigation();
     LocationFeature.initialize();
     OrderModal.setup();
