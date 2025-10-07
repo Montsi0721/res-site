@@ -113,35 +113,37 @@
             </p>
         </section>
 
+        <!-- Category Filter Buttons -->
+        <div class="category-filters">
+            <div class="filter-buttons static-filters">
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-utensils"></i> All Items
+                </button>
+                <button class="category-btn" data-category="appetizers">
+                    <i class="fas fa-leaf"></i> Appetizers
+                </button>
+                <button class="category-btn" data-category="main">
+                    <i class="fas fa-drumstick-bite"></i> Main Courses
+                </button>
+                <button class="category-btn" data-category="beverages">
+                    <i class="fas fa-glass-cheers"></i> Beverages
+                </button>
+                <button class="category-btn" data-category="desserts">
+                    <i class="fas fa-ice-cream"></i> Desserts
+                </button>
+            </div>
+            <div class="active-category">
+                Showing: All Items
+            </div>
+        </div>
+
         <!-- Menu Section -->
         <section id="menu">
             <h2 class="section-title">Our Menu</h2>
-            <!-- Category Filter Buttons -->
-            <div class="category-filters">
-                <div class="filter-buttons static-filters">
-                    <button class="category-btn active" data-category="all">
-                        <i class="fas fa-utensils"></i> All Items
-                    </button>
-                    <button class="category-btn" data-category="appetizers">
-                        <i class="fas fa-leaf"></i> Appetizers
-                    </button>
-                    <button class="category-btn" data-category="main">
-                        <i class="fas fa-drumstick-bite"></i> Main Courses
-                    </button>
-                    <button class="category-btn" data-category="beverages">
-                        <i class="fas fa-glass-cheers"></i> Beverages
-                    </button>
-                    <button class="category-btn" data-category="desserts">
-                        <i class="fas fa-ice-cream"></i> Desserts
-                    </button>
-                </div>
-                <div class="active-category">
-                    Showing: All Items
-                </div>
+            <div class="card-grid" id="menu-items">
+                <!-- Menu items will be loaded dynamically -->
             </div>
-    </div>
-    <div class="card-grid" id="menu-items">
-        <!-- Menu items will be loaded dynamically -->
+        </section>
     </div>
     <div class="pagination" id="pagination">
         <button class="pagination-btn" id="prevPage">
@@ -152,7 +154,6 @@
             Next <i class="fas fa-chevron-right"></i>
         </button>
     </div>
-    </section>
 
     <!-- Special Offers Section -->
     <section id="special-offers">
