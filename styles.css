@@ -1144,15 +1144,28 @@ body.dark-mode .spinner {
 .category-filters {
     position: sticky;
     top: 70px;
-    z-index: 10001;
-    margin-bottom: 30px;
-    background: rgba(224, 224, 224, 0.95);
+    z-index: 100;
+    /* margin-bottom: 30px; */
+    background: inherit;
     backdrop-filter: blur(10px);
     padding: 15px 0;
     border-radius: 0 0 15px 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
 }
+
+/* .category-filters {
+position: sticky;
+top: 80px;
+left: 0;
+right: 0;
+background: inherit;
+backdrop-filter: blur(10px);
+padding: 15px 0;
+z-index: 100;
+transition: all 0.3s ease;
+border-bottom: 1px solid rgba(204, 204, 204, 0.5);
+} */
 
 body.dark-mode .category-filters {
     background: rgba(51, 51, 51, 0.95);
@@ -1223,10 +1236,6 @@ body.dark-mode .active-category {
     visibility: hidden;
     transform: translateY(-20px);
     pointer-events: none;
-}
-
-#menu {
-    margin-top: 80px; /* Space for the fixed filters */
 }
 
 /* Responsive adjustments */
