@@ -1196,19 +1196,6 @@ body.dark-mode .category-btn.active {
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
 }
 
-.active-category {
-    font-style: italic;
-    color: #666;
-    margin-top: 10px;
-    margin-bottom: 0;
-    font-size: 16px;
-    text-align: center;
-}
-
-body.dark-mode .active-category {
-    color: #ccc;
-}
-
 /* Hide filters when scrolled past pagination */
 .category-filters.hidden {
     opacity: 0;
