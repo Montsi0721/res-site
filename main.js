@@ -247,79 +247,79 @@ const Pagination = {
 };
 
 // Category Filter Management
-const CategoryFilters = {
-    initialize() {
-        const categoryButtons = document.querySelectorAll('.category-btn');
-        const activeCategoryDisplay = document.querySelector('.active-category');
+// const CategoryFilters = {
+//     initialize() {
+//         const categoryButtons = document.querySelectorAll('.category-btn');
+//         const activeCategoryDisplay = document.querySelector('.active-category');
         
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const category = button.getAttribute('data-category');
+//         categoryButtons.forEach(button => {
+//             button.addEventListener('click', () => {
+//                 const category = button.getAttribute('data-category');
                 
-                categoryButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
+//                 categoryButtons.forEach(btn => btn.classList.remove('active'));
+//                 button.classList.add('active');
                 
-                const categoryNames = {
-                    'all': 'All Items',
-                    'appetizers': 'Appetizers',
-                    'main': 'Main Courses',
-                    'beverages': 'Beverages',
-                    'desserts': 'Desserts'
-                };
-                activeCategoryDisplay.textContent = `Showing: ${categoryNames[category]}`;
+//                 const categoryNames = {
+//                     'all': 'All Items',
+//                     'appetizers': 'Appetizers',
+//                     'main': 'Main Courses',
+//                     'beverages': 'Beverages',
+//                     'desserts': 'Desserts'
+//                 };
+//                 activeCategoryDisplay.textContent = `Showing: ${categoryNames[category]}`;
                 
-                this.loadCategoryItems(category);
+//                 this.loadCategoryItems(category);
                 
-                // Update floating filters
-                if (FloatingFilters && FloatingFilters.updateFromOriginal) {
-                    FloatingFilters.updateFromOriginal();
-                }
-            });
-        });
-    },
+//                 // Update floating filters
+//                 if (FloatingFilters && FloatingFilters.updateFromOriginal) {
+//                     FloatingFilters.updateFromOriginal();
+//                 }
+//             });
+//         });
+//     },
 
-    loadCategoryItems(category) {
-        AppState.currentCategory = category;
+//     loadCategoryItems(category) {
+//         AppState.currentCategory = category;
         
-        DOM.menuContainer.innerHTML = `
-            <div class="loading-spinner">
-                <div class="spinner"></div>
-            </div>
-        `;
+//         DOM.menuContainer.innerHTML = `
+//             <div class="loading-spinner">
+//                 <div class="spinner"></div>
+//             </div>
+//         `;
         
-        if (category === 'all') {
-            AppState.filteredMenuItems = AppState.allMenuItems;
-            AppState.currentPage = 1;
-            MenuManager.renderCurrentPage();
-            Pagination.updateControls();
-        } else {
-            fetch(`${Config.API_BASE}/menu/${category}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(items => {
-                    AppState.filteredMenuItems = items;
-                    AppState.currentPage = 1;
-                    MenuManager.renderCurrentPage();
-                    Pagination.updateControls();
+//         if (category === 'all') {
+//             AppState.filteredMenuItems = AppState.allMenuItems;
+//             AppState.currentPage = 1;
+//             MenuManager.renderCurrentPage();
+//             Pagination.updateControls();
+//         } else {
+//             fetch(`${Config.API_BASE}/menu/${category}`)
+//                 .then(response => {
+//                     if (!response.ok) {
+//                         throw new Error(`HTTP error! status: ${response.status}`);
+//                     }
+//                     return response.json();
+//                 })
+//                 .then(items => {
+//                     AppState.filteredMenuItems = items;
+//                     AppState.currentPage = 1;
+//                     MenuManager.renderCurrentPage();
+//                     Pagination.updateControls();
                     
-                    if (items.length === 0) {
-                        DOM.menuContainer.innerHTML = MenuManager.createNoResultsMessage();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading category items:', error);
-                    AppState.filteredMenuItems = AppState.allMenuItems.filter(item => item.category === category);
-                    AppState.currentPage = 1;
-                    MenuManager.renderCurrentPage();
-                    Pagination.updateControls();
-                });
-        }
-    }
-};
+//                     if (items.length === 0) {
+//                         DOM.menuContainer.innerHTML = MenuManager.createNoResultsMessage();
+//                     }
+//                 })
+//                 .catch(error => {
+//                     console.error('Error loading category items:', error);
+//                     AppState.filteredMenuItems = AppState.allMenuItems.filter(item => item.category === category);
+//                     AppState.currentPage = 1;
+//                     MenuManager.renderCurrentPage();
+//                     Pagination.updateControls();
+//                 });
+//         }
+//     }
+// };
 
 // Search Functionality
 const SearchManager = {
