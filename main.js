@@ -250,6 +250,7 @@ const Pagination = {
 const CategoryFilters = {
     initialize() {
         const categoryButtons = document.querySelectorAll('.category-btn');
+        const activeCategoryDisplay = document.querySelector('.active-category');
         
         categoryButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -265,6 +266,7 @@ const CategoryFilters = {
                     'beverages': 'Beverages',
                     'desserts': 'Desserts'
                 };
+                activeCategoryDisplay.textContent = `Showing: ${categoryNames[category]}`;
                 
                 this.loadCategoryItems(category);
             });
