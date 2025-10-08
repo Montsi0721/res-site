@@ -763,7 +763,6 @@ body.dark-mode .highlight {
     color: #000;
 }
 
-/* Modal */
 .modal {
     position: fixed;
     top: 0;
@@ -1438,6 +1437,10 @@ body.dark-mode .bottom-nav-item {
 
     .nav-item {
         padding: 12px 15px;
+    }
+
+    .pagination {
+        margin: 10px 0;
     }
 
     .card-grid {
