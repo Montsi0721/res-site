@@ -1220,13 +1220,13 @@ body.dark-mode .category-btn.active {
 }
 
 @media (max-width: 480px) {
-    .filter-buttons {
+    /* .filter-buttons {
         align-items: center;
     }
     
     .category-btn {
         justify-content: center;
-    }
+    } */
 }
 
 /* Pagination Styles */
