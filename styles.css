@@ -1160,7 +1160,8 @@ body.dark-mode .spinner {
 }
 
 .category-btn {
-    padding: 12px 20px;
+    /* padding: 12px 20px; */
+    width: fit-content;
     background: #e0e0e0;
     border: none;
     border-radius: 25px;
@@ -1207,17 +1208,11 @@ body.dark-mode .category-btn.active {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .category-filters {
-        padding: 10px 0;
-    }
-    
     .filter-buttons {
         gap: 8px;
     }
     
     .category-btn {
-        /* padding: 10px 15px; */
-        font-size: 12px;
         font-size: 14px;
         width: fit-content;
     }
