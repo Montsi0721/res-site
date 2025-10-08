@@ -1144,7 +1144,7 @@ body.dark-mode .spinner {
 .category-filters {
     position: sticky;
     top: 70px;
-    z-index: 100;
+    z-index: 98;
     background: transparent;
     transition: all 0.3s ease;
     pointer-events: none;
@@ -1482,19 +1482,6 @@ body.dark-mode .bottom-nav-item {
         padding: 8px;
     }
 
-    .filter-buttons {
-        gap: 8px;
-    }
-
-    .category-btn {
-        padding: 10px 15px;
-        font-size: 12px;
-    }
-
-    .category-btn i {
-        font-size: 14px;
-    }
-
     footer {
         margin-bottom: 80px;
     }
@@ -1533,14 +1520,5 @@ body.dark-mode .bottom-nav-item {
 
     .nav-text {
         font-size: 15px;
-    }
-
-    .filter-buttons {
-        align-items: center;
-    }
-
-    .category-btn {
-        width: 200px;
-        justify-content: center;
     }
 }
