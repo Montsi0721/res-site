@@ -1160,7 +1160,7 @@ body.dark-mode .spinner {
 }
 
 .category-btn {
-    /* padding: 12px 20px; */
+    padding: 12px 20px;
     width: fit-content;
     background: #e0e0e0;
     border: none;
@@ -1224,7 +1224,6 @@ body.dark-mode .category-btn.active {
     }
     
     .category-btn {
-        width: 200px;
         justify-content: center;
     }
 }
