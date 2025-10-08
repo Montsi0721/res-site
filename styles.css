@@ -1208,7 +1208,6 @@ body.dark-mode .category-btn.active {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .category-filters {
-        /* top: 90px; */
         padding: 10px 0;
     }
     
@@ -1217,12 +1216,10 @@ body.dark-mode .category-btn.active {
     }
     
     .category-btn {
-        padding: 10px 15px;
+        /* padding: 10px 15px; */
         font-size: 12px;
-    }
-    
-    .category-btn i {
         font-size: 14px;
+        width: fit-content;
     }
 }
 
