@@ -1146,7 +1146,6 @@ body.dark-mode .spinner {
     top: 70px;
     z-index: 100;
     background: transparent;
-    padding: 15px 0;
     transition: all 0.3s ease;
     pointer-events: none;
 }
@@ -1217,16 +1216,6 @@ body.dark-mode .category-btn.active {
         padding: 5px;
         width: fit-content;
     }
-}
-
-@media (max-width: 480px) {
-    /* .filter-buttons {
-        align-items: center;
-    }
-    
-    .category-btn {
-        justify-content: center;
-    } */
 }
 
 /* Pagination Styles */
