@@ -1337,6 +1337,17 @@ body.dark-mode .bottom-nav-item {
     }
 }
 
+@media (max-width: 763px) {
+    .nav-menu {
+        width: 85vw;
+        right: -100vw;
+    }
+
+    .nav-item {
+        padding: 12px 15px;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -1353,15 +1364,6 @@ body.dark-mode .bottom-nav-item {
 
     .search-container:hover .search-input {
         width: 200px;
-    }
-
-    .nav-menu {
-        width: 85vw;
-        right: -100vw;
-    }
-
-    .nav-item {
-        padding: 12px 15px;
     }
 
     .filter-buttons {
@@ -1455,4 +1457,5 @@ body.dark-mode .bottom-nav-item {
     .nav-text {
         font-size: 15px;
     }
+
 }
