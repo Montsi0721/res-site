@@ -6,7 +6,7 @@ const AppState = {
     filteredMenuItems: [],
     currentPage: 1,
     itemsPerPage: 6,
-    
+
     // Location State
     map: null,
     directionsService: null,
@@ -87,9 +87,9 @@ const Utils = {
 const MenuManager = {
     async fetchMenuItems() {
         DOM.menuContainer.innerHTML = this.createLoadingSpinner();
-        
+
         const menuItems = await Utils.fetchWithFallback(`${Config.API_BASE}/menu`);
-        
+
         if (menuItems && Array.isArray(menuItems)) {
             AppState.allMenuItems = menuItems;
             AppState.filteredMenuItems = menuItems;
@@ -104,7 +104,7 @@ const MenuManager = {
 
     loadSampleMenu() {
         DOM.menuContainer.innerHTML = this.createLoadingSpinner();
-        
+
         const sampleMenu = [
             {
                 id: 1,
@@ -219,7 +219,7 @@ const Pagination = {
     changePage(page) {
         const totalPages = Math.ceil(AppState.filteredMenuItems.length / AppState.itemsPerPage);
         if (page < 1 || page > totalPages) return;
-        
+
         AppState.currentPage = page;
         MenuManager.renderCurrentPage();
         Utils.scrollToSection('menu');
@@ -228,7 +228,7 @@ const Pagination = {
 
     updateControls() {
         const totalPages = Math.ceil(AppState.filteredMenuItems.length / AppState.itemsPerPage);
-        
+
         if (totalPages > 1) {
             DOM.pagination.classList.remove('hidden');
             DOM.pagination.style.display = 'flex';
@@ -237,7 +237,7 @@ const Pagination = {
             DOM.pagination.style.display = 'none';
             return;
         }
-        
+
         DOM.pageInfo.textContent = `Page ${AppState.currentPage} of ${totalPages}`;
         DOM.prevBtn.disabled = AppState.currentPage === 1;
         DOM.nextBtn.disabled = AppState.currentPage === totalPages;
@@ -250,14 +250,14 @@ const Pagination = {
 const CategoryFilters = {
     initialize() {
         const categoryButtons = document.querySelectorAll('.category-btn');
-        
+
         categoryButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const category = button.getAttribute('data-category');
-                
+
                 categoryButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
-                
+
                 const categoryNames = {
                     'all': 'All Items',
                     'appetizers': 'Appetizers',
@@ -265,7 +265,7 @@ const CategoryFilters = {
                     'beverages': 'Beverages',
                     'desserts': 'Desserts'
                 };
-                
+
                 this.loadCategoryItems(category);
             });
         });
@@ -273,13 +273,13 @@ const CategoryFilters = {
 
     loadCategoryItems(category) {
         AppState.currentCategory = category;
-        
+
         DOM.menuContainer.innerHTML = `
             <div class="loading-spinner">
                 <div class="spinner"></div>
             </div>
         `;
-        
+
         if (category === 'all') {
             AppState.filteredMenuItems = AppState.allMenuItems;
             AppState.currentPage = 1;
@@ -298,7 +298,7 @@ const CategoryFilters = {
                     AppState.currentPage = 1;
                     MenuManager.renderCurrentPage();
                     Pagination.updateControls();
-                    
+
                     if (items.length === 0) {
                         DOM.menuContainer.innerHTML = MenuManager.createNoResultsMessage();
                     }
@@ -387,9 +387,9 @@ const SearchManager = {
                 <h3>Search Results for "${searchTerm}" (${filteredItems.length} items found)</h3>
                 <div class="card-grid">
                     ${filteredItems.map(item => {
-                        const highlightedName = Utils.highlightText(item.name, searchTerm);
-                        const highlightedDescription = Utils.highlightText(item.description, searchTerm);
-                        return `
+                const highlightedName = Utils.highlightText(item.name, searchTerm);
+                const highlightedDescription = Utils.highlightText(item.description, searchTerm);
+                return `
                             <div class="card">
                                 <img src="${item.image}" alt="${item.name}" class="card-img">
                                 <div class="card-content">
@@ -402,7 +402,7 @@ const SearchManager = {
                                 </div>
                             </div>
                         `;
-                    }).join('')}
+            }).join('')}
                 </div>
             `;
         } else {
@@ -759,23 +759,23 @@ const OrderTracking = {
 
     trackOrder() {
         const email = document.getElementById('orderTrackingEmail').value.trim();
-        
+
         if (!email) {
             Utils.showToast('Please enter your email address');
             return;
         }
-        
+
         fetch(`${Config.API_BASE}/admin/orders`)
             .then(response => response.json())
             .then(orders => {
-                const userOrders = orders.filter(order => 
+                const userOrders = orders.filter(order =>
                     order.customer_email.toLowerCase() === email.toLowerCase()
                 );
-                
+
                 const resultDiv = document.getElementById('orderTrackingResult');
                 resultDiv.style.display = 'block';
                 resultDiv.style.color = '#333';
-                
+
                 if (userOrders.length === 0) {
                     resultDiv.innerHTML = `
                         <p>No orders found for ${email}.</p>
@@ -784,34 +784,34 @@ const OrderTracking = {
                     document.getElementById('orderConfirmationSection').style.display = 'none';
                     return;
                 }
-                
+
                 resultDiv.innerHTML = `
                     <h4>Your Orders (${userOrders.length})</h4>
                     ${userOrders.map(order => {
-                        const items = JSON.parse(order.items);
-                        const itemsText = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
-                        
-                        return `
+                    const items = JSON.parse(order.items);
+                    const itemsText = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+
+                    return `
                             <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0; border-radius: 8px;">
                                 <p><strong>Order #${order.id}</strong></p>
                                 <p><strong>Items:</strong> ${itemsText}</p>
                                 <p><strong>Total:</strong> M${order.total_amount}</p>
                                 <p><strong>Status:</strong> <span class="status-${order.status}">${this.getStatusText(order.status)}</span></p>
                                 <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
-                                ${order.status === 'out-for-delivery' ? 
-                                    `<button class="card-btn confirm-delivery-btn" data-order-id="${order.id}" 
+                                ${order.status === 'out-for-delivery' ?
+                            `<button class="card-btn confirm-delivery-btn" data-order-id="${order.id}" 
                                         style="background: #27ae60; color: white; margin-top: 10px;">
                                         Confirm Delivery Received
                                     </button>` : ''
-                                }
+                        }
                             </div>
                         `;
-                    }).join('')}
+                }).join('')}
                 `;
-                
+
                 // Add event listeners to confirm delivery buttons
                 document.querySelectorAll('.confirm-delivery-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
+                    btn.addEventListener('click', function () {
                         const orderId = this.getAttribute('data-order-id');
                         OrderTracking.confirmDelivery(orderId);
                     });
@@ -828,7 +828,7 @@ const OrderTracking = {
             Utils.showToast('No order selected');
             return;
         }
-        
+
         fetch(`${Config.API_BASE}/orders/${orderId}/status`, {
             method: 'PUT',
             headers: {
@@ -836,20 +836,20 @@ const OrderTracking = {
             },
             body: JSON.stringify({ status: 'delivered' })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Utils.showToast('Order delivery confirmed! Thank you for your order.');
-                // Refresh the orders list
-                this.trackOrder();
-            } else {
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Utils.showToast('Order delivery confirmed! Thank you for your order.');
+                    // Refresh the orders list
+                    this.trackOrder();
+                } else {
+                    Utils.showToast('Error confirming delivery');
+                }
+            })
+            .catch(error => {
+                console.error('Error confirming delivery:', error);
                 Utils.showToast('Error confirming delivery');
-            }
-        })
-        .catch(error => {
-            console.error('Error confirming delivery:', error);
-            Utils.showToast('Error confirming delivery');
-        });
+            });
     },
 
     getStatusText(status) {
@@ -883,7 +883,7 @@ const LocationFeature = {
     initMap() {
         // Restaurant coordinates (example coordinates for Foodville)
         const restaurantLocation = { lat: -26.2041, lng: 28.0473 }; // Johannesburg coordinates
-        
+
         AppState.map = new google.maps.Map(document.getElementById('map'), {
             zoom: 15,
             center: restaurantLocation,
@@ -895,11 +895,11 @@ const LocationFeature = {
                 }
             ]
         });
-        
+
         AppState.directionsService = new google.maps.DirectionsService();
         AppState.directionsRenderer = new google.maps.DirectionsRenderer();
         AppState.directionsRenderer.setMap(AppState.map);
-        
+
         // Add restaurant marker
         new google.maps.Marker({
             position: restaurantLocation,
@@ -916,19 +916,19 @@ const LocationFeature = {
             Utils.showToast('Geolocation is not supported by your browser');
             return;
         }
-        
+
         Utils.showToast('Getting your location...');
-        
+
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const userLocation = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 };
-                
+
                 // Reverse geocode to get address
                 this.reverseGeocode(userLocation);
-                
+
                 // Add/update user marker on map
                 if (AppState.userMarker) {
                     AppState.userMarker.setPosition(userLocation);
@@ -942,7 +942,7 @@ const LocationFeature = {
                         }
                     });
                 }
-                
+
                 // Center map on user location
                 AppState.map.setCenter(userLocation);
                 AppState.map.setZoom(13);
@@ -950,8 +950,8 @@ const LocationFeature = {
             (error) => {
                 console.error('Error getting location:', error);
                 let errorMessage = 'Unable to get your location';
-                
-                switch(error.code) {
+
+                switch (error.code) {
                     case error.PERMISSION_DENIED:
                         errorMessage = 'Location access denied. Please enable location services.';
                         break;
@@ -962,7 +962,7 @@ const LocationFeature = {
                         errorMessage = 'Location request timed out.';
                         break;
                 }
-                
+
                 Utils.showToast(errorMessage);
             },
             {
@@ -975,7 +975,7 @@ const LocationFeature = {
 
     reverseGeocode(location) {
         const geocoder = new google.maps.Geocoder();
-        
+
         geocoder.geocode({ location: location }, (results, status) => {
             if (status === 'OK' && results[0]) {
                 document.getElementById('userLocation').value = results[0].formatted_address;
@@ -987,36 +987,36 @@ const LocationFeature = {
 
     calculateRoute() {
         const userLocationInput = document.getElementById('userLocation').value.trim();
-        
+
         if (!userLocationInput) {
             Utils.showToast('Please enter your location or use current location');
             return;
         }
-        
+
         // Restaurant location (hardcoded for example)
         const restaurantLocation = { lat: -26.2041, lng: 28.0473 };
-        
+
         const request = {
             origin: userLocationInput,
             destination: restaurantLocation,
             travelMode: google.maps.TravelMode.DRIVING
         };
-        
+
         AppState.directionsService.route(request, (result, status) => {
             if (status === 'OK') {
                 AppState.directionsRenderer.setDirections(result);
-                
+
                 const route = result.routes[0].legs[0];
                 const distance = route.distance.text;
                 const duration = route.duration.text;
-                
+
                 document.getElementById('routeDetails').innerHTML = `
                     <strong>Distance:</strong> ${distance}<br>
                     <strong>Estimated Time:</strong> ${duration}<br>
                     <strong>Address:</strong> 123 Gourmet Street, Foodville
                 `;
                 document.getElementById('routeInfo').style.display = 'block';
-                
+
             } else {
                 Utils.showToast('Unable to calculate route. Please check your location.');
             }
@@ -1086,13 +1086,13 @@ const Navigation = {
             <div class="nav-icon"><i class="fas fa-map-marker-alt"></i></div>
             <div class="nav-text">Find Us</div>
         `;
-        
+
         // Insert before the theme toggle
         const themeToggle = document.querySelector('.theme-toggle');
         navItems.insertBefore(locationNavItem, themeToggle);
-        
+
         // Add click event
-        locationNavItem.addEventListener('click', function() {
+        locationNavItem.addEventListener('click', function () {
             Navigation.handleItemClick('location');
         });
     }
@@ -1210,6 +1210,43 @@ const EventListeners = {
             const scrollPercent = (scrollTop / scrollHeight) * 100;
             DOM.progressBar.style.width = scrollPercent + '%';
         });
+
+        // Swipe-to-close functionality for nav menu
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+
+        DOM.navMenu.addEventListener('touchstart', (e) => {
+            if (!DOM.navMenu.classList.contains('active')) return;
+            startX = e.touches[0].clientX;
+            isDragging = true;
+            DOM.navMenu.style.transition = 'none'; // Disable transition for smooth drag
+        });
+
+        DOM.navMenu.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault(); // Prevent scrolling during drag
+            currentX = e.touches[0].clientX;
+            const deltaX = currentX - startX;
+            if (deltaX > 0) { // Only allow right swipe
+                const translateX = Math.min(deltaX, 300); // Max swipe distance = menu width
+                DOM.navMenu.style.right = `${translateX}px`;
+            }
+        });
+
+        DOM.navMenu.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            const deltaX = currentX - startX;
+            DOM.navMenu.style.transition = 'right 0.4s ease-in-out'; // Re-enable transition
+            if (deltaX > 50) { // Threshold for closing (adjust as needed)
+                DOM.navMenu.classList.remove('active');
+                DOM.menuBtn.classList.remove('active');
+                DOM.navMenu.style.right = '-300px'; // Ensure it slides fully out
+            } else {
+                DOM.navMenu.style.right = '0px'; // Snap back to open position
+            }
+            isDragging = false;
+        });
     }
 };
 
@@ -1296,42 +1333,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     Utils.showToast('Welcome to Savory Delights!');
-});
-
-// Add swipe-to-close functionality to the nav menu
-const navMenu = document.querySelector('.nav-menu');
-let startX = 0;
-let currentX = 0;
-let isDragging = false;
-
-navMenu.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-    isDragging = true;
-    navMenu.style.transition = 'none'; // Disable transition for smooth drag
-});
-
-navMenu.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    e.preventDefault(); // Prevent scrolling during drag
-    currentX = e.touches[0].clientX;
-    const deltaX = currentX - startX;
-    if (deltaX > 0) { // Only allow right swipe
-        const translateX = Math.min(deltaX, 300); // Max swipe distance = menu width
-        navMenu.style.right = `${translateX}px`;
-    }
-});
-
-navMenu.addEventListener('touchend', (e) => {
-    if (!isDragging) return;
-    const deltaX = currentX - startX;
-    navMenu.style.transition = 'right 0.4s ease-in-out'; // Re-enable transition
-    if (deltaX > 50) { // Threshold for closing (adjust as needed)
-        navMenu.classList.remove('active');
-        navMenu.style.right = '-300px'; // Ensure it slides fully out
-        // Optionally, close menu button if it exists
-        document.querySelector('.menu-btn').classList.remove('active');
-    } else {
-        navMenu.style.right = '0px'; // Snap back to open position
-    }
-    isDragging = false;
 });
