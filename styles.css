@@ -523,7 +523,15 @@ body.dark-mode .section-title {
 }
 
 /* Card styles */
-.card-grid, .card-container {
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    display: contents;
+    gap: 25px;
+    width: 100%;
+}
+
+.card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     display: contents;
