@@ -523,20 +523,10 @@ body.dark-mode .section-title {
 }
 
 /* Card styles */
-.card-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-    width: 100%;
-}
-
-.card-container .card-grid {
-    display: contents;
-}
-
-.card-grid {
+.card-grid, .card-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    display: contents;
     gap: 25px;
     width: 100%;
 }
