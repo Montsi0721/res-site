@@ -1340,7 +1340,7 @@ body.dark-mode .bottom-nav-item {
 @media (max-width: 763px) {
     .nav-menu {
         width: 85vw;
-        right: -115vw;
+        right: -185vw;
     }
 
     .nav-item {
@@ -1459,4 +1459,5 @@ body.dark-mode .bottom-nav-item {
     }
 
 }
+
 
