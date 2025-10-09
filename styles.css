@@ -526,6 +526,21 @@ body.dark-mode .section-title {
     border-radius: 2px;
 }
 
+/* Ensure all card sections inherit centering from .container */
+.section-title + .card-container,
+.section-title + .card-grid,
+.any-other-card-wrapper-class {  /* Replace with actual class if needed, e.g., .gallery-cards */
+    margin: 0 auto;
+    width: 90%;
+    max-width: 1200px;
+}
+
+/* If the parent section lacks .container, force grid centering */
+.card-container,
+.card-grid {
+    justify-content: center;  /* Centers the grid tracks if they don't fill full width */
+}
+
 /* Card styles */
 .card-container {
     display: grid;
