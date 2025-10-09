@@ -1243,7 +1243,7 @@ const EventListeners = {
                 DOM.menuBtn.classList.remove('active');
                 DOM.navMenu.style.right = '-300px'; // Ensure it slides fully out
             } else {
-                DOM.navMenu.style.right = '-300px'; // Snap back to open position
+                DOM.navMenu.style.right = '0px'; // Snap back to open position
             }
             isDragging = false;
         });
