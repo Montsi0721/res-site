@@ -1346,8 +1346,8 @@ body.dark-mode .bottom-nav-item {
     }
 
     .nav-menu {
-        width: 85vw;
-        right: -85vw;
+        width: 100vw;
+        right: -100vw;
     }
 
     .nav-item {
