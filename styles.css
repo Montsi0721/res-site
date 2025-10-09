@@ -552,7 +552,6 @@ body.dark-mode .section-title {
 
 .card-container .card {
     margin-bottom: 0;
-    /* Remove any bottom margin */
 }
 
 body.dark-mode .card {
@@ -1209,19 +1208,6 @@ body.dark-mode .category-btn.active {
     pointer-events: none;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .filter-buttons {
-        gap: 8px;
-    }
-    
-    .category-btn {
-        font-size: 14px;
-        padding: 5px 10px;
-        width: fit-content;
-    }
-}
-
 /* Footer */
 footer {
     margin-top: 50px;
@@ -1385,6 +1371,16 @@ body.dark-mode .bottom-nav-item {
 
     .nav-item {
         padding: 12px 15px;
+    }
+
+    .filter-buttons {
+        gap: 8px;
+    }
+    
+    .category-btn {
+        font-size: 14px;
+        padding: 5px 10px;
+        width: fit-content;
     }
 
     .card-grid {
