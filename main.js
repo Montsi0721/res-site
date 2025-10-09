@@ -163,6 +163,8 @@ const MenuManager = {
 
         DOM.menuContainer.innerHTML = items.map(item => this.createMenuItemCard(item)).join('');
         this.attachOrderButtonListeners();
+
+        EnlargedImageManager.attachImageClickListeners();
     },
 
     createMenuItemCard(item) {
@@ -205,6 +207,104 @@ const MenuManager = {
                 OrderModal.show(itemId, itemName, itemPrice);
             });
         });
+    }
+};
+
+// Enlarged Image Management
+const EnlargedImageManager = {
+    setup() {
+        // Create and append the modal to the body
+        this.createModal();
+        this.setupEventListeners();
+    },
+
+    createModal() {
+        // Check if modal already exists
+        if (document.getElementById('enlargedImageModal')) {
+            return;
+        }
+
+        const modalHTML = `
+            <div class="enlarged-image-modal" id="enlargedImageModal">
+                <div class="enlarged-image-content">
+                    <button class="enlarged-image-close" id="enlargedImageClose">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <img class="enlarged-image" id="enlargedImage" src="" alt="Enlarged view">
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    },
+
+    setupEventListeners() {
+        const modal = document.getElementById('enlargedImageModal');
+        const closeBtn = document.getElementById('enlargedImageClose');
+        const image = document.getElementById('enlargedImage');
+
+        // Close modal when clicking close button
+        closeBtn.addEventListener('click', () => this.hide());
+
+        // Close modal when clicking outside the image
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                this.hide();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('visible')) {
+                this.hide();
+            }
+        });
+
+        // Prevent closing when clicking on the image itself
+        image.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    },
+
+    show(imageSrc, imageAlt) {
+        const modal = document.getElementById('enlargedImageModal');
+        const image = document.getElementById('enlargedImage');
+
+        image.src = imageSrc;
+        image.alt = imageAlt || 'Enlarged menu item';
+
+        modal.classList.add('visible');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    },
+
+    hide() {
+        const modal = document.getElementById('enlargedImageModal');
+        const image = document.getElementById('enlargedImage');
+
+        modal.classList.remove('visible');
+        document.body.style.overflow = ''; // Restore scrolling
+
+        // Clear the image source after transition
+        setTimeout(() => {
+            image.src = '';
+        }, 300);
+    },
+
+    attachImageClickListeners() {
+        // Attach click listeners to all menu card images
+        document.querySelectorAll('.card-img').forEach(img => {
+            // Remove any existing listeners to prevent duplicates
+            img.removeEventListener('click', this.handleImageClick);
+            // Add new listener
+            img.addEventListener('click', this.handleImageClick.bind(this));
+        });
+    },
+
+    handleImageClick(e) {
+        const img = e.target;
+        const src = img.src;
+        const alt = img.alt;
+
+        this.show(src, alt);
     }
 };
 
@@ -381,6 +481,8 @@ const SearchManager = {
         const searchResultsContainer = document.createElement('div');
         searchResultsContainer.id = 'search-results-container';
         searchResultsContainer.className = 'search-results';
+
+        EnlargedImageManager.attachImageClickListeners();
 
         if (filteredItems.length > 0) {
             searchResultsContainer.innerHTML = `
@@ -602,6 +704,8 @@ const Gallery = {
     },
 
     showEnlargedImage(src) {
+        EnlargedImageManager.show(src, 'Gallery image');
+
         const overlay = document.createElement('div');
         overlay.style.cssText = `
             position: fixed;
@@ -1328,6 +1432,7 @@ const FormHandlers = {
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     MenuManager.fetchMenuItems();
+    EnlargedImageManager.setup();
     EventListeners.setup();
     Pagination.setup();
     Navigation.addLocationToNavigation();
