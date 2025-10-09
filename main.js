@@ -1229,7 +1229,7 @@ const EventListeners = {
             currentX = e.touches[0].clientX;
             const deltaX = currentX - startX;
             if (deltaX > 0) { // Only allow right swipe
-                const translateX = Math.min(deltaX, 300); // Max swipe distance = menu width
+                const translateX = Math.min(deltaX, -300); // Max swipe distance = menu width
                 DOM.navMenu.style.right = `${translateX}px`;
             }
         });
