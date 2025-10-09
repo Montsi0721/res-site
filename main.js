@@ -1297,3 +1297,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     Utils.showToast('Welcome to Savory Delights!');
 });
+
+// Add swipe-to-close functionality to the nav menu
+const navMenu = document.querySelector('.nav-menu');
+let startX = 0;
+let currentX = 0;
+let isDragging = false;
+
+navMenu.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    isDragging = true;
+    navMenu.style.transition = 'none'; // Disable transition for smooth drag
+});
+
+navMenu.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault(); // Prevent scrolling during drag
+    currentX = e.touches[0].clientX;
+    const deltaX = currentX - startX;
+    if (deltaX > 0) { // Only allow right swipe
+        const translateX = Math.min(deltaX, 300); // Max swipe distance = menu width
+        navMenu.style.right = `${translateX}px`;
+    }
+});
+
+navMenu.addEventListener('touchend', (e) => {
+    if (!isDragging) return;
+    const deltaX = currentX - startX;
+    navMenu.style.transition = 'right 0.4s ease-in-out'; // Re-enable transition
+    if (deltaX > 50) { // Threshold for closing (adjust as needed)
+        navMenu.classList.remove('active');
+        navMenu.style.right = '-300px'; // Ensure it slides fully out
+        // Optionally, close menu button if it exists
+        document.querySelector('.menu-btn').classList.remove('active');
+    } else {
+        navMenu.style.right = '0px'; // Snap back to open position
+    }
+    isDragging = false;
+});
