@@ -1356,15 +1356,6 @@ body.dark-mode .bottom-nav-item {
     }
 
     .nav-menu {
-        width: 85vw;
-        right: -85vw;
-    }
-
-    .nav-item {
-        padding: 12px 15px;
-    }
-
-    .nav-menu {
         width: 100vw;
         right: -100vw;
     }
