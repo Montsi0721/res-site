@@ -523,6 +523,17 @@ body.dark-mode .section-title {
 }
 
 /* Card styles */
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    width: 100%;
+}
+
+.card-container .card-grid {
+    display: contents;
+}
+
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -537,6 +548,11 @@ body.dark-mode .section-title {
     border: 1px solid #ccccccc0;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.8);
+}
+
+.card-container .card {
+    margin-bottom: 0;
+    /* Remove any bottom margin */
 }
 
 body.dark-mode .card {
