@@ -295,7 +295,9 @@ body.dark-mode .menu-line {
     height: 100vh;
     background: #e0e0e0;
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-    transition: right 0.4s ease-in-out;
+    visibility: hidden;
+    opacity: 0;
+    transition: right 0.4s ease-in-out, visibility 0.4s ease-in-out, opacity 0.4s ease-in-out;
     z-index: 99;
     padding: 80px 20px 20px;
     display: flex;
@@ -309,6 +311,8 @@ body.dark-mode .nav-menu {
 }
 
 .nav-menu.active {
+    visibility: visible;
+    opacity: 1;
     right: 0;
 }
 
