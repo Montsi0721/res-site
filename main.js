@@ -1102,8 +1102,13 @@ const Navigation = {
 const EventListeners = {
     setup() {
         DOM.menuBtn.addEventListener('click', () => {
-            DOM.menuBtn.classList.toggle('active');
+            const isOpening = !DOM.navMenu.classList.contains('active');
             DOM.navMenu.classList.toggle('active');
+            DOM.menuBtn.classList.toggle('active');
+
+            if (isOpening) {
+                DOM.navMenu.style.removeProperty('right');
+            }
         });
 
         // Theme toggle
@@ -1237,7 +1242,7 @@ const EventListeners = {
         DOM.navMenu.addEventListener('touchend', (e) => {
             if (!isDragging) return;
             const deltaX = currentX - startX;
-            DOM.navMenu.style.transition = 'transition: right 0.4s ease-in-out, visibility 0.4s ease-in-out, opacity 0.4s ease-in-out;'; // Re-enable transition
+            DOM.navMenu.style.transition = 'right 0.4s ease-in-out'; // Re-enable transition
             if (deltaX > 50) { // Threshold for closing (adjust as needed)
                 DOM.navMenu.classList.remove('active');
                 DOM.menuBtn.classList.remove('active');
@@ -1246,6 +1251,11 @@ const EventListeners = {
                 DOM.navMenu.style.right = '0px'; // Snap back to open position
             }
             isDragging = false;
+
+            // Clean up inline style after transition to let CSS class handle positioning
+            setTimeout(() => {
+                DOM.navMenu.style.removeProperty('right');
+            }, 400);
         });
     }
 };
