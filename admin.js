@@ -765,38 +765,6 @@ function loadGallery() {
         });
 }
 
-function setupGalleryUpload() {
-    const urlUploadBtn = document.getElementById('urlUploadBtn');
-    const fileUploadBtn = document.getElementById('fileUploadBtn');
-    const urlUploadForm = document.getElementById('urlUploadForm');
-    const fileUploadForm = document.getElementById('fileUploadForm');
-    const saveUrlImageBtn = document.getElementById('saveUrlImage');
-    const uploadFileBtn = document.getElementById('uploadFileBtn');
-
-    // Set URL upload as default
-    urlUploadForm.style.display = 'block';
-    fileUploadForm.style.display = 'none';
-
-    urlUploadBtn.addEventListener('click', () => {
-        urlUploadBtn.classList.add('active');
-        fileUploadBtn.classList.remove('active');
-        urlUploadForm.style.display = 'block';
-        fileUploadForm.style.display = 'none';
-        resetForms();
-    });
-
-    fileUploadBtn.addEventListener('click', () => {
-        fileUploadBtn.classList.add('active');
-        urlUploadBtn.classList.remove('active');
-        fileUploadForm.style.display = 'block';
-        urlUploadForm.style.display = 'none';
-        resetForms();
-    });
-
-    saveUrlImageBtn.addEventListener('click', saveUrlImage);
-    uploadFileBtn.addEventListener('click', handleFileUpload);
-}
-
 function resetForms() {
     document.getElementById('imageUrl').value = '';
     document.getElementById('imageTitle').value = '';
