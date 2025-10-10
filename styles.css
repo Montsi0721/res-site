@@ -1197,8 +1197,9 @@ body.dark-mode .header {
     display: flex;
     justify-content: center;
     text-align: center;
-    width: 87vw;
-    height: 200px;
+    left: 0;
+    width: 99vw;
+    height: 50px;
 }
 
 .spinner {

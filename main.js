@@ -1472,10 +1472,6 @@ document.addEventListener('DOMContentLoaded', () => {
     Utils.showToast('Welcome to Savory Delights!');
 });
 
-
-
-
-
 // Gallery Management Functions
 function loadGallery() {
     adminFetch('/gallery')
