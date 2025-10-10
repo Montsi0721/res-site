@@ -18,7 +18,7 @@ const API_BASE = "https://res-site-backend.onrender.com/api";
 // Helper function for admin API calls
 async function adminFetch(endpoint, options = {}) {
     const url = `${API_BASE}/admin${endpoint}?password=1234`;
-    
+
     const config = {
         ...options,
         headers: {
@@ -226,7 +226,7 @@ function loadOrders() {
                 } catch (e) {
                     items = [{ name: 'Error parsing items', quantity: 1 }];
                 }
-                
+
                 const itemsText = items.map(item => `${item.name} (x${item.quantity})`).join(', ');
 
                 const row = document.createElement('tr');
@@ -257,7 +257,7 @@ function loadOrders() {
 
             // Add event listeners to update buttons
             document.querySelectorAll('.update-status-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const orderId = this.getAttribute('data-order-id');
                     const select = document.querySelector(`.status-select[data-order-id="${orderId}"]`);
                     const newStatus = select.value;
@@ -665,18 +665,18 @@ function updateOrderStatus(orderId, status) {
         method: 'PUT',
         body: JSON.stringify({ status: status })
     })
-    .then(data => {
-        if (data.success) {
-            alert(`Order status updated to "${status}"`);
-            loadOrders();
-        } else {
-            alert('Error updating order status: ' + (data.error || 'Unknown error'));
-        }
-    })
-    .catch(error => {
-        console.error('Error updating order status:', error);
-        alert('Error updating order status');
-    });
+        .then(data => {
+            if (data.success) {
+                alert(`Order status updated to "${status}"`);
+                loadOrders();
+            } else {
+                alert('Error updating order status: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error updating order status:', error);
+            alert('Error updating order status');
+        });
 }
 
 // Load gallery images
@@ -689,8 +689,10 @@ function loadGallery() {
             if (images.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; color: #777;">
-                            No gallery images found. Add your first image!
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #666;">
+                            <i class="fas fa-images" style="font-size: 48px; margin-bottom: 10px; display: block; color: #ddd;"></i>
+                            No gallery images found.<br>
+                            <small>Add your first image using the upload form above.</small>
                         </td>
                     </tr>
                 `;
@@ -701,42 +703,51 @@ function loadGallery() {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>
-                        <img src="${image.image_url}" alt="${image.title}" 
-                             style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px;">
+                        <img src="${image.image_url}" alt="${image.title || 'Gallery Image'}" 
+                             style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
                     </td>
-                    <td>${image.title || 'Untitled'}</td>
-                    <td>${image.description || '-'}</td>
-                    <td>${image.category}</td>
                     <td>
-                        <span style="color: ${image.is_active ? '#27ae60' : '#e74c3c'}; font-weight: bold;">
+                        <strong>${image.title || 'Untitled'}</strong>
+                    </td>
+                    <td>
+                        ${image.description ?
+                        `<span title="${image.description}">${image.description.substring(0, 50)}${image.description.length > 50 ? '...' : ''}</span>` :
+                        '<em>No description</em>'
+                    }
+                    </td>
+                    <td>
+                        <span class="category-badge">${image.category}</span>
+                    </td>
+                    <td>
+                        <span class="${image.is_active ? 'status-active' : 'status-inactive'}">
                             ${image.is_active ? 'Active' : 'Inactive'}
                         </span>
                     </td>
                     <td>
-                        <button class="card-btn toggle-gallery-btn" data-id="${image.id}" 
-                                style="padding: 5px 10px; font-size: 12px; margin-right: 5px; 
-                                       background: ${image.is_active ? '#e74c3c' : '#27ae60'}">
-                            ${image.is_active ? 'Deactivate' : 'Activate'}
-                        </button>
-                        <button class="card-btn delete-gallery-btn" data-id="${image.id}" 
-                                style="background: #e74c3c; padding: 5px 10px; font-size: 12px;">
-                            Delete
-                        </button>
+                        <div class="action-buttons">
+                            <button class="action-btn btn-toggle" data-id="${image.id}" 
+                                    title="${image.is_active ? 'Deactivate' : 'Activate'}">
+                                <i class="fas ${image.is_active ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                            </button>
+                            <button class="action-btn btn-delete" data-id="${image.id}" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
 
             // Add event listeners
-            document.querySelectorAll('.toggle-gallery-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+            document.querySelectorAll('.btn-toggle').forEach(btn => {
+                btn.addEventListener('click', function () {
                     const imageId = this.getAttribute('data-id');
                     toggleGalleryImage(imageId);
                 });
             });
 
-            document.querySelectorAll('.delete-gallery-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', function () {
                     const imageId = this.getAttribute('data-id');
                     deleteGalleryImage(imageId);
                 });
@@ -745,9 +756,137 @@ function loadGallery() {
         .catch(error => {
             console.error('Error loading gallery images:', error);
             document.getElementById('galleryBody').innerHTML = `
-                <tr><td colspan="6" style="text-align: center; color: #e74c3c;">Error loading gallery images</td></tr>
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #e74c3c; padding: 20px;">
+                        <i class="fas fa-exclamation-triangle"></i> Error loading gallery images
+                    </td>
+                </tr>
             `;
         });
+}
+
+function setupGalleryUpload() {
+    const urlUploadBtn = document.getElementById('urlUploadBtn');
+    const fileUploadBtn = document.getElementById('fileUploadBtn');
+    const urlUploadForm = document.getElementById('urlUploadForm');
+    const fileUploadForm = document.getElementById('fileUploadForm');
+    const saveUrlImageBtn = document.getElementById('saveUrlImage');
+    const uploadFileBtn = document.getElementById('uploadFileBtn');
+
+    // Set URL upload as default
+    urlUploadForm.style.display = 'block';
+    fileUploadForm.style.display = 'none';
+
+    urlUploadBtn.addEventListener('click', () => {
+        urlUploadBtn.classList.add('active');
+        fileUploadBtn.classList.remove('active');
+        urlUploadForm.style.display = 'block';
+        fileUploadForm.style.display = 'none';
+        resetForms();
+    });
+
+    fileUploadBtn.addEventListener('click', () => {
+        fileUploadBtn.classList.add('active');
+        urlUploadBtn.classList.remove('active');
+        fileUploadForm.style.display = 'block';
+        urlUploadForm.style.display = 'none';
+        resetForms();
+    });
+
+    saveUrlImageBtn.addEventListener('click', saveUrlImage);
+    uploadFileBtn.addEventListener('click', handleFileUpload);
+}
+
+function resetForms() {
+    document.getElementById('imageUrl').value = '';
+    document.getElementById('imageTitle').value = '';
+    document.getElementById('imageDescription').value = '';
+    document.getElementById('fileImageTitle').value = '';
+    document.getElementById('fileImageDescription').value = '';
+    document.getElementById('imageFile').value = '';
+
+    const progress = document.getElementById('uploadProgress');
+    progress.style.display = 'none';
+}
+
+async function handleFileUpload() {
+    const fileInput = document.getElementById('imageFile');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert('Please select an image file');
+        return;
+    }
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
+        return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB');
+        return;
+    }
+
+    const title = document.getElementById('fileImageTitle').value;
+    const description = document.getElementById('fileImageDescription').value;
+    const category = document.getElementById('fileImageCategory').value;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        const progress = document.getElementById('uploadProgress');
+        const progressBar = progress.querySelector('progress');
+        const progressText = document.getElementById('progressText');
+
+        progress.style.display = 'block';
+        progressBar.value = 0;
+        progressText.textContent = '0%';
+
+        const response = await fetch(`${API_BASE}/admin/upload?password=1234`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`Upload failed: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Save the uploaded image to gallery
+            const galleryData = {
+                image_url: result.image_url,
+                title: title,
+                description: description,
+                category: category
+            };
+
+            const saveResponse = await adminFetch('/gallery', {
+                method: 'POST',
+                body: JSON.stringify(galleryData)
+            });
+
+            if (saveResponse.success) {
+                alert('✅ Image uploaded and saved to gallery successfully!');
+                resetForms();
+                progress.style.display = 'none';
+                loadGallery();
+            } else {
+                alert('❌ Error saving image to gallery: ' + (saveResponse.error || 'Unknown error'));
+            }
+        } else {
+            alert('❌ Error uploading image: ' + (result.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('❌ Error uploading image: ' + error.message);
+    }
 }
 
 // Upload image functions
@@ -782,7 +921,7 @@ async function handleFileUpload(e) {
         const progress = document.getElementById('uploadProgress');
         const progressBar = progress.querySelector('progress');
         const progressText = document.getElementById('progressText');
-        
+
         progress.style.display = 'block';
 
         const response = await fetch(`${API_BASE}/admin/upload?password=1234`, {
@@ -791,7 +930,7 @@ async function handleFileUpload(e) {
         });
 
         const result = await response.json();
-        
+
         if (result.success) {
             // Auto-fill the URL field with the uploaded image URL
             document.getElementById('imageUrl').value = result.image_url;

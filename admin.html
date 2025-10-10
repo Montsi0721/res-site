@@ -207,85 +207,105 @@
 
         <div id="gallerySection" class="admin-section">
             <h2><i class="fas fa-images"></i> Gallery Management</h2>
-            <button class="btn-add" id="addGalleryImageBtn">
-                <i class="fas fa-plus"></i> Add New Image
-            </button>
 
-            <!-- Upload Options -->
-            <div class="upload-options" style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                <h4>Upload Options</h4>
-                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                    <button type="button" id="urlUploadBtn" class="card-btn">Upload via URL</button>
-                    <button type="button" id="fileUploadBtn" class="card-btn">Upload from Computer</button>
+            <div class="admin-controls">
+                <button class="btn-add" id="addGalleryImageBtn">
+                    <i class="fas fa-plus"></i> Add New Image
+                </button>
+            </div>
+
+            <!-- Upload Interface -->
+            <div class="upload-interface"
+                style="margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">
+                <h4 style="margin-bottom: 15px;"><i class="fas fa-upload"></i> Upload New Image</h4>
+
+                <!-- Upload Method Selection -->
+                <div class="upload-method-selector" style="margin-bottom: 20px;">
+                    <button type="button" id="urlUploadBtn" class="upload-method-btn active">
+                        <i class="fas fa-link"></i> Upload via URL
+                    </button>
+                    <button type="button" id="fileUploadBtn" class="upload-method-btn">
+                        <i class="fas fa-upload"></i> Upload from Computer
+                    </button>
                 </div>
 
                 <!-- URL Upload Form -->
-                <div id="urlUploadForm" style="display: none;">
+                <div id="urlUploadForm" class="upload-form">
                     <div class="form-group">
-                        <label for="imageUrl">Image URL</label>
-                        <input type="url" id="imageUrl" placeholder="Enter image URL"
-                            style="width: 100%; padding: 8px;">
+                        <label for="imageUrl"><i class="fas fa-link"></i> Image URL</label>
+                        <input type="url" id="imageUrl" placeholder="https://example.com/image.jpg" required>
                     </div>
                     <div class="form-group">
-                        <label for="imageTitle">Title (Optional)</label>
-                        <input type="text" id="imageTitle" placeholder="Enter image title"
-                            style="width: 100%; padding: 8px;">
+                        <label for="imageTitle"><i class="fas fa-heading"></i> Image Title</label>
+                        <input type="text" id="imageTitle" placeholder="Enter image title">
                     </div>
                     <div class="form-group">
-                        <label for="imageDescription">Description (Optional)</label>
-                        <textarea id="imageDescription" placeholder="Enter image description"
-                            style="width: 100%; padding: 8px;"></textarea>
+                        <label for="imageDescription"><i class="fas fa-align-left"></i> Description</label>
+                        <textarea id="imageDescription" placeholder="Enter image description" rows="3"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="imageCategory">Category</label>
-                        <select id="imageCategory" style="width: 100%; padding: 8px;">
+                        <label for="imageCategory"><i class="fas fa-folder"></i> Category</label>
+                        <select id="imageCategory">
                             <option value="restaurant">Restaurant</option>
                             <option value="food">Food</option>
                             <option value="ambiance">Ambiance</option>
                             <option value="events">Events</option>
                         </select>
                     </div>
-                    <button type="button" id="saveUrlImage" class="card-btn">Save Image</button>
+                    <button type="button" id="saveUrlImage" class="btn-primary">
+                        <i class="fas fa-save"></i> Save Image URL
+                    </button>
                 </div>
 
                 <!-- File Upload Form -->
-                <div id="fileUploadForm" style="display: none;">
+                <div id="fileUploadForm" class="upload-form" style="display: none;">
                     <div class="form-group">
-                        <label for="imageFile">Select Image</label>
-                        <input type="file" id="imageFile" accept="image/*" style="width: 100%; padding: 8px;">
+                        <label for="imageFile"><i class="fas fa-file-image"></i> Select Image File</label>
+                        <input type="file" id="imageFile" accept="image/*" required>
+                        <small style="color: #666;">Supported formats: JPEG, PNG, GIF, WebP (Max: 5MB)</small>
                     </div>
                     <div class="form-group">
-                        <label for="fileImageTitle">Title (Optional)</label>
-                        <input type="text" id="fileImageTitle" placeholder="Enter image title"
-                            style="width: 100%; padding: 8px;">
+                        <label for="fileImageTitle"><i class="fas fa-heading"></i> Image Title</label>
+                        <input type="text" id="fileImageTitle" placeholder="Enter image title">
                     </div>
                     <div class="form-group">
-                        <label for="fileImageDescription">Description (Optional)</label>
-                        <textarea id="fileImageDescription" placeholder="Enter image description"
-                            style="width: 100%; padding: 8px;"></textarea>
+                        <label for="fileImageDescription"><i class="fas fa-align-left"></i> Description</label>
+                        <textarea id="fileImageDescription" placeholder="Enter image description" rows="3"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="fileImageCategory">Category</label>
-                        <select id="fileImageCategory" style="width: 100%; padding: 8px;">
+                        <label for="fileImageCategory"><i class="fas fa-folder"></i> Category</label>
+                        <select id="fileImageCategory">
                             <option value="restaurant">Restaurant</option>
                             <option value="food">Food</option>
                             <option value="ambiance">Ambiance</option>
                             <option value="events">Events</option>
                         </select>
                     </div>
-                    <div id="uploadProgress" style="display: none;">
-                        <progress value="0" max="100" style="width: 100%;"></progress>
-                        <span id="progressText">0%</span>
+
+                    <!-- Upload Progress -->
+                    <div id="uploadProgress" style="display: none; margin: 15px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>Uploading...</span>
+                            <span id="progressText">0%</span>
+                        </div>
+                        <progress value="0" max="100" style="width: 100%; height: 20px;"></progress>
                     </div>
-                    <button type="button" id="uploadFileBtn" class="card-btn">Upload Image</button>
+
+                    <button type="button" id="uploadFileBtn" class="btn-primary">
+                        <i class="fas fa-upload"></i> Upload Image
+                    </button>
                 </div>
             </div>
 
+            <!-- Gallery Images Table -->
             <div class="table-container">
-                <table id="galleryTable">
+                <div class="table-header">
+                    <h3><i class="fas fa-images"></i> Current Gallery Images</h3>
+                </div>
+                <table id="galleryTable" class="admin-table">
                     <thead>
                         <tr>
-                            <th>Image</th>
+                            <th>Preview</th>
                             <th>Title</th>
                             <th>Description</th>
                             <th>Category</th>
@@ -295,7 +315,9 @@
                     </thead>
                     <tbody id="galleryBody">
                         <tr>
-                            <td colspan="6" style="text-align: center;">Loading gallery images...</td>
+                            <td colspan="6" style="text-align: center; padding: 20px;">
+                                <i class="fas fa-spinner fa-spin"></i> Loading gallery images...
+                            </td>
                         </tr>
                     </tbody>
                 </table>
