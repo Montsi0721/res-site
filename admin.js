@@ -78,6 +78,10 @@ function setupAdminEventListeners() {
                     case 'specialOffers':
                         loadSpecialOffers();
                         break;
+                    case 'gallery':
+                        loadGallery();
+                        setupGalleryUpload();
+                        break;
                 }
             } else {
                 console.error('Section not found:', targetSection + 'Section');
@@ -673,4 +677,164 @@ function updateOrderStatus(orderId, status) {
         console.error('Error updating order status:', error);
         alert('Error updating order status');
     });
+}
+
+// Load gallery images
+function loadGallery() {
+    adminFetch('/gallery')
+        .then(images => {
+            const tbody = document.getElementById('galleryBody');
+            tbody.innerHTML = '';
+
+            if (images.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #777;">
+                            No gallery images found. Add your first image!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            images.forEach(image => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <img src="${image.image_url}" alt="${image.title}" 
+                             style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px;">
+                    </td>
+                    <td>${image.title || 'Untitled'}</td>
+                    <td>${image.description || '-'}</td>
+                    <td>${image.category}</td>
+                    <td>
+                        <span style="color: ${image.is_active ? '#27ae60' : '#e74c3c'}; font-weight: bold;">
+                            ${image.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="card-btn toggle-gallery-btn" data-id="${image.id}" 
+                                style="padding: 5px 10px; font-size: 12px; margin-right: 5px; 
+                                       background: ${image.is_active ? '#e74c3c' : '#27ae60'}">
+                            ${image.is_active ? 'Deactivate' : 'Activate'}
+                        </button>
+                        <button class="card-btn delete-gallery-btn" data-id="${image.id}" 
+                                style="background: #e74c3c; padding: 5px 10px; font-size: 12px;">
+                            Delete
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Add event listeners
+            document.querySelectorAll('.toggle-gallery-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const imageId = this.getAttribute('data-id');
+                    toggleGalleryImage(imageId);
+                });
+            });
+
+            document.querySelectorAll('.delete-gallery-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const imageId = this.getAttribute('data-id');
+                    deleteGalleryImage(imageId);
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error loading gallery images:', error);
+            document.getElementById('galleryBody').innerHTML = `
+                <tr><td colspan="6" style="text-align: center; color: #e74c3c;">Error loading gallery images</td></tr>
+            `;
+        });
+}
+
+// Upload image functions
+function setupGalleryUpload() {
+    const urlUploadBtn = document.getElementById('urlUploadBtn');
+    const fileUploadBtn = document.getElementById('fileUploadBtn');
+    const urlUploadForm = document.getElementById('urlUploadForm');
+    const fileUploadForm = document.getElementById('fileUploadForm');
+
+    urlUploadBtn.addEventListener('click', () => {
+        urlUploadForm.style.display = 'block';
+        fileUploadForm.style.display = 'none';
+    });
+
+    fileUploadBtn.addEventListener('click', () => {
+        fileUploadForm.style.display = 'block';
+        urlUploadForm.style.display = 'none';
+    });
+
+    // Handle file upload
+    document.getElementById('imageFile').addEventListener('change', handleFileUpload);
+}
+
+async function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        const progress = document.getElementById('uploadProgress');
+        const progressBar = progress.querySelector('progress');
+        const progressText = document.getElementById('progressText');
+        
+        progress.style.display = 'block';
+
+        const response = await fetch(`${API_BASE}/admin/upload?password=1234`, {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            // Auto-fill the URL field with the uploaded image URL
+            document.getElementById('imageUrl').value = result.image_url;
+            alert('Image uploaded successfully!');
+        } else {
+            alert('Error uploading image: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('Error uploading image');
+    }
+}
+
+function toggleGalleryImage(imageId) {
+    adminFetch(`/gallery/${imageId}/toggle`, { method: 'PUT' })
+        .then(data => {
+            if (data.success) {
+                alert('Gallery image status updated successfully');
+                loadGallery();
+            } else {
+                alert('Error updating gallery image: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error toggling gallery image:', error);
+            alert('Error updating gallery image');
+        });
+}
+
+function deleteGalleryImage(imageId) {
+    if (confirm('Are you sure you want to delete this gallery image?')) {
+        adminFetch(`/gallery/${imageId}`, { method: 'DELETE' })
+            .then(data => {
+                if (data.success) {
+                    alert('Gallery image deleted successfully');
+                    loadGallery();
+                } else {
+                    alert('Error deleting gallery image: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting gallery image:', error);
+                alert('Error deleting gallery image');
+            });
+    }
 }

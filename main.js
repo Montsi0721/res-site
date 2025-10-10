@@ -640,14 +640,34 @@ const Gallery = {
         this.clearPreviousContainers();
         DOM.menuContainer.style.display = 'none';
 
-        const restaurantImages = [
-            "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-        ];
+        // Fetch gallery images from API
+        fetch(`${Config.API_BASE}/gallery`)
+            .then(response => response.json())
+            .then(galleryImages => {
+                const allGalleryImages = [
+                    ...galleryImages.map(img => img.image_url),
+                    ...AppState.allMenuItems.map(item => item.image)
+                ];
+                
+                this.displayGallery(allGalleryImages);
+            })
+            .catch(error => {
+                console.error('Error fetching gallery images:', error);
+                // Fallback to default images
+                const restaurantImages = [
+                    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    "https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                ];
+                const allGalleryImages = [...restaurantImages, ...AppState.allMenuItems.map(item => item.image)];
+                this.displayGallery(allGalleryImages);
+            });
+    },
 
-        const allGalleryImages = [...restaurantImages, ...AppState.allMenuItems.map(item => item.image)];
+    displayGallery(allGalleryImages) {
+        this.clearPreviousContainers();
+        DOM.menuContainer.style.display = 'none';
 
         const galleryContainer = document.createElement('div');
         galleryContainer.id = 'gallery-container';
@@ -1160,6 +1180,8 @@ const Navigation = {
                 break;
             case 'gallery':
                 Gallery.show();
+                loadGallery();
+                setupGalleryUpload();
                 break;
             case 'special-offers':
                 SpecialOffers.show();
@@ -1449,3 +1471,245 @@ document.addEventListener('DOMContentLoaded', () => {
 
     Utils.showToast('Welcome to Savory Delights!');
 });
+
+
+
+
+
+// Gallery Management Functions
+function loadGallery() {
+    adminFetch('/gallery')
+        .then(images => {
+            const tbody = document.getElementById('galleryBody');
+            tbody.innerHTML = '';
+
+            if (images.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #777;">
+                            No gallery images found. Add your first image!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            images.forEach(image => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <img src="${image.image_url}" alt="${image.title}" 
+                             style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px;">
+                    </td>
+                    <td>${image.title || 'Untitled'}</td>
+                    <td>${image.description || '-'}</td>
+                    <td>${image.category}</td>
+                    <td>
+                        <span style="color: ${image.is_active ? '#27ae60' : '#e74c3c'}; font-weight: bold;">
+                            ${image.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="card-btn toggle-gallery-btn" data-id="${image.id}" 
+                                style="padding: 5px 10px; font-size: 12px; margin-right: 5px; 
+                                       background: ${image.is_active ? '#e74c3c' : '#27ae60'}">
+                            ${image.is_active ? 'Deactivate' : 'Activate'}
+                        </button>
+                        <button class="card-btn delete-gallery-btn" data-id="${image.id}" 
+                                style="background: #e74c3c; padding: 5px 10px; font-size: 12px;">
+                            Delete
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Add event listeners
+            document.querySelectorAll('.toggle-gallery-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const imageId = this.getAttribute('data-id');
+                    toggleGalleryImage(imageId);
+                });
+            });
+
+            document.querySelectorAll('.delete-gallery-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const imageId = this.getAttribute('data-id');
+                    deleteGalleryImage(imageId);
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error loading gallery images:', error);
+            document.getElementById('galleryBody').innerHTML = `
+                <tr><td colspan="6" style="text-align: center; color: #e74c3c;">Error loading gallery images</td></tr>
+            `;
+        });
+}
+
+function setupGalleryUpload() {
+    const urlUploadBtn = document.getElementById('urlUploadBtn');
+    const fileUploadBtn = document.getElementById('fileUploadBtn');
+    const urlUploadForm = document.getElementById('urlUploadForm');
+    const fileUploadForm = document.getElementById('fileUploadForm');
+    const saveUrlImageBtn = document.getElementById('saveUrlImage');
+    const uploadFileBtn = document.getElementById('uploadFileBtn');
+
+    urlUploadBtn.addEventListener('click', () => {
+        urlUploadForm.style.display = 'block';
+        fileUploadForm.style.display = 'none';
+        resetForms();
+    });
+
+    fileUploadBtn.addEventListener('click', () => {
+        fileUploadForm.style.display = 'block';
+        urlUploadForm.style.display = 'none';
+        resetForms();
+    });
+
+    saveUrlImageBtn.addEventListener('click', saveUrlImage);
+    uploadFileBtn.addEventListener('click', handleFileUpload);
+}
+
+function resetForms() {
+    document.getElementById('imageUrl').value = '';
+    document.getElementById('imageTitle').value = '';
+    document.getElementById('imageDescription').value = '';
+    document.getElementById('fileImageTitle').value = '';
+    document.getElementById('fileImageDescription').value = '';
+    document.getElementById('imageFile').value = '';
+}
+
+function saveUrlImage() {
+    const imageUrl = document.getElementById('imageUrl').value;
+    const title = document.getElementById('imageTitle').value;
+    const description = document.getElementById('imageDescription').value;
+    const category = document.getElementById('imageCategory').value;
+
+    if (!imageUrl) {
+        alert('Please enter an image URL');
+        return;
+    }
+
+    const formData = {
+        image_url: imageUrl,
+        title: title,
+        description: description,
+        category: category
+    };
+
+    adminFetch('/gallery', {
+        method: 'POST',
+        body: JSON.stringify(formData)
+    })
+    .then(data => {
+        if (data.success) {
+            alert('Gallery image added successfully!');
+            resetForms();
+            loadGallery();
+        } else {
+            alert('Error adding gallery image: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error saving gallery image:', error);
+        alert('Error adding gallery image');
+    });
+}
+
+async function handleFileUpload() {
+    const fileInput = document.getElementById('imageFile');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Please select an image file');
+        return;
+    }
+
+    const title = document.getElementById('fileImageTitle').value;
+    const description = document.getElementById('fileImageDescription').value;
+    const category = document.getElementById('fileImageCategory').value;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        const progress = document.getElementById('uploadProgress');
+        const progressBar = progress.querySelector('progress');
+        const progressText = document.getElementById('progressText');
+        
+        progress.style.display = 'block';
+        progressBar.value = 0;
+        progressText.textContent = '0%';
+
+        const response = await fetch(`${API_BASE}/admin/upload?password=1234`, {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            // Save the uploaded image to gallery
+            const galleryData = {
+                image_url: result.image_url,
+                title: title,
+                description: description,
+                category: category
+            };
+
+            const saveResponse = await adminFetch('/gallery', {
+                method: 'POST',
+                body: JSON.stringify(galleryData)
+            });
+
+            if (saveResponse.success) {
+                alert('Image uploaded and saved to gallery successfully!');
+                resetForms();
+                progress.style.display = 'none';
+                loadGallery();
+            } else {
+                alert('Error saving image to gallery: ' + (saveResponse.error || 'Unknown error'));
+            }
+        } else {
+            alert('Error uploading image: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('Error uploading image');
+    }
+}
+
+function toggleGalleryImage(imageId) {
+    adminFetch(`/gallery/${imageId}/toggle`, { method: 'PUT' })
+        .then(data => {
+            if (data.success) {
+                alert('Gallery image status updated successfully');
+                loadGallery();
+            } else {
+                alert('Error updating gallery image: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error toggling gallery image:', error);
+            alert('Error updating gallery image');
+        });
+}
+
+function deleteGalleryImage(imageId) {
+    if (confirm('Are you sure you want to delete this gallery image?')) {
+        adminFetch(`/gallery/${imageId}`, { method: 'DELETE' })
+            .then(data => {
+                if (data.success) {
+                    alert('Gallery image deleted successfully');
+                    loadGallery();
+                } else {
+                    alert('Error deleting gallery image: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting gallery image:', error);
+                alert('Error deleting gallery image');
+            });
+    }
+}

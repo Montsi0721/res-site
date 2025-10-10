@@ -76,6 +76,9 @@
             <button data-section="specialOffers" class="nav-btn">
                 <i class="fas fa-tag"></i> Special Offers
             </button>
+            <button data-section="gallery" class="nav-btn">
+                <i class="fas fa-images"></i> Gallery Management
+            </button>
         </div>
 
         <div id="reservationsSection" class="admin-section active">
@@ -201,6 +204,103 @@
                 </table>
             </div>
         </div>
+
+        <div id="gallerySection" class="admin-section">
+            <h2><i class="fas fa-images"></i> Gallery Management</h2>
+            <button class="btn-add" id="addGalleryImageBtn">
+                <i class="fas fa-plus"></i> Add New Image
+            </button>
+
+            <!-- Upload Options -->
+            <div class="upload-options" style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <h4>Upload Options</h4>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button type="button" id="urlUploadBtn" class="card-btn">Upload via URL</button>
+                    <button type="button" id="fileUploadBtn" class="card-btn">Upload from Computer</button>
+                </div>
+
+                <!-- URL Upload Form -->
+                <div id="urlUploadForm" style="display: none;">
+                    <div class="form-group">
+                        <label for="imageUrl">Image URL</label>
+                        <input type="url" id="imageUrl" placeholder="Enter image URL"
+                            style="width: 100%; padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="imageTitle">Title (Optional)</label>
+                        <input type="text" id="imageTitle" placeholder="Enter image title"
+                            style="width: 100%; padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="imageDescription">Description (Optional)</label>
+                        <textarea id="imageDescription" placeholder="Enter image description"
+                            style="width: 100%; padding: 8px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="imageCategory">Category</label>
+                        <select id="imageCategory" style="width: 100%; padding: 8px;">
+                            <option value="restaurant">Restaurant</option>
+                            <option value="food">Food</option>
+                            <option value="ambiance">Ambiance</option>
+                            <option value="events">Events</option>
+                        </select>
+                    </div>
+                    <button type="button" id="saveUrlImage" class="card-btn">Save Image</button>
+                </div>
+
+                <!-- File Upload Form -->
+                <div id="fileUploadForm" style="display: none;">
+                    <div class="form-group">
+                        <label for="imageFile">Select Image</label>
+                        <input type="file" id="imageFile" accept="image/*" style="width: 100%; padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="fileImageTitle">Title (Optional)</label>
+                        <input type="text" id="fileImageTitle" placeholder="Enter image title"
+                            style="width: 100%; padding: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="fileImageDescription">Description (Optional)</label>
+                        <textarea id="fileImageDescription" placeholder="Enter image description"
+                            style="width: 100%; padding: 8px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="fileImageCategory">Category</label>
+                        <select id="fileImageCategory" style="width: 100%; padding: 8px;">
+                            <option value="restaurant">Restaurant</option>
+                            <option value="food">Food</option>
+                            <option value="ambiance">Ambiance</option>
+                            <option value="events">Events</option>
+                        </select>
+                    </div>
+                    <div id="uploadProgress" style="display: none;">
+                        <progress value="0" max="100" style="width: 100%;"></progress>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <button type="button" id="uploadFileBtn" class="card-btn">Upload Image</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="galleryTable">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="galleryBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center;">Loading gallery images...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- Menu Item Modal -->
@@ -285,11 +385,12 @@
     <script src="admin.js"></script>
     <script>
         // Check for saved dark mode preference
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             if (localStorage.getItem('darkMode') === 'true') {
                 document.body.classList.add('dark-mode');
             }
         });
     </script>
 </body>
+
 </html>
