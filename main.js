@@ -20,6 +20,20 @@ const Config = {
     MAPS_API_KEY: "YOUR_GOOGLE_MAPS_API_KEY"
 };
 
+async function publicFetch(endpoint) {
+    const url = `${API_BASE}${endpoint}`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Public API error:', error);
+        throw error;
+    }
+}
+
 // DOM Elements Cache
 const DOM = {
     get menuBtn() { return document.getElementById('menuBtn'); },
@@ -1451,96 +1465,56 @@ const FormHandlers = {
     }
 };
 
-// Initialization
-document.addEventListener('DOMContentLoaded', () => {
-    MenuManager.fetchMenuItems();
-    EnlargedImageManager.setup();
-    EventListeners.setup();
-    Pagination.setup();
-    Navigation.addLocationToNavigation();
-    LocationFeature.initialize();
-    OrderModal.setup();
-    ReservationModal.setup();
-    ContactForm.setup();
-    OrderTracking.setup();
-
-    const specialOffersHeading = document.querySelector('#special-offers h2');
-    if (specialOffersHeading) {
-        specialOffersHeading.style.display = 'none';
-    }
-
-    Utils.showToast('Welcome to Savory Delights!');
-});
-
 // Gallery Management Functions
-function loadGallery() {
-    adminFetch('/gallery')
-        .then(images => {
-            const tbody = document.getElementById('galleryBody');
-            tbody.innerHTML = '';
+async function loadGallery() {
+    try {
+        const images = await publicFetch('/gallery');  // Public endpoint, no adminFetch
 
-            if (images.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: #777;">
-                            No gallery images found. Add your first image!
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
+        const galleryGrid = document.querySelector('.gallery-grid');  // Adjust selector to match your HTML (e.g., '.gallery-grid' or '#galleryContainer')
+        if (!galleryGrid) {
+            console.error('Gallery container not found');
+            return;
+        }
 
-            images.forEach(image => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>
-                        <img src="${image.image_url}" alt="${image.title}" 
-                             style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px;">
-                    </td>
-                    <td>${image.title || 'Untitled'}</td>
-                    <td>${image.description || '-'}</td>
-                    <td>${image.category}</td>
-                    <td>
-                        <span style="color: ${image.is_active ? '#27ae60' : '#e74c3c'}; font-weight: bold;">
-                            ${image.is_active ? 'Active' : 'Inactive'}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="card-btn toggle-gallery-btn" data-id="${image.id}" 
-                                style="padding: 5px 10px; font-size: 12px; margin-right: 5px; 
-                                       background: ${image.is_active ? '#e74c3c' : '#27ae60'}">
-                            ${image.is_active ? 'Deactivate' : 'Activate'}
-                        </button>
-                        <button class="card-btn delete-gallery-btn" data-id="${image.id}" 
-                                style="background: #e74c3c; padding: 5px 10px; font-size: 12px;">
-                            Delete
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
+        galleryGrid.innerHTML = '';  // Clear existing
 
-            // Add event listeners
-            document.querySelectorAll('.toggle-gallery-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const imageId = this.getAttribute('data-id');
-                    toggleGalleryImage(imageId);
-                });
-            });
-
-            document.querySelectorAll('.delete-gallery-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const imageId = this.getAttribute('data-id');
-                    deleteGalleryImage(imageId);
-                });
-            });
-        })
-        .catch(error => {
-            console.error('Error loading gallery images:', error);
-            document.getElementById('galleryBody').innerHTML = `
-                <tr><td colspan="6" style="text-align: center; color: #e74c3c;">Error loading gallery images</td></tr>
+        if (images.length === 0) {
+            galleryGrid.innerHTML = `
+                <div class="no-images" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                    <i class="fas fa-images" style="font-size: 48px; margin-bottom: 10px; color: #ddd;"></i>
+                    No gallery images available yet.
+                </div>
             `;
+            return;
+        }
+
+        images.forEach((image, index) => {
+            const imageDiv = document.createElement('div');
+            imageDiv.className = 'gallery-item';  // Match your CSS classes
+            imageDiv.innerHTML = `
+                <img src="${image.image_url}" alt="${image.title || `Gallery Image ${index + 1}`}" 
+                     style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;"
+                     loading="lazy">
+                <div class="image-caption">${image.title || `Gallery Image ${index + 1}`}</div>
+            `;
+            // Optional: Add click handler if lightbox/modal is intended
+            imageDiv.addEventListener('click', (e) => {
+                // If handleItemClick is meant for lightbox, define it below or remove this
+                handleItemClick(e, image);  // This will error if undefined—see fix below
+            });
+            galleryGrid.appendChild(imageDiv);
         });
+    } catch (error) {
+        console.error('Error loading gallery:', error);
+        const galleryGrid = document.querySelector('.gallery-grid');
+        if (galleryGrid) {
+            galleryGrid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; color: #e74c3c; padding: 20px;">
+                    <i class="fas fa-exclamation-triangle"></i> Error loading gallery images
+                </div>
+            `;
+        }
+    }
 }
 
 function setupGalleryUpload() {
@@ -1709,3 +1683,54 @@ function deleteGalleryImage(imageId) {
             });
     }
 }
+
+function handleItemClick(event, image) {
+    event.preventDefault();
+    // Example: Open a modal with the image
+    const modal = document.createElement('div');
+    modal.className = 'lightbox-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img src="${image.image_url}" alt="${image.title}" style="max-width: 90%; max-height: 90%;">
+            <p>${image.description || ''}</p>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.style.display = 'block';  // Add CSS for .lightbox-modal { display: none; position: fixed; ... }
+
+    // Close on click
+    modal.querySelector('.close').addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+    });
+}
+
+// Initialization
+document.addEventListener('DOMContentLoaded' () => {
+    MenuManager.fetchMenuItems();
+    EnlargedImageManager.setup();
+    EventListeners.setup();
+    Pagination.setup();
+    Navigation.addLocationToNavigation();
+    LocationFeature.initialize();
+    OrderModal.setup();
+    ReservationModal.setup();
+    ContactForm.setup();
+    OrderTracking.setup();
+
+
+
+
+    
+
+
+
+
+    const specialOffersHeading = document.querySelector('#special-offers h2');
+    if (specialOffersHeading) {
+        specialOffersHeading.style.display = 'none';
+    }
+
+    Utils.showToast('Welcome to Savory Delights!');
+});
