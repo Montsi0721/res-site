@@ -799,62 +799,76 @@ async function handleFileUpload() {
         return;
     }
 
-    const title = document.getElementById('fileImageTitle').value;
-    const description = document.getElementById('fileImageDescription').value;
-    const category = document.getElementById('fileImageCategory').value;
+    const title = document.getElementById('fileImageTitle').value.trim() || 'Untitled';
+    const description = document.getElementById('fileImageDescription').value.trim() || '';
+    const category = document.getElementById('fileImageCategory').value || 'restaurant';
 
     const formData = new FormData();
     formData.append('image', file);
 
-    try {
-        const progress = document.getElementById('uploadProgress');
-        const progressBar = progress.querySelector('progress');
-        const progressText = document.getElementById('progressText');
+    // Use XMLHttpRequest for progress
+    const xhr = new XMLHttpRequest();
+    const progress = document.getElementById('uploadProgress');
+    const progressBar = progress.querySelector('progress');
+    const progressText = document.getElementById('progressText');
 
-        progress.style.display = 'block';
-        progressBar.value = 0;
-        progressText.textContent = '0%';
+    progress.style.display = 'block';
+    progressBar.value = 0;
+    progressText.textContent = '0%';
 
-        const response = await fetch(`${API_BASE}/admin/upload?password=1234`, {
-            method: 'POST',
-            body: formData
+    return new Promise((resolve, reject) => {
+        xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable) {
+                const percent = Math.round((e.loaded / e.total) * 100);
+                progressBar.value = percent;
+                progressText.textContent = `${percent}%`;
+            }
         });
 
-        if (!response.ok) {
-            throw new Error(`Upload failed: ${response.status}`);
-        }
+        xhr.addEventListener('load', () => {
+            if (xhr.status === 200) {
+                const result = JSON.parse(xhr.responseText);
+                if (result.success) {
+                    // Save to gallery
+                    const galleryData = {
+                        image_url: result.image_url,
+                        title,
+                        description,
+                        category
+                    };
 
-        const result = await response.json();
-
-        if (result.success) {
-            // Save the uploaded image to gallery
-            const galleryData = {
-                image_url: result.image_url,
-                title: title,
-                description: description,
-                category: category
-            };
-
-            const saveResponse = await adminFetch('/gallery', {
-                method: 'POST',
-                body: JSON.stringify(galleryData)
-            });
-
-            if (saveResponse.success) {
-                alert('✅ Image uploaded and saved to gallery successfully!');
-                resetForms();
-                progress.style.display = 'none';
-                loadGallery();
+                    adminFetch('/gallery', {
+                        method: 'POST',
+                        body: JSON.stringify(galleryData)
+                    }).then(saveResponse => {
+                        if (saveResponse.success) {
+                            alert('✅ Image uploaded and saved to gallery successfully!');
+                            resetForms();
+                            progress.style.display = 'none';
+                            loadGallery();
+                            resolve();
+                        } else {
+                            reject(new Error(saveResponse.error || 'Save failed'));
+                        }
+                    }).catch(reject);
+                } else {
+                    reject(new Error(result.error || 'Upload failed'));
+                }
             } else {
-                alert('❌ Error saving image to gallery: ' + (saveResponse.error || 'Unknown error'));
+                reject(new Error(`Upload failed: ${xhr.status}`));
             }
-        } else {
-            alert('❌ Error uploading image: ' + (result.error || 'Unknown error'));
-        }
-    } catch (error) {
+        });
+
+        xhr.addEventListener('error', reject);
+        xhr.addEventListener('abort', reject);
+
+        xhr.open('POST', `${API_BASE}/admin/upload?password=1234`);
+        xhr.send(formData);
+    }).catch(error => {
         console.error('Error uploading file:', error);
         alert('❌ Error uploading image: ' + error.message);
-    }
+        progress.style.display = 'none';
+    });
 }
 
 // Upload image functions
@@ -863,53 +877,41 @@ function setupGalleryUpload() {
     const fileUploadBtn = document.getElementById('fileUploadBtn');
     const urlUploadForm = document.getElementById('urlUploadForm');
     const fileUploadForm = document.getElementById('fileUploadForm');
+    const saveUrlImageBtn = document.getElementById('saveUrlImage');
+    const uploadFileBtn = document.getElementById('uploadFileBtn');
+
+    // Default to URL
+    urlUploadForm.style.display = 'block';
+    fileUploadForm.style.display = 'none';
+    urlUploadBtn.classList.add('active');
+    fileUploadBtn.classList.remove('active');
 
     urlUploadBtn.addEventListener('click', () => {
+        urlUploadBtn.classList.add('active');
+        fileUploadBtn.classList.remove('active');
         urlUploadForm.style.display = 'block';
         fileUploadForm.style.display = 'none';
+        resetForms(); // Clear file-specific fields
     });
 
     fileUploadBtn.addEventListener('click', () => {
+        fileUploadBtn.classList.add('active');
+        urlUploadBtn.classList.remove('active');
         fileUploadForm.style.display = 'block';
         urlUploadForm.style.display = 'none';
+        resetForms(); // Clear URL field
     });
 
-    // Handle file upload
-    document.getElementById('imageFile').addEventListener('change', handleFileUpload);
-}
+    // Listeners
+    if (saveUrlImageBtn) saveUrlImageBtn.addEventListener('click', saveUrlImage);
+    if (uploadFileBtn) uploadFileBtn.addEventListener('click', handleFileUpload);
 
-async function handleFileUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-        const progress = document.getElementById('uploadProgress');
-        const progressBar = progress.querySelector('progress');
-        const progressText = document.getElementById('progressText');
-
-        progress.style.display = 'block';
-
-        const response = await fetch(`${API_BASE}/admin/upload?password=1234`, {
-            method: 'POST',
-            body: formData
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            // Auto-fill the URL field with the uploaded image URL
-            document.getElementById('imageUrl').value = result.image_url;
-            alert('Image uploaded successfully!');
-        } else {
-            alert('Error uploading image: ' + result.error);
+    // Optional: Auto-trigger on file change (but button is primary)
+    document.getElementById('imageFile').addEventListener('change', () => {
+        if (fileUploadBtn.classList.contains('active')) {
+            handleFileUpload(); // Trigger upload on select if in file mode
         }
-    } catch (error) {
-        console.error('Error uploading file:', error);
-        alert('Error uploading image');
-    }
+    });
 }
 
 function toggleGalleryImage(imageId) {
@@ -943,5 +945,51 @@ function deleteGalleryImage(imageId) {
                 console.error('Error deleting gallery image:', error);
                 alert('Error deleting gallery image');
             });
+    }
+}
+
+// Save URL image to gallery
+async function saveUrlImage() {
+    const imageUrl = document.getElementById('imageUrl').value.trim();
+    const title = document.getElementById('imageTitle').value.trim();
+    const description = document.getElementById('imageDescription').value.trim();
+    const category = document.getElementById('imageCategory').value;
+
+    if (!imageUrl) {
+        alert('Please enter a valid image URL');
+        return;
+    }
+
+    // Optional: Basic URL validation
+    try {
+        new URL(imageUrl);
+    } catch {
+        alert('Please enter a valid URL');
+        return;
+    }
+
+    const galleryData = {
+        image_url: imageUrl,
+        title: title || 'Untitled',
+        description: description || '',
+        category: category || 'restaurant'
+    };
+
+    try {
+        const saveResponse = await adminFetch('/gallery', {
+            method: 'POST',
+            body: JSON.stringify(galleryData)
+        });
+
+        if (saveResponse.success) {
+            alert('✅ Image saved to gallery successfully!');
+            resetForms();
+            loadGallery();
+        } else {
+            alert('❌ Error saving image: ' + (saveResponse.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error saving URL image:', error);
+        alert('❌ Error saving image: ' + error.message);
     }
 }
