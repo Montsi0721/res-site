@@ -1804,6 +1804,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const specialOffersHeading = document.querySelector('#special-offers h2');
     if (specialOffersHeading) {
         specialOffersHeading.style.display = 'none';
+        specialOffersHeading.style.visibility = 'hidden';
     }
 
     Utils.showToast('Welcome to Savory Delights!');
