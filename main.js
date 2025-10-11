@@ -282,7 +282,7 @@ const SeeMoreManager = {
 
     collapseDescription(description, button) {
         description.classList.remove('expanded');
-        button.textContent = 'See more...';
+        button.textContent = 'See description...';
         this.expandedDescriptions.delete(description.id);
     },
 
