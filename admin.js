@@ -82,6 +82,9 @@ function setupAdminEventListeners() {
                         loadGallery();
                         setupGalleryUpload();
                         break;
+                    case 'analytics':
+                        setupAnalyticsDashboard();
+                        break;
                 }
             } else {
                 console.error('Section not found:', targetSection + 'Section');
@@ -992,4 +995,354 @@ async function saveUrlImage() {
         console.error('Error saving URL image:', error);
         alert('❌ Error saving image: ' + error.message);
     }
+}
+
+// Google Analytics 4 API Integration
+class AnalyticsDashboard {
+    constructor() {
+        this.accessToken = null;
+        this.propertyId = 'YOUR_GA4_PROPERTY_ID'; // Replace with your GA4 property ID
+        this.metrics = {
+            users: 'totalUsers',
+            pageviews: 'screenPageViews',
+            sessions: 'sessions',
+            engagementRate: 'engagementRate',
+            averageSessionDuration: 'averageSessionDuration',
+            bounceRate: 'bounceRate'
+        };
+    }
+
+    async init() {
+        await this.authenticate();
+        this.setupEventListeners();
+        this.loadInitialData();
+        this.startRealtimeUpdates();
+    }
+
+    setupEventListeners() {
+        document.getElementById('dateRange').addEventListener('change', (e) => {
+            if (e.target.value === 'custom') {
+                document.getElementById('customDateRange').style.display = 'flex';
+            } else {
+                document.getElementById('customDateRange').style.display = 'none';
+                this.loadAnalyticsData();
+            }
+        });
+
+        document.getElementById('applyCustomRange').addEventListener('click', () => {
+            this.loadAnalyticsData();
+        });
+
+        document.getElementById('refreshAnalytics').addEventListener('click', () => {
+            this.loadAnalyticsData();
+        });
+
+        // Auto-refresh every 5 minutes
+        setInterval(() => {
+            this.loadAnalyticsData();
+        }, 300000);
+    }
+
+    async authenticate() {
+        // For demo purposes - in production, use proper OAuth2 flow
+        // You'll need to set up Google OAuth2 credentials
+        try {
+            // This is a placeholder - implement proper authentication
+            this.accessToken = await this.getAccessToken();
+        } catch (error) {
+            console.error('GA4 Authentication failed:', error);
+            this.showError('Analytics authentication failed. Please check GA4 configuration.');
+        }
+    }
+
+    async loadInitialData() {
+        await this.loadOverviewMetrics();
+        await this.loadTrafficSources();
+        await this.loadDeviceData();
+        await this.loadGeographicData();
+        await this.loadPopularPages();
+        await this.loadUserInteractions();
+    }
+
+    async loadOverviewMetrics() {
+        const dateRange = this.getDateRange();
+        
+        try {
+            const response = await this.runReport({
+                dimensions: [{ name: 'date' }],
+                metrics: [
+                    { name: this.metrics.users },
+                    { name: this.metrics.pageviews },
+                    { name: this.metrics.sessions },
+                    { name: this.metrics.averageSessionDuration },
+                    { name: this.metrics.engagementRate }
+                ],
+                dateRanges: [dateRange]
+            });
+
+            this.updateOverviewMetrics(response);
+        } catch (error) {
+            console.error('Error loading overview metrics:', error);
+            this.showMockData(); // Fallback to mock data for demo
+        }
+    }
+
+    async loadTrafficSources() {
+        try {
+            const response = await this.runReport({
+                dimensions: [{ name: 'sessionSource' }],
+                metrics: [{ name: this.metrics.sessions }],
+                dateRanges: [this.getDateRange()],
+                limit: 10
+            });
+
+            this.updateTrafficSources(response);
+        } catch (error) {
+            console.error('Error loading traffic sources:', error);
+            this.showMockTrafficData();
+        }
+    }
+
+    async loadDeviceData() {
+        try {
+            const response = await this.runReport({
+                dimensions: [{ name: 'deviceCategory' }],
+                metrics: [{ name: this.metrics.users }],
+                dateRanges: [this.getDateRange()]
+            });
+
+            this.updateDeviceData(response);
+        } catch (error) {
+            console.error('Error loading device data:', error);
+            this.showMockDeviceData();
+        }
+    }
+
+    async loadGeographicData() {
+        try {
+            const response = await this.runReport({
+                dimensions: [{ name: 'country' }],
+                metrics: [{ name: this.metrics.users }],
+                dateRanges: [this.getDateRange()],
+                limit: 15
+            });
+
+            this.updateGeographicData(response);
+        } catch (error) {
+            console.error('Error loading geographic data:', error);
+            this.showMockGeographicData();
+        }
+    }
+
+    async loadPopularPages() {
+        try {
+            const response = await this.runReport({
+                dimensions: [{ name: 'pageTitle' }],
+                metrics: [{ name: this.metrics.pageviews }],
+                dateRanges: [this.getDateRange()],
+                limit: 10
+            });
+
+            this.updatePopularPages(response);
+        } catch (error) {
+            console.error('Error loading popular pages:', error);
+            this.showMockPageData();
+        }
+    }
+
+    async loadUserInteractions() {
+        try {
+            const response = await this.runReport({
+                dimensions: [{ name: 'eventName' }],
+                metrics: [{ name: 'eventCount' }],
+                dateRanges: [this.getDateRange()],
+                limit: 10
+            });
+
+            this.updateUserInteractions(response);
+        } catch (error) {
+            console.error('Error loading user interactions:', error);
+            this.showMockInteractionData();
+        }
+    }
+
+    updateOverviewMetrics(data) {
+        // Update the overview metrics cards with real data
+        const metrics = this.calculateMetrics(data);
+        
+        document.getElementById('totalUsers').textContent = this.formatNumber(metrics.totalUsers);
+        document.getElementById('totalPageviews').textContent = this.formatNumber(metrics.totalPageviews);
+        document.getElementById('avgSessionDuration').textContent = this.formatDuration(metrics.avgSessionDuration);
+        document.getElementById('bounceRate').textContent = this.formatPercentage(metrics.bounceRate);
+    }
+
+    updateTrafficSources(data) {
+        const sources = data.rows || [];
+        const chartData = sources.map(row => ({
+            source: row.dimensionValues[0].value || 'direct',
+            sessions: parseInt(row.metricValues[0].value)
+        }));
+
+        this.renderTrafficChart(chartData);
+    }
+
+    updateDeviceData(data) {
+        const devices = data.rows || [];
+        const chartData = devices.map(row => ({
+            device: row.dimensionValues[0].value,
+            users: parseInt(row.metricValues[0].value)
+        }));
+
+        this.renderDeviceChart(chartData);
+    }
+
+    updateGeographicData(data) {
+        const locations = data.rows || [];
+        const chartData = locations.map(row => ({
+            country: row.dimensionValues[0].value,
+            users: parseInt(row.metricValues[0].value)
+        }));
+
+        this.renderGeographicChart(chartData);
+    }
+
+    updatePopularPages(data) {
+        const pages = data.rows || [];
+        const html = pages.map(row => `
+            <div style="display: flex; justify-content: between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
+                <div style="flex: 1;">
+                    <div style="font-weight: 500;">${row.dimensionValues[0].value}</div>
+                    <div style="font-size: 12px; color: #666;">${this.formatNumber(row.metricValues[0].value)} views</div>
+                </div>
+            </div>
+        `).join('');
+        
+        document.getElementById('popularPages').innerHTML = html;
+    }
+
+    updateUserInteractions(data) {
+        const interactions = data.rows || [];
+        const html = interactions.map(row => `
+            <div style="display: flex; justify-content: between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
+                <div style="flex: 1;">
+                    <div style="font-weight: 500;">${this.formatEventName(row.dimensionValues[0].value)}</div>
+                    <div style="font-size: 12px; color: #666;">${this.formatNumber(row.metricValues[0].value)} times</div>
+                </div>
+            </div>
+        `).join('');
+        
+        document.getElementById('userInteractions').innerHTML = html;
+    }
+
+    // Helper methods
+    getDateRange() {
+        const range = document.getElementById('dateRange').value;
+        const now = new Date();
+        
+        switch(range) {
+            case 'today':
+                return { startDate: this.formatDate(now), endDate: this.formatDate(now) };
+            case 'yesterday':
+                const yesterday = new Date(now);
+                yesterday.setDate(yesterday.getDate() - 1);
+                return { startDate: this.formatDate(yesterday), endDate: this.formatDate(yesterday) };
+            case '7days':
+                const weekAgo = new Date(now);
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return { startDate: this.formatDate(weekAgo), endDate: this.formatDate(now) };
+            case '30days':
+                const monthAgo = new Date(now);
+                monthAgo.setDate(monthAgo.getDate() - 30);
+                return { startDate: this.formatDate(monthAgo), endDate: this.formatDate(now) };
+            case 'custom':
+                const start = document.getElementById('startDate').value;
+                const end = document.getElementById('endDate').value;
+                return { startDate: start, endDate: end };
+            default:
+                return { startDate: '7daysAgo', endDate: 'today' };
+        }
+    }
+
+    formatDate(date) {
+        return date.toISOString().split('T')[0];
+    }
+
+    formatNumber(num) {
+        return parseInt(num).toLocaleString();
+    }
+
+    formatDuration(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}m ${secs}s`;
+    }
+
+    formatPercentage(decimal) {
+        return `${(decimal * 100).toFixed(1)}%`;
+    }
+
+    formatEventName(eventName) {
+        return eventName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    // Mock data for demonstration (remove in production)
+    showMockData() {
+        document.getElementById('totalUsers').textContent = '1,247';
+        document.getElementById('totalPageviews').textContent = '3,892';
+        document.getElementById('avgSessionDuration').textContent = '2m 45s';
+        document.getElementById('bounceRate').textContent = '42.3%';
+    }
+
+    showMockTrafficData() {
+        const mockData = [
+            { source: 'Google', sessions: 845 },
+            { source: 'Direct', sessions: 432 },
+            { source: 'Facebook', sessions: 298 },
+            { source: 'Instagram', sessions: 156 },
+            { source: 'Twitter', sessions: 87 }
+        ];
+        this.renderTrafficChart(mockData);
+    }
+
+    // Add similar mock data methods for other charts...
+
+    startRealtimeUpdates() {
+        // Simulate real-time updates
+        setInterval(() => {
+            const activeUsers = Math.floor(Math.random() * 50) + 10;
+            const pageviewsMin = Math.floor(Math.random() * 20) + 5;
+            
+            document.getElementById('activeUsers').textContent = activeUsers;
+            document.getElementById('pageviewsMin').textContent = pageviewsMin;
+        }, 10000);
+    }
+
+    async runReport(request) {
+        // This would make actual API calls to Google Analytics Data API
+        // For now, return mock data structure
+        return await this.getMockReportData(request);
+    }
+
+    async getMockReportData(request) {
+        // Return structured mock data matching GA4 API response format
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve({
+                    rows: this.generateMockRows(request)
+                });
+            }, 1000);
+        });
+    }
+
+    generateMockRows(request) {
+        // Generate realistic mock data based on the request
+        // Implementation depends on what metrics/dimensions are requested
+        return [];
+    }
+}
+
+// Initialize analytics dashboard when section is active
+function setupAnalyticsDashboard() {
+    const analyticsDashboard = new AnalyticsDashboard();
+    analyticsDashboard.init();
 }

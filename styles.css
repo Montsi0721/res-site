@@ -1159,6 +1159,65 @@ th:last-child {
     font-weight: bold;
 }
 
+/* Analytics Dashboard Styles */
+.metric-card {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+}
+
+.metric-value {
+    font-size: 2.5em;
+    font-weight: 300;
+    margin-bottom: 5px;
+}
+
+.metric-label {
+    font-size: 0.9em;
+    opacity: 0.9;
+    margin-bottom: 5px;
+}
+
+.metric-change {
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+
+.analytics-card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s ease;
+}
+
+.analytics-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.realtime-metric {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.realtime-value {
+    font-size: 2em;
+    font-weight: 300;
+    color: #3498db;
+}
+
+.realtime-label {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.loading-placeholder {
+    color: #666;
+}
+
 /* Admin order status select */
 .status-select {
     background: #e0e0e0;

@@ -1451,27 +1451,6 @@ const FormHandlers = {
     }
 };
 
-// Initialization
-document.addEventListener('DOMContentLoaded', () => {
-    MenuManager.fetchMenuItems();
-    EnlargedImageManager.setup();
-    EventListeners.setup();
-    Pagination.setup();
-    Navigation.addLocationToNavigation();
-    LocationFeature.initialize();
-    OrderModal.setup();
-    ReservationModal.setup();
-    ContactForm.setup();
-    OrderTracking.setup();
-
-    const specialOffersHeading = document.querySelector('#special-offers h2');
-    if (specialOffersHeading) {
-        specialOffersHeading.style.display = 'none';
-    }
-
-    Utils.showToast('Welcome to Savory Delights!');
-});
-
 // Gallery Management Functions
 function loadGallery() {
     adminFetch('/gallery')
@@ -1709,3 +1688,123 @@ function deleteGalleryImage(imageId) {
             });
     }
 }
+
+// Enhanced GA4 Tracking
+const GATracking = {
+    init() {
+        this.trackPageViews();
+        this.trackUserEngagement();
+        this.trackCustomEvents();
+    },
+
+    trackPageViews() {
+        // Track virtual page views for SPA navigation
+        const originalPushState = history.pushState;
+        history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            gtag('event', 'page_view', {
+                page_title: document.title,
+                page_location: window.location.href
+            });
+        };
+    },
+
+    trackUserEngagement() {
+        // Track menu interactions
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.order-btn')) {
+                this.trackOrderIntent(e.target);
+            }
+            if (e.target.closest('#reservationBtn')) {
+                this.trackEvent('reservation_intent', 'Reservation', 'Reservation Button Click');
+            }
+            if (e.target.closest('#contactForm')) {
+                this.trackEvent('contact_intent', 'Contact', 'Contact Form Click');
+            }
+        });
+
+        // Track form submissions
+        document.addEventListener('submit', (e) => {
+            if (e.target.id === 'reservationForm') {
+                this.trackEvent('reservation_submitted', 'Reservation', 'Reservation Form Submitted');
+            }
+            if (e.target.id === 'contactForm') {
+                this.trackEvent('contact_submitted', 'Contact', 'Contact Form Submitted');
+            }
+            if (e.target.id === 'orderForm') {
+                this.trackEvent('order_submitted', 'Order', 'Order Form Submitted');
+            }
+        });
+
+        // Track gallery views
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('[data-target="gallery"]')) {
+                this.trackEvent('gallery_view', 'Gallery', 'Gallery Opened');
+            }
+        });
+
+        // Track special offers views
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('[data-target="special-offers"]')) {
+                this.trackEvent('offers_view', 'Special Offers', 'Special Offers Viewed');
+            }
+        });
+    },
+
+    trackOrderIntent(button) {
+        const itemId = button.getAttribute('data-id');
+        const itemName = button.getAttribute('data-name');
+        const itemPrice = button.getAttribute('data-price');
+        
+        gtag('event', 'select_item', {
+            'item_list_id': 'menu',
+            'item_list_name': 'Restaurant Menu',
+            'items': [{
+                'item_id': itemId,
+                'item_name': itemName,
+                'price': itemPrice,
+                'item_category': 'food'
+            }]
+        });
+    },
+
+    trackEvent(eventName, category, label) {
+        gtag('event', eventName, {
+            'event_category': category,
+            'event_label': label
+        });
+    },
+
+    // Track custom dimensions
+    trackUserProperties() {
+        gtag('set', 'user_properties', {
+            'prefers_dark_mode': localStorage.getItem('darkMode') === 'true',
+            'has_visited_before': !!localStorage.getItem('hasVisitedBefore')
+        });
+        
+        localStorage.setItem('hasVisitedBefore', 'true');
+    }
+};
+
+// Initialization
+document.addEventListener('DOMContentLoaded', () => {
+    MenuManager.fetchMenuItems();
+    EnlargedImageManager.setup();
+    EventListeners.setup();
+    Pagination.setup();
+    Navigation.addLocationToNavigation();
+    LocationFeature.initialize();
+    OrderModal.setup();
+    ReservationModal.setup();
+    ContactForm.setup();
+    OrderTracking.setup();
+    GATracking.init();
+    GATracking.trackUserProperties();
+
+    const specialOffersHeading = document.querySelector('#special-offers h2');
+    if (specialOffersHeading) {
+        specialOffersHeading.style.display = 'none';
+    }
+
+    Utils.showToast('Welcome to Savory Delights!');
+});
