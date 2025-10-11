@@ -666,31 +666,35 @@ body.dark-mode .price {
     overflow: hidden;
     line-height: 1.4;
     max-height: 2.8em; /* 2 lines * line-height */
-    transition: max-height 0.3s ease;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .card-text.expanded {
     -webkit-line-clamp: unset;
     max-height: none;
     overflow: visible;
+    background: linear-gradient(to bottom, transparent 95%, white 100%);
 }
 
 /* See More Button */
 .see-more-btn {
-    background: none;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
     border: none;
-    color: #3498db;
+    padding: 6px 12px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 0.9em;
-    padding: 5px 0;
-    margin-top: 5px;
-    font-weight: 500;
-    display: none; /* Hidden by default */
+    font-size: 0.8em;
+    margin: 8px 0;
+    transition: all 0.3s ease;
+    display: none;
+    align-self: flex-start;
 }
 
 .see-more-btn:hover {
-    color: #2980b9;
-    text-decoration: underline;
+    background: linear-gradient(135deg, #2980b9, #21618c);
+    transform: translateY(-1px);
 }
 
 /* Show see more button only when text is truncated */
@@ -701,8 +705,13 @@ body.dark-mode .price {
 /* Mobile-specific styles */
 @media (max-width: 768px) {
     .card-text {
-        -webkit-line-clamp: 2; /* Show 2 lines on mobile */
+        -webkit-line-clamp: 0;
         max-height: 2.8em;
+    }
+    
+    .card-text.expanded {
+        max-height: 200px; /* Limit max height even when expanded */
+        overflow-y: auto;
     }
     
     /* Always show see more button on mobile if text is long */
@@ -714,9 +723,34 @@ body.dark-mode .price {
 /* Desktop - show more lines by default */
 @media (min-width: 769px) {
     .card-text {
-        -webkit-line-clamp: 3; /* Show 3 lines on desktop */
+        -webkit-line-clamp: 3;
         max-height: 4.2em;
     }
+    
+    .card-text.expanded {
+        max-height: none;
+    }
+}
+
+/* Ensure card layout remains consistent */
+.card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card-footer {
+    margin-top: auto;
+    padding-top: 10px;
+}
+
+/* Smooth transitions for better UX */
+.card {
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
 }
 
 /* Enlarged Image Modal Styles */

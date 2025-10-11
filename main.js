@@ -156,22 +156,28 @@ const MenuManager = {
     },
 
     renderMenuItems(items) {
-        if (!items || items.length === 0) {
-            DOM.menuContainer.innerHTML = this.createNoResultsMessage();
-            return;
-        }
+    if (!items || items.length === 0) {
+        DOM.menuContainer.innerHTML = this.createNoResultsMessage();
+        return;
+    }
 
-        DOM.menuContainer.innerHTML = items.map(item => this.createMenuItemCard(item)).join('');
-        this.attachOrderButtonListeners();
-
+    // Collapse any previously expanded descriptions before rendering new ones
+    SeeMoreManager.expandedDescriptions.clear();
+    
+    DOM.menuContainer.innerHTML = items.map(item => this.createMenuItemCard(item)).join('');
+    this.attachOrderButtonListeners();
+    
+    // Initialize see more functionality
+    setTimeout(() => {
         SeeMoreManager.checkNewCards();
-
-        EnlargedImageManager.attachImageClickListeners();
-    },
+    }, 150);
+    
+    EnlargedImageManager.attachImageClickListeners();
+},
 
     createMenuItemCard(item) {
         // Generate a unique ID for each card's description
-        const descriptionId = `desc-${item.id}-${Math.random().toString(36).substr(2, 9)}`;
+        const descriptionId = `desc-${item.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
         return `
         <div class="card">
@@ -180,7 +186,7 @@ const MenuManager = {
                 <h3 class="card-title">${item.name}</h3>
                 <p class="card-text" id="${descriptionId}">${item.description}</p>
                 <button class="see-more-btn" data-target="${descriptionId}">
-                    See more...
+                    See description...
                 </button>
                 <div class="card-footer">
                     <p class="price">M${item.price.toFixed(2)}</p>
@@ -220,9 +226,13 @@ const MenuManager = {
 
 // See More functionality for menu descriptions
 const SeeMoreManager = {
+    expandedDescriptions: new Set(), // Track currently expanded descriptions
+    scrollHandler: null,
+
     init() {
         this.setupEventListeners();
         this.checkTextOverflow();
+        this.setupScrollHandler();
     },
 
     setupEventListeners() {
@@ -239,32 +249,99 @@ const SeeMoreManager = {
         });
     },
 
+    setupScrollHandler() {
+        // Throttled scroll handler for performance
+        this.scrollHandler = this.throttle(() => {
+            this.collapseAllOnScroll();
+        }, 100);
+
+        window.addEventListener('scroll', this.scrollHandler);
+    },
+
     toggleDescription(button) {
         const targetId = button.getAttribute('data-target');
         const description = document.getElementById(targetId);
 
         if (description.classList.contains('expanded')) {
             // Collapse
-            description.classList.remove('expanded');
-            button.textContent = 'See more...';
+            this.collapseDescription(description, button);
         } else {
             // Expand
-            description.classList.add('expanded');
-            button.textContent = 'See less';
+            this.expandDescription(description, button);
+        }
+    },
+
+    expandDescription(description, button) {
+        description.classList.add('expanded');
+        button.textContent = 'See less';
+        this.expandedDescriptions.add(description.id);
+
+        // Scroll the description into view if it's not fully visible
+        this.scrollToElementIfNeeded(description);
+    },
+
+    collapseDescription(description, button) {
+        description.classList.remove('expanded');
+        button.textContent = 'See more...';
+        this.expandedDescriptions.delete(description.id);
+    },
+
+    collapseAllOnScroll() {
+        if (this.expandedDescriptions.size === 0) return;
+
+        // Get viewport dimensions
+        const viewportHeight = window.innerHeight;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        this.expandedDescriptions.forEach(descriptionId => {
+            const description = document.getElementById(descriptionId);
+            if (description) {
+                const rect = description.getBoundingClientRect();
+                const descriptionTop = rect.top + scrollTop;
+                const descriptionBottom = rect.bottom + scrollTop;
+
+                // Check if description is significantly out of view
+                // (more than 100px above or below viewport)
+                if (descriptionBottom < scrollTop - 100 || descriptionTop > scrollTop + viewportHeight + 100) {
+                    const button = description.nextElementSibling;
+                    if (button && button.classList.contains('see-more-btn')) {
+                        this.collapseDescription(description, button);
+                    }
+                }
+            }
+        });
+    },
+
+    scrollToElementIfNeeded(element) {
+        const rect = element.getBoundingClientRect();
+        const isVisible = (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+
+        if (!isVisible) {
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'nearest'
+            });
         }
     },
 
     checkTextOverflow() {
         // Check all menu descriptions for overflow
         document.querySelectorAll('.card-text').forEach(description => {
+            // Reset and re-check
+            description.classList.remove('truncated');
+
             const lineHeight = parseInt(getComputedStyle(description).lineHeight);
             const maxHeight = parseInt(getComputedStyle(description).maxHeight);
 
             // Check if text content exceeds the visible area
-            if (description.scrollHeight > maxHeight) {
+            if (description.scrollHeight > maxHeight + 5) { // +5 for buffer
                 description.classList.add('truncated');
-            } else {
-                description.classList.remove('truncated');
             }
         });
     },
@@ -274,6 +351,28 @@ const SeeMoreManager = {
         setTimeout(() => {
             this.checkTextOverflow();
         }, 100);
+    },
+
+    // Throttle function for performance
+    throttle(func, limit) {
+        let inThrottle;
+        return function () {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        };
+    },
+
+    // Cleanup method
+    destroy() {
+        if (this.scrollHandler) {
+            window.removeEventListener('scroll', this.scrollHandler);
+        }
+        this.expandedDescriptions.clear();
     }
 };
 
@@ -1761,7 +1860,8 @@ const GATracking = {
     init() {
         this.trackPageViews();
         this.trackUserEngagement();
-        this.trackCustomEvents();
+        //this.trackCustomEvents();
+        this.trackUserProperties();
     },
 
     trackPageViews() {
@@ -1856,6 +1956,7 @@ const GATracking = {
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     MenuManager.fetchMenuItems();
+    SeeMoreManager.init();
     EnlargedImageManager.setup();
     EventListeners.setup();
     Pagination.setup();
@@ -1874,4 +1975,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     Utils.showToast('Welcome to Savory Delights!');
+});
+
+// Handle page unload
+window.addEventListener('beforeunload', function() {
+    SeeMoreManager.destroy();
 });
