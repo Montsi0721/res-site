@@ -164,28 +164,36 @@ const MenuManager = {
         DOM.menuContainer.innerHTML = items.map(item => this.createMenuItemCard(item)).join('');
         this.attachOrderButtonListeners();
 
+        SeeMoreManager.checkNewCards();
+
         EnlargedImageManager.attachImageClickListeners();
     },
 
     createMenuItemCard(item) {
+        // Generate a unique ID for each card's description
+        const descriptionId = `desc-${item.id}-${Math.random().toString(36).substr(2, 9)}`;
+
         return `
-            <div class="card">
-                <img src="${item.image}" alt="${item.name}" class="card-img">
-                <div class="card-content">
-                    <h3 class="card-title">${item.name}</h3>
-                    <p class="card-text">${item.description}</p>
-                    <div class="card-footer">
-                        <p class="price">M${item.price.toFixed(2)}</p>
-                        <button class="card-btn order-btn" 
-                                data-id="${item.id}" 
-                                data-name="${item.name}" 
-                                data-price="${item.price}">
-                            Order Now
-                        </button>
-                    </div>
+        <div class="card">
+            <img src="${item.image}" alt="${item.name}" class="card-img">
+            <div class="card-content">
+                <h3 class="card-title">${item.name}</h3>
+                <p class="card-text" id="${descriptionId}">${item.description}</p>
+                <button class="see-more-btn" data-target="${descriptionId}">
+                    See more...
+                </button>
+                <div class="card-footer">
+                    <p class="price">M${item.price.toFixed(2)}</p>
+                    <button class="card-btn order-btn" 
+                            data-id="${item.id}" 
+                            data-name="${item.name}" 
+                            data-price="${item.price}">
+                        Order Now
+                    </button>
                 </div>
             </div>
-        `;
+        </div>
+    `;
     },
 
     createNoResultsMessage() {
@@ -207,6 +215,65 @@ const MenuManager = {
                 OrderModal.show(itemId, itemName, itemPrice);
             });
         });
+    }
+};
+
+// See More functionality for menu descriptions
+const SeeMoreManager = {
+    init() {
+        this.setupEventListeners();
+        this.checkTextOverflow();
+    },
+
+    setupEventListeners() {
+        // Delegate event to handle dynamically created buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('see-more-btn')) {
+                this.toggleDescription(e.target);
+            }
+        });
+
+        // Re-check on window resize
+        window.addEventListener('resize', () => {
+            this.checkTextOverflow();
+        });
+    },
+
+    toggleDescription(button) {
+        const targetId = button.getAttribute('data-target');
+        const description = document.getElementById(targetId);
+
+        if (description.classList.contains('expanded')) {
+            // Collapse
+            description.classList.remove('expanded');
+            button.textContent = 'See more...';
+        } else {
+            // Expand
+            description.classList.add('expanded');
+            button.textContent = 'See less';
+        }
+    },
+
+    checkTextOverflow() {
+        // Check all menu descriptions for overflow
+        document.querySelectorAll('.card-text').forEach(description => {
+            const lineHeight = parseInt(getComputedStyle(description).lineHeight);
+            const maxHeight = parseInt(getComputedStyle(description).maxHeight);
+
+            // Check if text content exceeds the visible area
+            if (description.scrollHeight > maxHeight) {
+                description.classList.add('truncated');
+            } else {
+                description.classList.remove('truncated');
+            }
+        });
+    },
+
+    // Check for new cards when menu is rendered
+    checkNewCards() {
+        setTimeout(() => {
+            this.checkTextOverflow();
+        }, 100);
     }
 };
 
@@ -648,7 +715,7 @@ const Gallery = {
                     ...galleryImages.map(img => img.image_url),
                     ...AppState.allMenuItems.map(item => item.image)
                 ];
-                
+
                 this.displayGallery(allGalleryImages);
             })
             .catch(error => {
@@ -1501,14 +1568,14 @@ function loadGallery() {
 
             // Add event listeners
             document.querySelectorAll('.toggle-gallery-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const imageId = this.getAttribute('data-id');
                     toggleGalleryImage(imageId);
                 });
             });
 
             document.querySelectorAll('.delete-gallery-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const imageId = this.getAttribute('data-id');
                     deleteGalleryImage(imageId);
                 });
@@ -1577,25 +1644,25 @@ function saveUrlImage() {
         method: 'POST',
         body: JSON.stringify(formData)
     })
-    .then(data => {
-        if (data.success) {
-            alert('Gallery image added successfully!');
-            resetForms();
-            loadGallery();
-        } else {
-            alert('Error adding gallery image: ' + (data.error || 'Unknown error'));
-        }
-    })
-    .catch(error => {
-        console.error('Error saving gallery image:', error);
-        alert('Error adding gallery image');
-    });
+        .then(data => {
+            if (data.success) {
+                alert('Gallery image added successfully!');
+                resetForms();
+                loadGallery();
+            } else {
+                alert('Error adding gallery image: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error saving gallery image:', error);
+            alert('Error adding gallery image');
+        });
 }
 
 async function handleFileUpload() {
     const fileInput = document.getElementById('imageFile');
     const file = fileInput.files[0];
-    
+
     if (!file) {
         alert('Please select an image file');
         return;
@@ -1612,7 +1679,7 @@ async function handleFileUpload() {
         const progress = document.getElementById('uploadProgress');
         const progressBar = progress.querySelector('progress');
         const progressText = document.getElementById('progressText');
-        
+
         progress.style.display = 'block';
         progressBar.value = 0;
         progressText.textContent = '0%';
@@ -1623,7 +1690,7 @@ async function handleFileUpload() {
         });
 
         const result = await response.json();
-        
+
         if (result.success) {
             // Save the uploaded image to gallery
             const galleryData = {
@@ -1700,7 +1767,7 @@ const GATracking = {
     trackPageViews() {
         // Track virtual page views for SPA navigation
         const originalPushState = history.pushState;
-        history.pushState = function() {
+        history.pushState = function () {
             originalPushState.apply(this, arguments);
             gtag('event', 'page_view', {
                 page_title: document.title,
@@ -1755,7 +1822,7 @@ const GATracking = {
         const itemId = button.getAttribute('data-id');
         const itemName = button.getAttribute('data-name');
         const itemPrice = button.getAttribute('data-price');
-        
+
         gtag('event', 'select_item', {
             'item_list_id': 'menu',
             'item_list_name': 'Restaurant Menu',
@@ -1781,7 +1848,7 @@ const GATracking = {
             'prefers_dark_mode': localStorage.getItem('darkMode') === 'true',
             'has_visited_before': !!localStorage.getItem('hasVisitedBefore')
         });
-        
+
         localStorage.setItem('hasVisitedBefore', 'true');
     }
 };
@@ -1804,7 +1871,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const specialOffersHeading = document.querySelector('#special-offers h2');
     if (specialOffersHeading) {
         specialOffersHeading.style.display = 'none';
-        specialOffersHeading.style.visibility = 'hidden';
     }
 
     Utils.showToast('Welcome to Savory Delights!');

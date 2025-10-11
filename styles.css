@@ -530,7 +530,7 @@ body.dark-mode .section-title {
 .card-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
+    gap: 20px;
     width: 100%;
 }
 
@@ -541,7 +541,7 @@ body.dark-mode .section-title {
 .card-grid, .card-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
+    gap: 20px;
     width: 100%;
     justify-content: center;
 }
@@ -656,6 +656,67 @@ body.dark-mode .card-btn:hover {
 
 body.dark-mode .price {
     color: #aaa;
+}
+
+/* Menu Description Truncation */
+.card-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Show only 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+    max-height: 2.8em; /* 2 lines * line-height */
+    transition: max-height 0.3s ease;
+}
+
+.card-text.expanded {
+    -webkit-line-clamp: unset;
+    max-height: none;
+    overflow: visible;
+}
+
+/* See More Button */
+.see-more-btn {
+    background: none;
+    border: none;
+    color: #3498db;
+    cursor: pointer;
+    font-size: 0.9em;
+    padding: 5px 0;
+    margin-top: 5px;
+    font-weight: 500;
+    display: none; /* Hidden by default */
+}
+
+.see-more-btn:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+/* Show see more button only when text is truncated */
+.card-text.truncated + .see-more-btn {
+    display: inline-block;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .card-text {
+        -webkit-line-clamp: 2; /* Show 2 lines on mobile */
+        max-height: 2.8em;
+    }
+    
+    /* Always show see more button on mobile if text is long */
+    .card-text.truncated + .see-more-btn {
+        display: inline-block;
+    }
+}
+
+/* Desktop - show more lines by default */
+@media (min-width: 769px) {
+    .card-text {
+        -webkit-line-clamp: 3; /* Show 3 lines on desktop */
+        max-height: 4.2em;
+    }
 }
 
 /* Enlarged Image Modal Styles */
