@@ -1478,7 +1478,7 @@ const SeeMore = {
         const charLimit = window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT;
 
         if (fullText.length > charLimit) {
-            const truncated = fullText.substring(0, charLimit) + '...';
+            const truncated = fullText.substring(0, charLimit);
             desc.textContent = truncated;
             desc.setAttribute('data-full-text', fullText);
             desc.classList.add('truncated');
@@ -1496,7 +1496,7 @@ const SeeMore = {
 
         const button = document.createElement('button');
         button.className = 'see-more-btn';
-        button.textContent = 'See more...';
+        button.textContent = 'See description';
         const descId = desc.id || `desc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // Unique fallback ID
         button.setAttribute('data-target', descId);
         if (!desc.id) desc.id = descId;
@@ -1529,7 +1529,7 @@ const SeeMore = {
         } else {
             // Collapse
             this.truncateDescription(desc);
-            button.textContent = 'See more...';
+            button.textContent = 'See description';
         }
     },
 
