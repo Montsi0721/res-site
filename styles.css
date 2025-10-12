@@ -1725,16 +1725,20 @@ body.dark-mode .bottom-nav-item {
 
 .see-more-btn {
     background: transparent;
-    color: white;
+    color: #6b6b6b;
     text-decoration: underline;
     border: none;
     padding: 6px;
     cursor: pointer;
     font-size: 0.8em;
-    /* margin: 8px 0; */
+    margin-bottom: 8px;
     transition: all 0.3s ease;
 }
 
 .see-more-btn:hover {
     transform: translateY(-1px);
+}
+
+body.dark-mode .see-more-btn {
+    color: white;
 }
