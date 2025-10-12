@@ -1451,10 +1451,97 @@ const FormHandlers = {
     }
 };
 
+// Enhanced version with character limits
+const SeeMore = {
+    MOBILE_CHAR_LIMIT: 80,
+    DESKTOP_CHAR_LIMIT: 120,
+
+    init() {
+        this.setupEventListeners();
+        this.truncateAllDescriptions();
+        
+        // Re-check on resize and orientation change
+        window.addEventListener('resize', this.debounce(() => {
+            this.truncateAllDescriptions();
+        }, 250));
+    },
+
+    truncateAllDescriptions() {
+        document.querySelectorAll('.card-text').forEach(desc => {
+            this.truncateDescription(desc);
+        });
+    },
+
+    truncateDescription(desc) {
+        const fullText = desc.getAttribute('data-full-text') || desc.textContent;
+        const charLimit = window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT;
+        
+        if (fullText.length > charLimit) {
+            const truncated = fullText.substring(0, charLimit) + '...';
+            desc.textContent = truncated;
+            desc.setAttribute('data-full-text', fullText);
+            desc.classList.add('truncated');
+            
+            // Ensure see more button exists
+            this.ensureSeeMoreButton(desc);
+        } else {
+            desc.classList.remove('truncated');
+            this.removeSeeMoreButton(desc);
+        }
+    },
+
+    ensureSeeMoreButton(desc) {
+        let button = desc.nextElementSibling;
+        if (!button || !button.classList.contains('see-more-btn')) {
+            button = document.createElement('button');
+            button.className = 'see-more-btn';
+            button.textContent = 'See more...';
+            button.setAttribute('data-target', desc.id);
+            desc.parentNode.insertBefore(button, desc.nextSibling);
+        }
+    },
+
+    removeSeeMoreButton(desc) {
+        const button = desc.nextElementSibling;
+        if (button && button.classList.contains('see-more-btn')) {
+            button.remove();
+        }
+    },
+
+    toggleText(button) {
+        const desc = document.getElementById(button.getAttribute('data-target'));
+        const fullText = desc.getAttribute('data-full-text');
+        
+        if (desc.classList.contains('truncated')) {
+            // Expand
+            desc.textContent = fullText;
+            desc.classList.remove('truncated');
+            button.textContent = 'See less';
+        } else {
+            // Collapse
+            this.truncateDescription(desc);
+            button.textContent = 'See more...';
+        }
+    },
+
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+};
+
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     MenuManager.fetchMenuItems();
     EnlargedImageManager.setup();
+    SeeMore.init();
     EventListeners.setup();
     Pagination.setup();
     Navigation.addLocationToNavigation();
