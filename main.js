@@ -162,7 +162,11 @@ const MenuManager = {
         }
 
         DOM.menuContainer.innerHTML = items.map(item => this.createMenuItemCard(item)).join('');
+
+        // Attach listeners AFTER rendering
         this.attachOrderButtonListeners();
+        this.attachSeeMoreListeners(); // New: Attach see more button listeners
+        SeeMore.truncateAllDescriptions(); // Apply truncation after render
 
         EnlargedImageManager.attachImageClickListeners();
     },
@@ -173,7 +177,7 @@ const MenuManager = {
                 <img src="${item.image}" alt="${item.name}" class="card-img">
                 <div class="card-content">
                     <h3 class="card-title">${item.name}</h3>
-                    <p class="card-text">${item.description}</p>
+                    <p class="card-text" id="desc-${item.id}">${item.description}</p>
                     <div class="card-footer">
                         <p class="price">M${item.price.toFixed(2)}</p>
                         <button class="card-btn order-btn" 
@@ -200,12 +204,22 @@ const MenuManager = {
 
     attachOrderButtonListeners() {
         document.querySelectorAll('.order-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const itemId = button.getAttribute('data-id');
-                const itemName = button.getAttribute('data-name');
-                const itemPrice = parseFloat(button.getAttribute('data-price'));
+            // Remove existing listeners to prevent duplicates
+            button.replaceWith(button.cloneNode(true));
+            const newButton = document.querySelector(`[data-id="${button.getAttribute('data-id')}"]`);
+            newButton.addEventListener('click', () => {
+                const itemId = newButton.getAttribute('data-id');
+                const itemName = newButton.getAttribute('data-name');
+                const itemPrice = parseFloat(newButton.getAttribute('data-price'));
                 OrderModal.show(itemId, itemName, itemPrice);
             });
+        });
+    },
+
+    // New: Attach listeners to dynamically created "see more" buttons
+    attachSeeMoreListeners() {
+        document.querySelectorAll('.see-more-btn').forEach(button => {
+            button.addEventListener('click', () => SeeMore.toggleText(button));
         });
     }
 };
@@ -482,48 +496,44 @@ const SearchManager = {
         searchResultsContainer.id = 'search-results-container';
         searchResultsContainer.className = 'search-results';
 
-        EnlargedImageManager.attachImageClickListeners();
-
         if (filteredItems.length > 0) {
             searchResultsContainer.innerHTML = `
-                <h3>Search Results for "${searchTerm}" (${filteredItems.length} items found)</h3>
-                <div class="card-grid">
-                    ${filteredItems.map(item => {
+            <h3>Search Results for "${searchTerm}" (${filteredItems.length} items found)</h3>
+            <div class="card-grid">
+                ${filteredItems.map(item => {
                 const highlightedName = Utils.highlightText(item.name, searchTerm);
                 const highlightedDescription = Utils.highlightText(item.description, searchTerm);
                 return `
-                            <div class="card">
-                                <img src="${item.image}" alt="${item.name}" class="card-img">
-                                <div class="card-content">
-                                    <h3 class="card-title">${highlightedName}</h3>
-                                    <p class="card-text">${highlightedDescription}</p>
-                                    <div class="card-footer">
-                                        <p class="price">M${item.price.toFixed(2)}</p>
-                                        <button class="card-btn order-btn" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">Order Now</button>
-                                    </div>
+                        <div class="card">
+                            <img src="${item.image}" alt="${item.name}" class="card-img">
+                            <div class="card-content">
+                                <h3 class="card-title">${highlightedName}</h3>
+                                <p class="card-text" id="desc-${item.id}">${highlightedDescription}</p>
+                                <div class="card-footer">
+                                    <p class="price">M${item.price.toFixed(2)}</p>
+                                    <button class="card-btn order-btn" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">Order Now</button>
                                 </div>
                             </div>
-                        `;
+                        </div>
+                    `;
             }).join('')}
-                </div>
-            `;
+            </div>
+        `;
         } else {
             searchResultsContainer.innerHTML = `
-                <p class="no-results">No menu items found for "${searchTerm}". Try different keywords.</p>
-            `;
+            <p class="no-results">No menu items found for "${searchTerm}". Try different keywords.</p>
+        `;
         }
 
         document.getElementById('menu').appendChild(searchResultsContainer);
 
-        document.querySelectorAll('.order-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const itemId = button.getAttribute('data-id');
-                const itemName = button.getAttribute('data-name');
-                const itemPrice = parseFloat(button.getAttribute('data-price'));
-                OrderModal.show(itemId, itemName, itemPrice);
-            });
-        });
-    }
+        // Attach listeners AFTER rendering (same as MenuManager)
+        MenuManager.attachOrderButtonListeners();
+        MenuManager.attachSeeMoreListeners(); // Reuse from MenuManager
+        SeeMore.truncateAllDescriptions(); // Apply truncation
+
+        EnlargedImageManager.attachImageClickListeners();
+    },
 };
 
 // Modal Management
@@ -648,7 +658,7 @@ const Gallery = {
                     ...galleryImages.map(img => img.image_url),
                     ...AppState.allMenuItems.map(item => item.image)
                 ];
-                
+
                 this.displayGallery(allGalleryImages);
             })
             .catch(error => {
@@ -1459,7 +1469,7 @@ const SeeMore = {
     init() {
         this.setupEventListeners();
         this.truncateAllDescriptions();
-        
+
         // Re-check on resize and orientation change
         window.addEventListener('resize', this.debounce(() => {
             this.truncateAllDescriptions();
@@ -1475,13 +1485,13 @@ const SeeMore = {
     truncateDescription(desc) {
         const fullText = desc.getAttribute('data-full-text') || desc.textContent;
         const charLimit = window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT;
-        
+
         if (fullText.length > charLimit) {
             const truncated = fullText.substring(0, charLimit) + '...';
             desc.textContent = truncated;
             desc.setAttribute('data-full-text', fullText);
             desc.classList.add('truncated');
-            
+
             // Ensure see more button exists
             this.ensureSeeMoreButton(desc);
         } else {
@@ -1511,7 +1521,7 @@ const SeeMore = {
     toggleText(button) {
         const desc = document.getElementById(button.getAttribute('data-target'));
         const fullText = desc.getAttribute('data-full-text');
-        
+
         if (desc.classList.contains('truncated')) {
             // Expand
             desc.textContent = fullText;
@@ -1609,14 +1619,14 @@ function loadGallery() {
 
             // Add event listeners
             document.querySelectorAll('.toggle-gallery-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const imageId = this.getAttribute('data-id');
                     toggleGalleryImage(imageId);
                 });
             });
 
             document.querySelectorAll('.delete-gallery-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const imageId = this.getAttribute('data-id');
                     deleteGalleryImage(imageId);
                 });
@@ -1685,25 +1695,25 @@ function saveUrlImage() {
         method: 'POST',
         body: JSON.stringify(formData)
     })
-    .then(data => {
-        if (data.success) {
-            alert('Gallery image added successfully!');
-            resetForms();
-            loadGallery();
-        } else {
-            alert('Error adding gallery image: ' + (data.error || 'Unknown error'));
-        }
-    })
-    .catch(error => {
-        console.error('Error saving gallery image:', error);
-        alert('Error adding gallery image');
-    });
+        .then(data => {
+            if (data.success) {
+                alert('Gallery image added successfully!');
+                resetForms();
+                loadGallery();
+            } else {
+                alert('Error adding gallery image: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error saving gallery image:', error);
+            alert('Error adding gallery image');
+        });
 }
 
 async function handleFileUpload() {
     const fileInput = document.getElementById('imageFile');
     const file = fileInput.files[0];
-    
+
     if (!file) {
         alert('Please select an image file');
         return;
@@ -1720,7 +1730,7 @@ async function handleFileUpload() {
         const progress = document.getElementById('uploadProgress');
         const progressBar = progress.querySelector('progress');
         const progressText = document.getElementById('progressText');
-        
+
         progress.style.display = 'block';
         progressBar.value = 0;
         progressText.textContent = '0%';
@@ -1731,7 +1741,7 @@ async function handleFileUpload() {
         });
 
         const result = await response.json();
-        
+
         if (result.success) {
             // Save the uploaded image to gallery
             const galleryData = {
