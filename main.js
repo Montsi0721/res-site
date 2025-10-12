@@ -161,15 +161,15 @@ const MenuManager = {
 
         // Attach listeners AFTER rendering
         this.attachOrderButtonListeners();
-        this.attachSeeMoreListeners(); // New: Attach see more button listeners
-        SeeMore.truncateAllDescriptions(); // Apply truncation after render
+        this.attachSeeMoreListeners(); // Attach see more button listeners
+        SeeMore.truncateMenuDescriptions(); // Scoped: Apply truncation only to menu cards
 
         EnlargedImageManager.attachImageClickListeners();
     },
 
     createMenuItemCard(item) {
         return `
-            <div class="card">
+            <div class="card menu-card">
                 <img src="${item.image}" alt="${item.name}" class="card-img">
                 <div class="card-content">
                     <h3 class="card-title">${item.name}</h3>
@@ -200,9 +200,9 @@ const MenuManager = {
 
     attachOrderButtonListeners() {
         document.querySelectorAll('.order-btn').forEach(button => {
-            // Remove existing listeners to prevent duplicates
-            button.replaceWith(button.cloneNode(true));
-            const newButton = document.querySelector(`[data-id="${button.getAttribute('data-id')}"]`);
+            // Remove existing listeners to prevent duplicates (clone trick)
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
             newButton.addEventListener('click', () => {
                 const itemId = newButton.getAttribute('data-id');
                 const itemName = newButton.getAttribute('data-name');
@@ -212,7 +212,7 @@ const MenuManager = {
         });
     },
 
-    // New: Attach listeners to dynamically created "see more" buttons
+    // Attach listeners to dynamically created "see more" buttons
     attachSeeMoreListeners() {
         document.querySelectorAll('.see-more-btn').forEach(button => {
             button.addEventListener('click', () => SeeMore.toggleText(button));
@@ -496,7 +496,7 @@ const SearchManager = {
                 const highlightedName = Utils.highlightText(item.name, searchTerm);
                 const highlightedDescription = Utils.highlightText(item.description, searchTerm);
                 return `
-                        <div class="card">
+                        <div class="card menu-card">
                             <img src="${item.image}" alt="${item.name}" class="card-img">
                             <div class="card-content">
                                 <h3 class="card-title">${highlightedName}</h3>
@@ -519,13 +519,13 @@ const SearchManager = {
 
         document.getElementById('menu').appendChild(searchResultsContainer);
 
-        // Attach listeners AFTER rendering (same as MenuManager)
+        // Attach listeners AFTER rendering (scoped to menu/search)
         MenuManager.attachOrderButtonListeners();
-        MenuManager.attachSeeMoreListeners(); // Reuse from MenuManager
-        SeeMore.truncateAllDescriptions(); // Apply truncation
+        MenuManager.attachSeeMoreListeners();
+        SeeMore.truncateMenuDescriptions(); // Scoped: Only menu cards
 
         EnlargedImageManager.attachImageClickListeners();
-    },
+    }
 };
 
 const ModalManager = {
@@ -1451,7 +1451,7 @@ const SeeMore = {
         this.setupEventListeners();
         // Only truncate menu cards on init (static content doesn't need it)
         this.truncateMenuDescriptions();
-        
+
         // Re-check on resize
         window.addEventListener('resize', this.debounce(() => {
             this.truncateMenuDescriptions();
@@ -1476,13 +1476,13 @@ const SeeMore = {
     truncateDescription(desc) {
         const fullText = desc.getAttribute('data-full-text') || desc.textContent.trim();
         const charLimit = window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT;
-        
+
         if (fullText.length > charLimit) {
             const truncated = fullText.substring(0, charLimit) + '...';
             desc.textContent = truncated;
             desc.setAttribute('data-full-text', fullText);
             desc.classList.add('truncated');
-            
+
             this.ensureSeeMoreButton(desc);
         } else {
             desc.classList.remove('truncated');
@@ -1493,7 +1493,7 @@ const SeeMore = {
     ensureSeeMoreButton(desc) {
         // Remove any existing button first to prevent duplicates
         this.removeSeeMoreButton(desc);
-        
+
         const button = document.createElement('button');
         button.className = 'see-more-btn';
         button.textContent = 'See more...';
@@ -1518,9 +1518,9 @@ const SeeMore = {
         const descId = button.getAttribute('data-target');
         const desc = document.getElementById(descId);
         if (!desc) return; // Safety check
-        
+
         const fullText = desc.getAttribute('data-full-text');
-        
+
         if (desc.classList.contains('truncated')) {
             // Expand
             desc.textContent = fullText;
