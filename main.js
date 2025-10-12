@@ -1443,13 +1443,12 @@ const FormHandlers = {
 };
 
 const SeeMore = {
-    MOBILE_CHAR_LIMIT: 80,
+    MOBILE_CHAR_LIMIT: 0,
     DESKTOP_CHAR_LIMIT: 120,
-    currentlyExpanded: null, // Track currently expanded description ID
+    currentlyExpanded: null,
 
     init() {
         this.setupEventListeners();
-        // Only truncate menu cards on init (static content doesn't need it)
         this.truncateMenuDescriptions();
         
         // Re-check on resize
@@ -1501,7 +1500,7 @@ const SeeMore = {
         const charLimit = window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT;
         
         if (fullText.length > charLimit) {
-            const truncated = fullText.substring(0, charLimit) + '...';
+            const truncated = fullText.substring(0, charLimit);
             desc.textContent = truncated;
             desc.setAttribute('data-full-text', fullText);
             desc.classList.add('truncated');
@@ -1519,7 +1518,7 @@ const SeeMore = {
         
         const button = document.createElement('button');
         button.className = 'see-more-btn';
-        button.textContent = 'See more...';
+        button.textContent = 'See description';
         const descId = desc.id || `desc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // Unique fallback ID
         button.setAttribute('data-target', descId);
         if (!desc.id) desc.id = descId;
@@ -1555,10 +1554,10 @@ const SeeMore = {
         } else {
             // Collapse
             const charLimit = window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT;
-            const truncated = fullText.substring(0, charLimit) + '...';
+            const truncated = fullText.substring(0, charLimit);
             desc.textContent = truncated;
             desc.classList.add('truncated');
-            button.textContent = 'See more...';
+            button.textContent = 'See description';
             this.currentlyExpanded = null;
         }
     },
@@ -1586,7 +1585,7 @@ const SeeMore = {
             // Trigger collapse
             desc.textContent = desc.getAttribute('data-full-text').substring(0, window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT) + '...';
             desc.classList.add('truncated');
-            button.textContent = 'See more...';
+            button.textContent = 'See description';
         }
 
         this.currentlyExpanded = null;
