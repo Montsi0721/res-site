@@ -1444,7 +1444,7 @@ const FormHandlers = {
 
 // Enhanced version with character limits (scoped to menu cards)
 const SeeMore = {
-    MOBILE_CHAR_LIMIT: 80,
+    MOBILE_CHAR_LIMIT: 20,
     DESKTOP_CHAR_LIMIT: 120,
 
     init() {
