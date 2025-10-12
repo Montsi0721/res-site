@@ -1731,7 +1731,7 @@ body.dark-mode .bottom-nav-item {
     padding: 6px;
     cursor: pointer;
     font-size: 0.8em;
-    margin: 8px 0;
+    /* margin: 8px 0; */
     transition: all 0.3s ease;
 }
 
