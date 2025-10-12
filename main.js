@@ -1442,16 +1442,16 @@ const FormHandlers = {
     }
 };
 
-// Enhanced version with character limits (scoped to menu cards)
 const SeeMore = {
-    MOBILE_CHAR_LIMIT: 0,
+    MOBILE_CHAR_LIMIT: 80,
     DESKTOP_CHAR_LIMIT: 120,
+    currentlyExpanded: null, // Track currently expanded description ID
 
     init() {
         this.setupEventListeners();
         // Only truncate menu cards on init (static content doesn't need it)
         this.truncateMenuDescriptions();
-
+        
         // Re-check on resize
         window.addEventListener('resize', this.debounce(() => {
             this.truncateMenuDescriptions();
@@ -1459,11 +1459,34 @@ const SeeMore = {
     },
 
     setupEventListeners() {
+        // Delegate click handling for see-more buttons
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('see-more-btn')) {
-                this.toggleText(e.target);
+                this.handleSeeMoreClick(e.target);
             }
         });
+
+        // Auto-collapse on scroll (debounced to avoid performance issues)
+        window.addEventListener('scroll', this.debounce(() => {
+            this.collapseAllExpanded();
+        }, 150));
+    },
+
+    // Handle click: Collapse others first, then toggle target
+    handleSeeMoreClick(button) {
+        const targetId = button.getAttribute('data-target');
+        
+        // If clicking the same button (to collapse), just toggle it
+        if (this.currentlyExpanded === targetId) {
+            this.toggleText(button);
+            return;
+        }
+
+        // Collapse any currently expanded
+        this.collapseAllExpanded();
+
+        // Now expand the new one
+        this.toggleText(button, true); // Force expand
     },
 
     // Scoped: Only target menu cards
@@ -1476,13 +1499,13 @@ const SeeMore = {
     truncateDescription(desc) {
         const fullText = desc.getAttribute('data-full-text') || desc.textContent.trim();
         const charLimit = window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT;
-
+        
         if (fullText.length > charLimit) {
-            const truncated = fullText.substring(0, charLimit);
+            const truncated = fullText.substring(0, charLimit) + '...';
             desc.textContent = truncated;
             desc.setAttribute('data-full-text', fullText);
             desc.classList.add('truncated');
-
+            
             this.ensureSeeMoreButton(desc);
         } else {
             desc.classList.remove('truncated');
@@ -1493,10 +1516,10 @@ const SeeMore = {
     ensureSeeMoreButton(desc) {
         // Remove any existing button first to prevent duplicates
         this.removeSeeMoreButton(desc);
-
+        
         const button = document.createElement('button');
         button.className = 'see-more-btn';
-        button.textContent = 'See description';
+        button.textContent = 'See more...';
         const descId = desc.id || `desc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // Unique fallback ID
         button.setAttribute('data-target', descId);
         if (!desc.id) desc.id = descId;
@@ -1514,23 +1537,59 @@ const SeeMore = {
         }
     },
 
-    toggleText(button) {
+    // Updated toggle: Supports force-expand and tracks state
+    toggleText(button, forceExpand = false) {
         const descId = button.getAttribute('data-target');
         const desc = document.getElementById(descId);
         if (!desc) return; // Safety check
-
+        
         const fullText = desc.getAttribute('data-full-text');
-
-        if (desc.classList.contains('truncated')) {
+        const isCurrentlyExpanded = !desc.classList.contains('truncated');
+        
+        if (forceExpand || !isCurrentlyExpanded) {
             // Expand
             desc.textContent = fullText;
             desc.classList.remove('truncated');
             button.textContent = 'See less';
+            this.currentlyExpanded = descId;
         } else {
             // Collapse
-            this.truncateDescription(desc);
-            button.textContent = 'See description';
+            const charLimit = window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT;
+            const truncated = fullText.substring(0, charLimit) + '...';
+            desc.textContent = truncated;
+            desc.classList.add('truncated');
+            button.textContent = 'See more...';
+            this.currentlyExpanded = null;
         }
+    },
+
+    // Collapse all expanded descriptions
+    collapseAllExpanded() {
+        if (!this.currentlyExpanded) return;
+
+        const desc = document.getElementById(this.currentlyExpanded);
+        if (!desc) {
+            this.currentlyExpanded = null;
+            return;
+        }
+
+        // Find the associated button
+        let button = desc.nextElementSibling;
+        while (button) {
+            if (button.classList.contains('see-more-btn') && button.getAttribute('data-target') === this.currentlyExpanded) {
+                break;
+            }
+            button = button.nextElementSibling;
+        }
+
+        if (button) {
+            // Trigger collapse
+            desc.textContent = desc.getAttribute('data-full-text').substring(0, window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT) + '...';
+            desc.classList.add('truncated');
+            button.textContent = 'See more...';
+        }
+
+        this.currentlyExpanded = null;
     },
 
     debounce(func, wait) {
