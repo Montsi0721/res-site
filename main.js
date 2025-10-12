@@ -1583,7 +1583,7 @@ const SeeMore = {
 
         if (button) {
             // Trigger collapse
-            desc.textContent = desc.getAttribute('data-full-text').substring(0, window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT) + '...';
+            desc.textContent = desc.getAttribute('data-full-text').substring(0, window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT);
             desc.classList.add('truncated');
             button.textContent = 'See description';
         }

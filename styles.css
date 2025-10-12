@@ -1428,17 +1428,6 @@ body.dark-mode .bottom-nav-item {
     }
 }
 
-@media (max-width: 763px) {
-    .nav-menu {
-        width: 85vw;
-        right: -55vw;
-    }
-
-    .nav-item {
-        padding: 12px 15px;
-    }
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -1465,6 +1454,24 @@ body.dark-mode .bottom-nav-item {
         font-size: 14px;
         padding: 5px 10px;
         width: fit-content;
+    }
+
+    .card-footer {
+        flex-direction: column;
+        gap: 10px; /* Space between price and button */
+        align-items: stretch; /* Full width for children */
+    }
+
+    .card-footer .price {
+        text-align: center;
+        margin: 0;
+        font-size: 16px; /* Slightly larger for touch */
+        font-weight: bold;
+    }
+
+    .card-footer .card-btn {
+        width: 100%; /* Full-width button on mobile */
+        justify-content: center;
     }
 
     .card-grid {
