@@ -1724,11 +1724,11 @@ body.dark-mode .bottom-nav-item {
 }
 
 .see-more-btn {
-    background: linear-gradient(135deg, #3498db, #2980b9);
+    background: transparent;
     color: white;
+    text-decoration: underline;
     border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
+    padding: 6px;
     cursor: pointer;
     font-size: 0.8em;
     margin: 8px 0;
@@ -1736,10 +1736,5 @@ body.dark-mode .bottom-nav-item {
 }
 
 .see-more-btn:hover {
-    background: linear-gradient(135deg, #2980b9, #21618c);
     transform: translateY(-1px);
 }
-
-/* Ensure cards use flexbox to push footer to bottom */
-
-
