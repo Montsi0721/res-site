@@ -14,13 +14,11 @@ const AppState = {
     userMarker: null
 };
 
-// Configuration
 const Config = {
     API_BASE: "https://res-site-backend.onrender.com/api",
     MAPS_API_KEY: "YOUR_GOOGLE_MAPS_API_KEY"
 };
 
-// DOM Elements Cache
 const DOM = {
     get menuBtn() { return document.getElementById('menuBtn'); },
     get navMenu() { return document.getElementById('navMenu'); },
@@ -34,7 +32,6 @@ const DOM = {
     get toast() { return document.getElementById('toast'); }
 };
 
-// Utility Functions
 const Utils = {
     async fetchWithFallback(url) {
         try {
@@ -83,7 +80,6 @@ const Utils = {
     }
 };
 
-// Menu Management
 const MenuManager = {
     async fetchMenuItems() {
         DOM.menuContainer.innerHTML = this.createLoadingSpinner();
@@ -224,7 +220,6 @@ const MenuManager = {
     }
 };
 
-// Enlarged Image Management
 const EnlargedImageManager = {
     setup() {
         // Create and append the modal to the body
@@ -322,7 +317,6 @@ const EnlargedImageManager = {
     }
 };
 
-// Pagination Management
 const Pagination = {
     setup() {
         DOM.prevBtn.addEventListener('click', () => this.changePage(AppState.currentPage - 1));
@@ -360,7 +354,6 @@ const Pagination = {
     }
 };
 
-// Category Filter Management
 const CategoryFilters = {
     initialize() {
         const categoryButtons = document.querySelectorAll('.category-btn');
@@ -428,7 +421,6 @@ const CategoryFilters = {
     }
 };
 
-// Search Functionality
 const SearchManager = {
     init() {
         const searchInput = document.querySelector('.search-input');
@@ -536,7 +528,6 @@ const SearchManager = {
     },
 };
 
-// Modal Management
 const ModalManager = {
     show(modalId) {
         const modal = document.getElementById(modalId);
@@ -559,7 +550,6 @@ const ModalManager = {
     }
 };
 
-// Order Modal
 const OrderModal = {
     show(itemId, itemName, itemPrice) {
         AppState.currentOrderItem = { id: itemId, name: itemName, price: itemPrice };
@@ -628,7 +618,6 @@ const OrderModal = {
     }
 };
 
-// Reservation Modal
 const ReservationModal = {
     setup() {
         document.getElementById('reservationBtn').addEventListener('click', () => ModalManager.show('reservationModal'));
@@ -637,14 +626,12 @@ const ReservationModal = {
     }
 };
 
-// Contact Form
 const ContactForm = {
     setup() {
         document.getElementById('contactForm').addEventListener('submit', FormHandlers.handleContact);
     }
 };
 
-// Gallery Management
 const Gallery = {
     show() {
         this.clearPreviousContainers();
@@ -776,7 +763,6 @@ const Gallery = {
     }
 };
 
-// Special Offers Management
 const SpecialOffers = {
     show() {
         const specialOffersSection = document.getElementById('special-offers');
@@ -852,7 +838,6 @@ const SpecialOffers = {
     }
 };
 
-// Order Tracking Management
 const OrderTracking = {
     setup() {
         document.getElementById('trackOrderBtn').addEventListener('click', this.trackOrder.bind(this));
@@ -998,7 +983,6 @@ const OrderTracking = {
     }
 };
 
-// Location Feature Initialization
 const LocationFeature = {
     initialize() {
         // Load Google Maps API
@@ -1164,7 +1148,6 @@ const LocationFeature = {
     }
 };
 
-// Navigation Management
 const Navigation = {
     handleItemClick(target) {
         DOM.menuBtn.classList.remove('active');
@@ -1234,7 +1217,6 @@ const Navigation = {
     }
 };
 
-// Event Listeners Setup
 const EventListeners = {
     setup() {
         DOM.menuBtn.addEventListener('click', () => {
@@ -1396,7 +1378,6 @@ const EventListeners = {
     }
 };
 
-// Form Handlers
 const FormHandlers = {
     handleReservation(e) {
         e.preventDefault();
@@ -1461,38 +1442,47 @@ const FormHandlers = {
     }
 };
 
-// Enhanced version with character limits
+// Enhanced version with character limits (scoped to menu cards)
 const SeeMore = {
     MOBILE_CHAR_LIMIT: 80,
     DESKTOP_CHAR_LIMIT: 120,
 
     init() {
         this.setupEventListeners();
-        this.truncateAllDescriptions();
-
-        // Re-check on resize and orientation change
+        // Only truncate menu cards on init (static content doesn't need it)
+        this.truncateMenuDescriptions();
+        
+        // Re-check on resize
         window.addEventListener('resize', this.debounce(() => {
-            this.truncateAllDescriptions();
+            this.truncateMenuDescriptions();
         }, 250));
     },
 
-    truncateAllDescriptions() {
-        document.querySelectorAll('.card-text').forEach(desc => {
+    setupEventListeners() {
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('see-more-btn')) {
+                this.toggleText(e.target);
+            }
+        });
+    },
+
+    // Scoped: Only target menu cards
+    truncateMenuDescriptions() {
+        document.querySelectorAll('.menu-card .card-text').forEach(desc => {
             this.truncateDescription(desc);
         });
     },
 
     truncateDescription(desc) {
-        const fullText = desc.getAttribute('data-full-text') || desc.textContent;
+        const fullText = desc.getAttribute('data-full-text') || desc.textContent.trim();
         const charLimit = window.innerWidth <= 768 ? this.MOBILE_CHAR_LIMIT : this.DESKTOP_CHAR_LIMIT;
-
+        
         if (fullText.length > charLimit) {
             const truncated = fullText.substring(0, charLimit) + '...';
             desc.textContent = truncated;
             desc.setAttribute('data-full-text', fullText);
             desc.classList.add('truncated');
-
-            // Ensure see more button exists
+            
             this.ensureSeeMoreButton(desc);
         } else {
             desc.classList.remove('truncated');
@@ -1501,27 +1491,36 @@ const SeeMore = {
     },
 
     ensureSeeMoreButton(desc) {
-        let button = desc.nextElementSibling;
-        if (!button || !button.classList.contains('see-more-btn')) {
-            button = document.createElement('button');
-            button.className = 'see-more-btn';
-            button.textContent = 'See more...';
-            button.setAttribute('data-target', desc.id);
-            desc.parentNode.insertBefore(button, desc.nextSibling);
-        }
+        // Remove any existing button first to prevent duplicates
+        this.removeSeeMoreButton(desc);
+        
+        const button = document.createElement('button');
+        button.className = 'see-more-btn';
+        button.textContent = 'See more...';
+        const descId = desc.id || `desc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // Unique fallback ID
+        button.setAttribute('data-target', descId);
+        if (!desc.id) desc.id = descId;
+        desc.parentNode.insertBefore(button, desc.nextSibling);
     },
 
     removeSeeMoreButton(desc) {
-        const button = desc.nextElementSibling;
-        if (button && button.classList.contains('see-more-btn')) {
-            button.remove();
+        let sibling = desc.nextElementSibling;
+        while (sibling) {
+            if (sibling.classList && sibling.classList.contains('see-more-btn')) {
+                sibling.remove();
+                break;
+            }
+            sibling = sibling.nextElementSibling;
         }
     },
 
     toggleText(button) {
-        const desc = document.getElementById(button.getAttribute('data-target'));
+        const descId = button.getAttribute('data-target');
+        const desc = document.getElementById(descId);
+        if (!desc) return; // Safety check
+        
         const fullText = desc.getAttribute('data-full-text');
-
+        
         if (desc.classList.contains('truncated')) {
             // Expand
             desc.textContent = fullText;
