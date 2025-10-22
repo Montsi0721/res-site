@@ -1482,6 +1482,10 @@ body.dark-mode .bottom-nav-item {
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     }
 
+    .card-grid, .card-container {
+        gap: 0px;
+    }
+
     .card {
         font-size: 14px;
     }
