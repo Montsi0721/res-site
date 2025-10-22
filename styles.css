@@ -1481,6 +1481,7 @@ body.dark-mode .bottom-nav-item {
     .card-grid, .card-container {
         border: #000 solid black;
         margin-left: -10px;
+        left: -10px;
     }
 
     .card {
