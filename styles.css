@@ -1457,7 +1457,7 @@ body.dark-mode .bottom-nav-item {
     }
 
     .card-container {
-        gap: -5px;
+        gap: 0px;
     }
 
     .card-footer {
