@@ -1478,12 +1478,6 @@ body.dark-mode .bottom-nav-item {
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     }
 
-    .card-grid, .card-container {
-        border: #000 solid black;
-        margin-left: -10px;
-        left: -10px;
-    }
-
     .card {
         font-size: 14px;
     }
