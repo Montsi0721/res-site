@@ -1456,6 +1456,10 @@ body.dark-mode .bottom-nav-item {
         width: fit-content;
     }
 
+    .card-container {
+        gap: -5px;
+    }
+
     .card-footer {
         flex-direction: column;
         gap: 10px; /* Space between price and button */
